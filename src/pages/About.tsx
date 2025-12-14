@@ -72,7 +72,7 @@ const About = () => {
               <span className="text-primary"> Since 2009</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Stratégique Cyber Sec was founded by elite security professionals 
+              GenXDual Cyber Solutions was founded by elite security professionals 
               with a mission to protect organizations from ever-evolving cyber threats.
             </p>
           </motion.div>
@@ -89,7 +89,7 @@ const About = () => {
                 Our Mission
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                At Stratégique Cyber Sec, we believe that the best defense is a proactive 
+                At GenXDual Cyber Solutions, we believe that the best defense is a proactive 
                 offense. Our mission is to empower organizations by exposing vulnerabilities 
                 before adversaries can exploit them.
               </p>

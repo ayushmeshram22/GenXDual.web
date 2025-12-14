@@ -63,17 +63,17 @@ export const Navbar = () => {
             <div className="relative">
               <img 
                 src={logo} 
-                alt="Stratégique Cyber Sec" 
+                alt="GenXDual Cyber Solutions" 
                 className="w-10 h-10 object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_10px_hsl(var(--primary))]" 
               />
               <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold text-foreground tracking-tight">
-                Stratégique
+                GenXDual
               </span>
               <span className="text-xs font-medium text-primary tracking-widest uppercase">
-                Cyber Sec
+                Cyber Solutions
               </span>
             </div>
           </Link>
