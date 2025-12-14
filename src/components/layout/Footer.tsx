@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Shield, Mail, Phone, MapPin, Linkedin, Twitter, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Twitter, Github } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const footerLinks = {
   services: [
@@ -31,7 +32,7 @@ export const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
-              <Shield className="w-10 h-10 text-primary" />
+              <img src={logo} alt="Stratégique Cyber Sec" className="w-10 h-10 object-contain" />
               <div className="flex flex-col">
                 <span className="text-lg font-bold text-foreground tracking-tight">
                   Stratégique
