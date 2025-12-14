@@ -60,7 +60,7 @@ export const WhyChooseSection = () => {
               <span className="text-primary"> Delivers Results</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              At Stratégique Cyber Sec, we don't just find vulnerabilities—we provide 
+              At GenXDual Cyber Solutions, we don't just find vulnerabilities—we provide 
               the strategic insight needed to transform your security posture. Our 
               battle-tested methodologies and elite team ensure your defenses are 
               ready for any threat.

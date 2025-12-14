@@ -32,13 +32,13 @@ export const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
-              <img src={logo} alt="Stratégique Cyber Sec" className="w-10 h-10 object-contain" />
+              <img src={logo} alt="GenXDual Cyber Solutions" className="w-10 h-10 object-contain" />
               <div className="flex flex-col">
                 <span className="text-lg font-bold text-foreground tracking-tight">
-                  Stratégique
+                  GenXDual
                 </span>
                 <span className="text-xs font-medium text-primary tracking-widest uppercase">
-                  Cyber Sec
+                  Cyber Solutions
                 </span>
               </div>
             </Link>
@@ -145,7 +145,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Stratégique Cyber Sec. All rights reserved.
+            © {new Date().getFullYear()} GenXDual Cyber Solutions. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             {footerLinks.legal.map((link) => (

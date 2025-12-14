@@ -29,7 +29,7 @@ export const CTASection = () => {
 
           <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
             Don't wait for a breach to expose your vulnerabilities. Partner with 
-            Stratégique Cyber Sec and proactively secure your digital assets today.
+            GenXDual Cyber Solutions and proactively secure your digital assets today.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

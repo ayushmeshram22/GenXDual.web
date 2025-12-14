@@ -4,7 +4,7 @@ import { Star, Quote } from "lucide-react";
 const testimonials = [
   {
     quote:
-      "Stratégique Cyber Sec's penetration test revealed critical vulnerabilities we never knew existed. Their detailed report and remediation guidance helped us fix issues before they could be exploited.",
+      "GenXDual Cyber Solutions' penetration test revealed critical vulnerabilities we never knew existed. Their detailed report and remediation guidance helped us fix issues before they could be exploited.",
     author: "Sarah Mitchell",
     role: "CISO",
     company: "TechVenture Inc.",
@@ -58,7 +58,7 @@ export const TestimonialsSection = () => {
             transition={{ delay: 0.2 }}
             className="text-lg text-muted-foreground"
           >
-            See what our clients say about partnering with Stratégique Cyber Sec.
+            See what our clients say about partnering with GenXDual Cyber Solutions.
           </motion.p>
         </div>
 
