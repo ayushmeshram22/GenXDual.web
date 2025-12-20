@@ -49,7 +49,7 @@ export const Footer = () => {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/genxdual-cyber-solutions/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all duration-300"
@@ -119,7 +119,7 @@ export const Footer = () => {
                   href="mailto:contact@strategiquecybersec.com"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  contact@strategiquecybersec.com
+                  genxdual@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
@@ -128,7 +128,7 @@ export const Footer = () => {
                   href="tel:+1-800-CYBER-01"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  +1-800-CYBER-01
+                  +918668461257
                 </a>
               </li>
               <li className="flex items-start gap-3">

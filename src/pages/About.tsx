@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CTASection } from "@/components/home/CTASection";
+import creator_logo from "@/assets/creator_logo.png";
 
 const values = [
   {
@@ -69,7 +70,7 @@ const About = () => {
             </span>
             <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
               Defending the Digital World
-              <span className="text-primary"> Since 2009</span>
+              <span className="text-primary"> Since 2025</span>
             </h1>
             <p className="text-lg text-muted-foreground">
               GenXDual Cyber Solutions was founded by elite security professionals 
@@ -107,11 +108,18 @@ const About = () => {
               </Button>
             </div>
             <div className="relative">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/50 border border-border/50 flex items-center justify-center">
-                <Shield className="w-32 h-32 text-primary/30" />
+              <div className="relative aspect-square rounded-2xl overflow-hidden
+                              bg-gradient-to-br from-primary/20 to-secondary/50
+                              border border-border/50">
+                <img 
+                  src={creator_logo}
+                  alt="Creator Logo"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
               </div>
               <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/10 rounded-full blur-3xl" />
             </div>
+
           </motion.div>
 
           {/* Values */}
