@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
+import white_logo from "@/assets/white_logo.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -62,7 +63,7 @@ export const Navbar = () => {
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
               <img 
-                src={logo} 
+                src={white_logo} 
                 alt="GenXDual Cyber Solutions" 
                 className="w-10 h-10 object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_10px_hsl(var(--primary))]" 
               />
@@ -131,7 +132,7 @@ export const Navbar = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <Button variant="cyberOutline" size="sm" asChild>
-              <Link to="/contact">Get Assessment</Link>
+              <Link to="/contact">Get Started</Link>
             </Button>
           </div>
 

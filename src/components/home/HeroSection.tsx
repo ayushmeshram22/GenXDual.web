@@ -20,7 +20,7 @@ export const HeroSection = () => {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -30,7 +30,7 @@ export const HeroSection = () => {
             <span className="text-sm text-muted-foreground">
               Trusted by Fortune 500 Companies
             </span>
-          </motion.div>
+          </motion.div> */}
 
           {/* Main Headline */}
           <motion.h1
