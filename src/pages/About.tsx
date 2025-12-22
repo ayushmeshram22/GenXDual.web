@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CTASection } from "@/components/home/CTASection";
 import creator_logo from "@/assets/creator_logo.png";
+import white_bg_logo from "@/assets/white_bg_logo.jpeg";
 
 const values = [
   {
@@ -112,8 +113,8 @@ const About = () => {
                               bg-gradient-to-br from-primary/20 to-secondary/50
                               border border-border/50">
                 <img 
-                  src={creator_logo}
-                  alt="Creator Logo"
+                  src={white_bg_logo}
+                  alt="white_bg_logo"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
@@ -186,11 +187,14 @@ const About = () => {
                   transition={{ delay: idx * 0.15 }}
                   className="p-8 rounded-2xl bg-card/50 border border-border/50 text-center"
                 >
-                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                    <span className="text-2xl font-bold text-primary">
-                      {leader.name.charAt(0)}
-                    </span>
+                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6 overflow-hidden">
+                    <img 
+                      src={white_bg_logo}
+                      alt="white_bg_logo"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
+
                   <h3 className="text-xl font-semibold text-foreground mb-1">
                     {leader.name}
                   </h3>

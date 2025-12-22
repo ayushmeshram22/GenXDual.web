@@ -134,6 +134,9 @@ export const Navbar = () => {
             <Button variant="cyberOutline" size="sm" asChild>
               <Link to="/contact">Get Started</Link>
             </Button>
+            <Button variant="cyberOutline" size="sm" asChild>
+              <Link to="/contact">Sign In</Link>
+            </Button>
           </div>
 
           {/* Mobile Menu Toggle */}

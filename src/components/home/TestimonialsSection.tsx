@@ -5,25 +5,25 @@ const testimonials = [
   {
     quote:
       "GenXDual Cyber Solutions' penetration test revealed critical vulnerabilities we never knew existed. Their detailed report and remediation guidance helped us fix issues before they could be exploited.",
-    author: "Sarah Mitchell",
+    author: "Rahul Sharma",
     role: "CISO",
-    company: "TechVenture Inc.",
+    company: "TechVenture India Pvt. Ltd.",
     rating: 5,
   },
   {
     quote:
       "The red team engagement was eye-opening. They bypassed controls we thought were solid and provided invaluable insights into improving our detection capabilities.",
-    author: "Marcus Chen",
+    author: "Ananya Iyer",
     role: "VP of Security",
-    company: "GlobalFinance Corp",
+    company: "Bharat Finance Ltd.",
     rating: 5,
   },
   {
     quote:
       "Their cloud security assessment identified misconfigurations across our AWS infrastructure that could have led to a major breach. Professional, thorough, and highly recommended.",
-    author: "Elena Rodriguez",
+    author: "Vikram Patel",
     role: "Director of IT",
-    company: "HealthFirst Medical",
+    company: "Arogya Health Systems",
     rating: 5,
   },
 ];

@@ -134,8 +134,8 @@ export const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary mt-0.5" />
                 <span className="text-sm text-muted-foreground">
-                  123 Security Boulevard<br />
-                  Cyber City, CC 10101
+                  Chhatrapati Square <br/>
+                  New Sneh Nagar, Nagpur, Maharashtra 440015
                 </span>
               </li>
             </ul>
