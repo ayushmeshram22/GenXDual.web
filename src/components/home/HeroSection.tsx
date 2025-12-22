@@ -82,7 +82,7 @@ export const HeroSection = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8"
           >
             {[
-              { value: "500+", label: "Assessments Completed" },
+              { value: "100+", label: "Assessments Completed" },
               { value: "99%", label: "Threat Detection Rate" },
               { value: "24/7", label: "Security Monitoring" },
               { value: "15+", label: "Years Experience" },

@@ -37,21 +37,22 @@ const values = [
 
 const leadership = [
   {
-    name: "Alexandre Dubois",
+    name: "Amit Kulkarni",
     role: "Chief Executive Officer",
     bio: "Former government cybersecurity advisor with 20+ years leading offensive security teams.",
   },
   {
-    name: "Maria Santos",
+    name: "Priya Menon",
     role: "Chief Technology Officer",
     bio: "Renowned security researcher and OSCE holder, specializing in advanced exploitation techniques.",
   },
   {
-    name: "James Harrington",
+    name: "Rajiv Malhotra",
     role: "VP of Operations",
     bio: "Former CISO of Fortune 100 companies, expert in security program development.",
   },
 ];
+
 
 const About = () => {
   return (
