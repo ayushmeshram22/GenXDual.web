@@ -21,6 +21,7 @@ const navLinks = [
       { name: "Training & Certifications", href: "/services/training" },
     ],
   },
+  { name: "Get Started", href: "/get-started" },
   { name: "Blog", href: "/blog" },
   { name: "Careers", href: "/careers" },
   { name: "Contact", href: "/contact" },
