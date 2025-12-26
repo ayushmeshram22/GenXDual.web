@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 import logo from "@/assets/logo.png";
 import white_logo from "@/assets/white_logo.png";
 
@@ -32,7 +35,10 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +52,39 @@ export const Navbar = () => {
     setIsOpen(false);
     setActiveDropdown(null);
   }, [location]);
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Logout failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+      navigate("/");
+    }
+  };
 
   return (
     <motion.header
@@ -133,12 +172,29 @@ export const Navbar = () => {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="cyberOutline" size="sm" asChild>
-              <Link to="/contact">Get Started</Link>
-            </Button>
-            <Button variant="cyberOutline" size="sm" asChild>
-              <Link to="/contact">Sign In</Link>
-            </Button>
+            {user ? (
+              <>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User className="w-4 h-4" />
+                  <span className="max-w-[120px] truncate">
+                    {user.user_metadata?.display_name || user.email?.split("@")[0]}
+                  </span>
+                </div>
+                <Button variant="cyberOutline" size="sm" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 mr-1" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="cyberOutline" size="sm" asChild>
+                  <Link to="/get-started">Get Started</Link>
+                </Button>
+                <Button variant="cyberOutline" size="sm" asChild>
+                  <Link to="/auth">Sign In</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -189,10 +245,28 @@ export const Navbar = () => {
                   )}
                 </div>
               ))}
-              <div className="pt-4 border-t border-border">
-                <Button variant="cyber" className="w-full" asChild>
-                  <Link to="/contact">Request Assessment</Link>
-                </Button>
+              <div className="pt-4 border-t border-border space-y-2">
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+                      <User className="w-4 h-4" />
+                      <span>{user.user_metadata?.display_name || user.email?.split("@")[0]}</span>
+                    </div>
+                    <Button variant="cyber" className="w-full" onClick={handleLogout}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="cyber" className="w-full" asChild>
+                      <Link to="/auth">Sign In</Link>
+                    </Button>
+                    <Button variant="cyberOutline" className="w-full" asChild>
+                      <Link to="/get-started">Get Started</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
