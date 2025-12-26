@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Shield, Lock, Network, Terminal, Globe, Server, 
-  Code, FileCode, Bug, Target, Heart, Clock, Award
+  Code, FileCode, Bug, Target, Heart, Clock, Award, Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -249,6 +251,15 @@ const getTypeColor = (type: string) => {
 };
 
 const Modules = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredModules = modules.filter((module) =>
+    module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    module.tier.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    module.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    module.difficulty.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -273,9 +284,28 @@ const Modules = () => {
             </p>
           </motion.div>
 
+          {/* Search Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-10 max-w-md"
+          >
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search modules by name, tier, type..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-card border-border focus:border-primary"
+              />
+            </div>
+          </motion.div>
+
           {/* Module Cards Grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module, index) => (
+            {filteredModules.map((module, index) => (
               <motion.div
                 key={module.title}
                 initial={{ opacity: 0, y: 30 }}
