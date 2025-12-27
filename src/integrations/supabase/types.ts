@@ -52,26 +52,50 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age: number | null
           avatar_url: string | null
+          country: string | null
           created_at: string
           display_name: string | null
+          experience_details: string | null
+          full_name: string | null
+          goal: string | null
+          has_prior_experience: boolean | null
           id: string
+          phone: string | null
+          skill_level: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          age?: number | null
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
           display_name?: string | null
+          experience_details?: string | null
+          full_name?: string | null
+          goal?: string | null
+          has_prior_experience?: boolean | null
           id?: string
+          phone?: string | null
+          skill_level?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          age?: number | null
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
           display_name?: string | null
+          experience_details?: string | null
+          full_name?: string | null
+          goal?: string | null
+          has_prior_experience?: boolean | null
           id?: string
+          phone?: string | null
+          skill_level?: string | null
           updated_at?: string
           user_id?: string
         }
