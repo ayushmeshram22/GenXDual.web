@@ -174,6 +174,9 @@ export const Navbar = () => {
           <div className="hidden lg:flex items-center gap-3">
             {user ? (
               <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/dashboard">Dashboard</Link>
+                </Button>
                 <Link 
                   to="/profile" 
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -251,6 +254,12 @@ export const Navbar = () => {
               <div className="pt-4 border-t border-border space-y-2">
                 {user ? (
                   <>
+                    <Link 
+                      to="/dashboard"
+                      className="flex items-center gap-2 text-sm text-foreground hover:text-primary py-2 transition-colors"
+                    >
+                      Dashboard
+                    </Link>
                     <Link 
                       to="/profile" 
                       className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground py-2 transition-colors"

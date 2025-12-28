@@ -11,7 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Mail, Phone, Calendar, Globe, Target, GraduationCap, Briefcase } from "lucide-react";
+import { User, Mail, Phone, Calendar, Globe, Target, GraduationCap, Briefcase, Camera } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const countries = [
   "Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh",
@@ -38,6 +39,7 @@ const Profile = () => {
     experience_details: "",
     skill_level: "",
     goal: "",
+    avatar_url: "",
   });
 
   useEffect(() => {
@@ -77,6 +79,7 @@ const Profile = () => {
         experience_details: data.experience_details || "",
         skill_level: data.skill_level || "",
         goal: data.goal || "",
+        avatar_url: data.avatar_url || "",
       });
     }
   };
@@ -97,6 +100,7 @@ const Profile = () => {
         experience_details: formData.has_prior_experience === "yes" ? formData.experience_details : null,
         skill_level: formData.skill_level || null,
         goal: formData.goal || null,
+        avatar_url: formData.avatar_url || null,
       })
       .eq("user_id", user.id);
 
@@ -131,6 +135,39 @@ const Profile = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Avatar Section */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Camera className="w-5 h-5 text-primary" />
+                  Profile Picture
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-6">
+                  <Avatar className="w-24 h-24 border-2 border-primary/30">
+                    <AvatarImage src={formData.avatar_url || undefined} />
+                    <AvatarFallback className="bg-primary/20 text-primary text-2xl">
+                      {formData.full_name ? formData.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : user?.email?.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="avatar_url">Avatar URL</Label>
+                    <Input
+                      id="avatar_url"
+                      type="url"
+                      placeholder="https://example.com/your-photo.jpg"
+                      value={formData.avatar_url}
+                      onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Enter a URL to your profile picture (e.g., from Gravatar, LinkedIn, or any image host)
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Experience Questions */}
             <Card className="border-border/50 bg-card/50 backdrop-blur">
               <CardHeader>
