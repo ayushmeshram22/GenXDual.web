@@ -174,12 +174,15 @@ export const Navbar = () => {
           <div className="hidden lg:flex items-center gap-3">
             {user ? (
               <>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Link 
+                  to="/profile" 
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   <User className="w-4 h-4" />
                   <span className="max-w-[120px] truncate">
                     {user.user_metadata?.display_name || user.email?.split("@")[0]}
                   </span>
-                </div>
+                </Link>
                 <Button variant="cyberOutline" size="sm" onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-1" />
                   Logout
@@ -248,10 +251,13 @@ export const Navbar = () => {
               <div className="pt-4 border-t border-border space-y-2">
                 {user ? (
                   <>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+                    <Link 
+                      to="/profile" 
+                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground py-2 transition-colors"
+                    >
                       <User className="w-4 h-4" />
                       <span>{user.user_metadata?.display_name || user.email?.split("@")[0]}</span>
-                    </div>
+                    </Link>
                     <Button variant="cyber" className="w-full" onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout
