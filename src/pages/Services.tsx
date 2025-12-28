@@ -248,6 +248,7 @@ const Services = () => {
           </div>
 
           {/* Courses Section */}
+          {/*
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -277,7 +278,7 @@ const Services = () => {
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
                   className="group p-6 rounded-2xl bg-card/50 border border-border/50 hover:border-primary/30 transition-all duration-300 flex flex-col"
                 >
-                  {/* Header */}
+                  {/* Header 
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                       <course.icon className="w-6 h-6 text-primary" />
@@ -292,7 +293,7 @@ const Services = () => {
                     </span>
                   </div>
 
-                  {/* Title & Description */}
+                  {/* Title & Description 
                   <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                     {course.title}
                   </h3>
@@ -300,7 +301,7 @@ const Services = () => {
                     {course.description}
                   </p>
 
-                  {/* Topics */}
+                  {/* Topics 
                   <div className="flex flex-wrap gap-2 mb-4">
                     {course.topics.map((topic) => (
                       <span
@@ -312,7 +313,7 @@ const Services = () => {
                     ))}
                   </div>
 
-                  {/* Footer */}
+                  {/* Footer 
                   <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between">
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
@@ -329,7 +330,7 @@ const Services = () => {
               ))}
             </div>
 
-            {/* Courses CTA */}
+            {/* Courses CTA 
             <div className="text-center mt-12">
               <Button variant="cyberOutline" size="lg" asChild>
                 <Link to="/contact" className="flex items-center gap-2">
@@ -339,6 +340,8 @@ const Services = () => {
               </Button>
             </div>
           </motion.div>
+          */}
+
         </div>
 
         <CTASection />

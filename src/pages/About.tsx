@@ -98,7 +98,7 @@ const About = () => {
               </p>
               <p className="text-muted-foreground leading-relaxed mb-6">
                 We employ the same tactics, techniques, and procedures (TTPs) used by 
-                sophisticated threat actors—but we use them to strengthen your defenses, 
+                sophisticated threat actors but we use them to strengthen your defenses, 
                 not to breach them. Our team of certified experts combines deep technical 
                 expertise with strategic insight to deliver actionable results.
               </p>

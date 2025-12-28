@@ -132,10 +132,10 @@ export const Navbar = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <Button variant="cyberOutline" size="sm" asChild>
-              <Link to="/contact">Get Started</Link>
+              <Link to="/signup">Get Started</Link>
             </Button>
             <Button variant="cyberOutline" size="sm" asChild>
-              <Link to="/contact">Sign In</Link>
+              <Link to="/signin">Sign In</Link>
             </Button>
           </div>
 
@@ -188,8 +188,13 @@ export const Navbar = () => {
                 </div>
               ))}
               <div className="pt-4 border-t border-border">
-                <Button variant="cyber" className="w-full" asChild>
-                  <Link to="/contact">Request Assessment</Link>
+                <Button variant="cyber" className="w-1/2" asChild>
+                  <Link to="/signup">Get Started</Link>
+                </Button>
+              </div>
+              <div className="pt-4 border-t border-border">
+                <Button variant="cyber" className="w-1/2" asChild>
+                  <Link to="/signin">Sign In</Link>
                 </Button>
               </div>
             </div>

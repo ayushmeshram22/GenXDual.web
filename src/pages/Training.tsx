@@ -392,7 +392,7 @@ const Training = () => {
             ))}
           </motion.div>
 
-          {/* Upcoming Sessions */}
+          {/* Upcoming Sessions 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -482,6 +482,7 @@ const Training = () => {
               </table>
             </div>
           </motion.div>
+          */}
 
           {/* Enrollment Form */}
           <motion.div

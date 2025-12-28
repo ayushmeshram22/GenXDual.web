@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Clock, Shield } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Clock, Shield, Linkedin, Instagram, Twitter, Github, MessageCircle } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -80,14 +80,14 @@ const Contact = () => {
                 <Mail className="w-8 h-8 text-primary mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">Email</h3>
                 <a
-                  href="mailto:contact@strategiquecybersec.com"
+                  href="mailto:genxdual@gmail.com"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  contact@strategiquecybersec.com
+                  genxdual@gmail.com
                 </a>
               </div>
 
-              <div className="p-6 rounded-xl bg-card/50 border border-border/50">
+              {/* <div className="p-6 rounded-xl bg-card/50 border border-border/50">
                 <Phone className="w-8 h-8 text-primary mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">Phone</h3>
                 <a
@@ -96,14 +96,30 @@ const Contact = () => {
                 >
                   +1-800-CYBER-01
                 </a>
+              </div> */}
+
+              <div className="p-6 rounded-xl bg-card/50 border border-border/50">
+                <Linkedin className="w-8 h-8 text-primary mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">Linked In</h3>
+                <p className="text-muted-foreground">
+                  
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-card/50 border border-border/50">
+                <Instagram className="w-8 h-8 text-primary mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">Instagram</h3>
+                <p className="text-muted-foreground">
+                  
+                </p>
               </div>
 
               <div className="p-6 rounded-xl bg-card/50 border border-border/50">
                 <MapPin className="w-8 h-8 text-primary mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">Office</h3>
                 <p className="text-muted-foreground">
-                  123 Security Boulevard<br />
-                  Cyber City, CC 10101
+                  Chhatrapati Square <br/>
+                  New Sneh Nagar, Nagpur, Maharashtra 440015
                 </p>
               </div>
 
@@ -146,13 +162,14 @@ const Contact = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        placeholder="John Doe"
+                        placeholder="Enter your full name"
                         className="bg-secondary/50 border-border"
                       />
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Email Address *
+                        Email ID *
                       </label>
                       <Input
                         type="email"
@@ -161,7 +178,7 @@ const Contact = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
                         }
-                        placeholder="john@company.com"
+                        placeholder="example@yourcompany.com"
                         className="bg-secondary/50 border-border"
                       />
                     </div>
@@ -170,20 +187,21 @@ const Contact = () => {
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Company Name
+                        Company / Organisation Name
                       </label>
                       <Input
                         value={formData.company}
                         onChange={(e) =>
                           setFormData({ ...formData, company: e.target.value })
                         }
-                        placeholder="Your Company"
+                        placeholder="Your organisation name"
                         className="bg-secondary/50 border-border"
                       />
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Phone Number
+                        Mobile Number
                       </label>
                       <Input
                         type="tel"
@@ -191,7 +209,7 @@ const Contact = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, phone: e.target.value })
                         }
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+91 XXXXX XXXXX"
                         className="bg-secondary/50 border-border"
                       />
                     </div>
@@ -199,7 +217,7 @@ const Contact = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Service of Interest
+                      Service Required
                     </label>
                     <select
                       value={formData.service}
@@ -208,13 +226,13 @@ const Contact = () => {
                       }
                       className="w-full h-10 px-3 rounded-md bg-secondary/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     >
-                      <option value="">Select a service...</option>
+                      <option value="">Please select a service</option>
                       <option value="pentest">Penetration Testing</option>
-                      <option value="redteam">Red Team Operations</option>
+                      <option value="redteam">Red Team Assessment</option>
                       <option value="webapp">Web Application Security</option>
                       <option value="cloud">Cloud Security Assessment</option>
-                      <option value="training">Security Training</option>
-                      <option value="other">Other</option>
+                      <option value="training">Cyber Security Training</option>
+                      <option value="other">Other Services</option>
                     </select>
                   </div>
 
@@ -229,7 +247,7 @@ const Contact = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      placeholder="Tell us about your security needs..."
+                      placeholder="Please share your requirements in brief..."
                       className="bg-secondary/50 border-border resize-none"
                     />
                   </div>
@@ -242,15 +260,16 @@ const Contact = () => {
                     className="w-full sm:w-auto"
                   >
                     {isSubmitting ? (
-                      "Sending..."
+                      "Submitting..."
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        Send Message
+                        Submit Enquiry
                       </>
                     )}
                   </Button>
                 </form>
+
               </div>
             </motion.div>
           </div>
