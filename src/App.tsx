@@ -16,6 +16,9 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Careers from "./pages/Careers";
+import Beginner from "./components/modules/Beginner";
+import Intermediate from "./components/modules/Intermediate";
+import Advanced from "./components/modules/Advanced";
 
 
 const queryClient = new QueryClient();
@@ -33,6 +36,10 @@ const App = () => (
           <Route path="/services/training" element={<Training />} />
           <Route path="/get-started" element={<GetStarted />} />
           <Route path="/modules" element={<Modules />} />
+          <Route path="/modules/beginner" element={<Beginner />} />
+          <Route path="/modules/intermediate" element={<Intermediate />} />
+          <Route path="/modules/advanced" element={<Advanced />} />
+
           <Route path="/auth" element={<Auth />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/profile" element={<Profile />} />
