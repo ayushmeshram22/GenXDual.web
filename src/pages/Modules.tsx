@@ -369,7 +369,7 @@ const Modules = () => {
                         size="sm"
                         className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground"
                       >
-                        Start Module
+                        Coming soon
                       </Button>
                     </div>
                   </div>
