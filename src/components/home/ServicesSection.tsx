@@ -12,46 +12,52 @@ import {
 
 const services = [
   {
+    icon: GraduationCap,
+    title: "AI Security Testing",
+    description:
+      "Hands-on cybersecurity training and certification programs designed for technical teams and security professionals.",
+    // href: "/services/training",
+    href : " "
+  },
+  {
     icon: Target,
     title: "Penetration Testing",
     description:
       "Comprehensive security assessments that simulate real-world attacks to identify vulnerabilities in your networks, applications, and infrastructure.",
-    href: "/services/penetration-testing",
+    // href: "/services/penetration-testing",
+    href : " "
   },
   {
     icon: Users,
     title: "Red Team Operations",
     description:
       "Advanced adversarial simulations testing your organization's detection and response capabilities against sophisticated threat actors.",
-    href: "/services/red-team",
+    // href: "/services/red-team",
+    href : " "
   },
   {
     icon: Globe,
     title: "Web Application Security",
     description:
       "In-depth analysis of web applications to uncover OWASP Top 10 vulnerabilities, business logic flaws, and API security issues.",
-    href: "/services/web-security",
+    // href: "/services/web-security",
+    href : " "
   },
   {
     icon: Cloud,
     title: "Cloud Security Assessments",
     description:
       "Evaluate your cloud infrastructure across AWS, Azure, and GCP for misconfigurations, access control issues, and compliance gaps.",
-    href: "/services/cloud-security",
+    // href: "/services/cloud-security",
+    href : " "
   },
   {
     icon: Shield,
     title: "Blue Team & SOC Services",
     description:
       "Strengthen your defensive capabilities with security operations, incident response planning, and continuous monitoring solutions.",
-    href: "/services/blue-team",
-  },
-  {
-    icon: GraduationCap,
-    title: "Security Training",
-    description:
-      "Hands-on cybersecurity training and certification programs designed for technical teams and security professionals.",
-    href: "/services/training",
+    // href: "/services/blue-team",
+    href : " "
   },
 ];
 
