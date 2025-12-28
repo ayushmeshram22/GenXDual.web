@@ -19,6 +19,7 @@ import Careers from "./pages/Careers";
 import Beginner from "./components/modules/Beginner";
 import Intermediate from "./components/modules/Intermediate";
 import Advanced from "./components/modules/Advanced";
+import Enrollment from "./pages/Enrollment";
 
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/enroll" element={<Enrollment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

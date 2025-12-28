@@ -376,7 +376,7 @@ const Training = () => {
                       {course.format}
                     </span>
                   </div>
-                  <Button
+                  {/* <Button
                     variant="cyberOutline"
                     size="sm"
                     onClick={() => {
@@ -386,7 +386,14 @@ const Training = () => {
                     }}
                   >
                     Enroll Now
+                  </Button> */}
+                  
+                  <Button variant="cyberOutline" size="sm" asChild>
+                    <Link to="/enroll">
+                      Enroll Now
+                    </Link>
                   </Button>
+
                 </div>
               </motion.div>
             ))}
@@ -484,7 +491,7 @@ const Training = () => {
           </motion.div>
           */}
 
-          {/* Enrollment Form */}
+          {/* Enrollment Form
           <motion.div
             id="enrollment-form"
             initial={{ opacity: 0, y: 30 }}
@@ -647,7 +654,7 @@ const Training = () => {
                 </div>
               </form>
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* Corporate Training CTA */}
           <motion.div
