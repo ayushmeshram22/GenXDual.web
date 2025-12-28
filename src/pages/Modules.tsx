@@ -274,7 +274,7 @@ const Modules = () => {
             className="text-center mb-16"
           >
             <p className="text-primary font-medium tracking-widest mb-4">
-              LEARNING PATHS
+              ALL LEARNING PATHS
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
               Cybersecurity Modules
