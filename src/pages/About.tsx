@@ -35,23 +35,32 @@ const values = [
   },
 ];
 
-const leadership = [
+// const leadership = [
+//   {
+//     name: "Amit Kulkarni",
+//     role: "Chief Executive Officer",
+//     bio: "Former government cybersecurity advisor with 20+ years leading offensive security teams.",
+//   },
+//   {
+//     name: "Priya Menon",
+//     role: "Chief Technology Officer",
+//     bio: "Renowned security researcher and OSCE holder, specializing in advanced exploitation techniques.",
+//   },
+//   {
+//     name: "Rajiv Malhotra",
+//     role: "VP of Operations",
+//     bio: "Former CISO of Fortune 100 companies, expert in security program development.",
+//   },
+// ];
+
+const founders = [
   {
-    name: "Amit Kulkarni",
-    role: "Chief Executive Officer",
-    bio: "Former government cybersecurity advisor with 20+ years leading offensive security teams.",
-  },
-  {
-    name: "Priya Menon",
-    role: "Chief Technology Officer",
-    bio: "Renowned security researcher and OSCE holder, specializing in advanced exploitation techniques.",
-  },
-  {
-    name: "Rajiv Malhotra",
-    role: "VP of Operations",
-    bio: "Former CISO of Fortune 100 companies, expert in security program development.",
+    name: "Ayush Meshram",
+    role: "Founder & CEO",
+    bio: "Founder of the organization, leading the vision and strategy with a strong focus on cybersecurity innovation and digital defense solutions.",
   },
 ];
+
 
 
 const About = () => {
@@ -164,7 +173,7 @@ const About = () => {
           </motion.div>
 
           {/* Leadership */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -204,7 +213,53 @@ const About = () => {
                 </motion.div>
               ))}
             </div>
+          </motion.div> */}
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-24"
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Founders
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Visionaries who laid the foundation and drive our mission forward.
+              </p>
+            </div>
+
+            <div className="grid place-items-center">
+              {founders.map((founder, idx) => (
+                <motion.div
+                  key={founder.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.15 }}
+                  className="p-8 rounded-2xl bg-card/50 border border-border/50 text-center max-w-md w-full"
+                >
+                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6 overflow-hidden">
+                    <img
+                      src={white_bg_logo}
+                      alt="Founder"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <h3 className="text-xl font-semibold text-foreground mb-1">
+                    {founder.name}
+                  </h3>
+                  <p className="text-sm text-primary mb-4">{founder.role}</p>
+                  <p className="text-sm text-muted-foreground">{founder.bio}</p>
+                </motion.div>
+              ))}
+            </div>
+
           </motion.div>
+
+
         </div>
 
         <CTASection />
