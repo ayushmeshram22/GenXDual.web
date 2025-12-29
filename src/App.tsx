@@ -20,7 +20,13 @@ import Beginner from "./components/modules/Beginner";
 import Intermediate from "./components/modules/Intermediate";
 import Advanced from "./components/modules/Advanced";
 import Enrollment from "./pages/Enrollment";
-
+import AISecurity from "./pages/services/ai-security";
+import PenetrationTesting from "./pages/services/penetration-testing";
+import RedTeam from "./pages/services/red-team";
+import WebSecurity from "./pages/services/web-security";
+import CloudSecurity from "./pages/services/cloud-security";
+import BlueTeam from "./pages/services/blue-team";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +36,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
@@ -48,6 +55,14 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/enroll" element={<Enrollment />} />
+
+          <Route path="/services/ai-security" element={<AISecurity />} />
+          <Route path="/services/penetration-testing" element={<PenetrationTesting />} />
+          <Route path="/services/red-team" element={<RedTeam />} />
+          <Route path="/services/web-security" element={<WebSecurity />} />
+          <Route path="/services/cloud-security" element={<CloudSecurity />} />
+          <Route path="/services/blue-team" element={<BlueTeam />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

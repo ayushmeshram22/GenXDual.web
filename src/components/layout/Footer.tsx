@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Linkedin, Twitter, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Twitter, Github, Instagram, Youtube } from "lucide-react";
 import logo from "@/assets/white_logo.png";
 
 const footerLinks = {
@@ -57,20 +57,20 @@ export const Footer = () => {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://www.instagram.com/genxdual.cybertech"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all duration-300"
               >
-                <Twitter className="w-5 h-5" />
+                <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://github.com"
+                href="https://www.youtube.com/@genxdual.cybertech"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all duration-300"
               >
-                <Github className="w-5 h-5" />
+                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>

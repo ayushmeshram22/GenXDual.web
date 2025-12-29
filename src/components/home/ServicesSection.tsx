@@ -16,48 +16,42 @@ const services = [
     title: "AI Security Testing",
     description:
       "Hands-on cybersecurity training and certification programs designed for technical teams and security professionals.",
-    // href: "/services/training",
-    href : " "
+    href: "/services/ai-security",
   },
   {
     icon: Target,
     title: "Penetration Testing",
     description:
       "Comprehensive security assessments that simulate real-world attacks to identify vulnerabilities in your networks, applications, and infrastructure.",
-    // href: "/services/penetration-testing",
-    href : " "
+    href: "/services/penetration-testing",
   },
   {
     icon: Users,
     title: "Red Team Operations",
     description:
       "Advanced adversarial simulations testing your organization's detection and response capabilities against sophisticated threat actors.",
-    // href: "/services/red-team",
-    href : " "
+    href: "/services/red-team",
   },
   {
     icon: Globe,
     title: "Web Application Security",
     description:
       "In-depth analysis of web applications to uncover OWASP Top 10 vulnerabilities, business logic flaws, and API security issues.",
-    // href: "/services/web-security",
-    href : " "
+    href: "/services/web-security",
   },
   {
     icon: Cloud,
     title: "Cloud Security Assessments",
     description:
       "Evaluate your cloud infrastructure across AWS, Azure, and GCP for misconfigurations, access control issues, and compliance gaps.",
-    // href: "/services/cloud-security",
-    href : " "
+    href: "/services/cloud-security",
   },
   {
     icon: Shield,
     title: "Blue Team & SOC Services",
     description:
       "Strengthen your defensive capabilities with security operations, incident response planning, and continuous monitoring solutions.",
-    // href: "/services/blue-team",
-    href : " "
+    href: "/services/blue-team",
   },
 ];
 

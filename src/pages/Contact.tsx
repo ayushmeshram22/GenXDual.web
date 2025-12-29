@@ -102,7 +102,12 @@ const Contact = () => {
                 <Linkedin className="w-8 h-8 text-primary mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">Linked In</h3>
                 <p className="text-muted-foreground">
-                  
+                  <a
+                    href="https://www.linkedin.com/in/genxdual-cyber-solutions/"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    genxdual-cyber-solutions
+                  </a>
                 </p>
               </div>
 
@@ -110,7 +115,12 @@ const Contact = () => {
                 <Instagram className="w-8 h-8 text-primary mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2">Instagram</h3>
                 <p className="text-muted-foreground">
-                  
+                  <a
+                    href="https://www.instagram.com/genxdual.cybertech"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    genxdual.cybertech
+                  </a>
                 </p>
               </div>
 
