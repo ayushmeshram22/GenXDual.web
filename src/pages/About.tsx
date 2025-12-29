@@ -118,18 +118,21 @@ const About = () => {
                 </Link>
               </Button>
             </div>
-            <div className="relative">
-              <div className="relative aspect-square rounded-2xl overflow-hidden
-                              bg-gradient-to-br from-primary/20 to-secondary/50
-                              border border-border/50">
-                <img 
+            <div className="relative flex justify-center">
+              <div
+                className="relative w-80 h-80 rounded-xl overflow-hidden
+                          bg-gradient-to-br from-primary/20 to-secondary/50
+                          border border-border/50"
+              >
+                <img
                   src={white_bg_logo}
                   alt="white_bg_logo"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-3 -right-3 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
             </div>
+
 
           </motion.div>
 
