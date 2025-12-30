@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { 
   Shield, Lock, Network, Terminal, Globe, Server, 
   Code, FileCode, Bug, Target, Heart, Clock, Award, Search
@@ -21,6 +22,7 @@ const modules = [
     points: 50,
     duration: "2 hours",
     isNew: true,
+    href: "/modules/cybersecurity",
   },
   {
     title: "Information Security Fundamentals",
@@ -364,13 +366,16 @@ const Modules = () => {
                       <span className="text-sm text-muted-foreground">
                         Free Access
                       </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground"
-                      >
-                        Coming soon
-                      </Button>
+                      {module.href ? (
+                        <Link to={module.href}>
+                          <Button size="sm" variant="outline">View Module</Button>
+                        </Link>
+                      ) : (
+                        <Button size="sm" variant="outline" disabled>
+                          Coming Soon
+                        </Button>
+                      )}
+
                     </div>
                   </div>
                 </div>

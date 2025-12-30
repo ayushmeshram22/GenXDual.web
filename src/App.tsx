@@ -27,6 +27,8 @@ import WebSecurity from "./pages/services/web-security";
 import CloudSecurity from "./pages/services/cloud-security";
 import BlueTeam from "./pages/services/blue-team";
 import ScrollToTop from "@/components/common/ScrollToTop";
+import IntroductionToCybersecurity from "@/pages/modules/IntroductionToCybersecurity";
+import CybersecurityTest from "@/pages/modules/CybersecurityTest";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +64,8 @@ const App = () => (
           <Route path="/services/web-security" element={<WebSecurity />} />
           <Route path="/services/cloud-security" element={<CloudSecurity />} />
           <Route path="/services/blue-team" element={<BlueTeam />} />
+          <Route path="/modules/cybersecurity" element={<IntroductionToCybersecurity />} />
+          <Route path="/modules/cybersecurity/test" element={<CybersecurityTest />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
