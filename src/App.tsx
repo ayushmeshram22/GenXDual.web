@@ -29,6 +29,7 @@ import BlueTeam from "./pages/services/blue-team";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import IntroductionToCybersecurity from "@/pages/modules/IntroductionToCybersecurity";
 import CybersecurityTest from "@/pages/modules/CybersecurityTest";
+import ModuleLearningPage from "@/pages/modules/ModuleLearningPage";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
           <Route path="/services/blue-team" element={<BlueTeam />} />
           <Route path="/modules/cybersecurity" element={<IntroductionToCybersecurity />} />
           <Route path="/modules/cybersecurity/test" element={<CybersecurityTest />} />
+          <Route path="/modules/learn/:moduleId" element={<ModuleLearningPage />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
