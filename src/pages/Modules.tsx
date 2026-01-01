@@ -25,15 +25,16 @@ const modules = [
     href: "/modules/cybersecurity",
   },
   {
-    title: "Information Security Fundamentals",
-    icon: Lock,
+    title: "Cybersecurity Basics",
+    icon: Shield,
     tier: "Tier 0",
     difficulty: "Easy",
     type: "Fundamental",
-    sections: 15,
-    points: 75,
-    duration: "3 hours",
+    sections: 4,
+    points: 40,
+    duration: "1.5 hours",
     isNew: true,
+    href: "/modules/learn/cybersecurity-basics",
   },
   {
     title: "Security Concepts & Terminology",
@@ -45,6 +46,7 @@ const modules = [
     points: 40,
     duration: "2 hours",
     isNew: false,
+    href: "/modules/learn/security-concepts",
   },
   {
     title: "Network Fundamentals",
@@ -56,6 +58,7 @@ const modules = [
     points: 100,
     duration: "4 hours",
     isNew: true,
+    href: "/modules/learn/network-fundamentals",
   },
   {
     title: "TCP/IP Model",
@@ -67,6 +70,7 @@ const modules = [
     points: 80,
     duration: "3 hours",
     isNew: false,
+    href: "/modules/learn/tcp-ip-model",
   },
   {
     title: "OSI Model",
@@ -78,6 +82,7 @@ const modules = [
     points: 70,
     duration: "3 hours",
     isNew: false,
+    href: "/modules/learn/osi-model",
   },
   {
     title: "DNS Basics",
@@ -89,6 +94,7 @@ const modules = [
     points: 40,
     duration: "1.5 hours",
     isNew: false,
+    href: "/modules/learn/dns-basics",
   },
   {
     title: "HTTP & HTTPS",
@@ -100,6 +106,7 @@ const modules = [
     points: 60,
     duration: "2 hours",
     isNew: true,
+    href: "/modules/learn/http-https",
   },
   {
     title: "Linux Fundamentals",
@@ -107,10 +114,11 @@ const modules = [
     tier: "Tier I",
     difficulty: "Medium",
     type: "Offensive",
-    sections: 20,
+    sections: 8,
     points: 150,
     duration: "5 hours",
     isNew: true,
+    href: "/modules/learn/linux-fundamentals",
   },
   {
     title: "Windows Fundamentals",
@@ -122,6 +130,7 @@ const modules = [
     points: 120,
     duration: "4 hours",
     isNew: false,
+    href: "/modules/learn/windows-fundamentals",
   },
   {
     title: "macOS Basics",
@@ -133,6 +142,7 @@ const modules = [
     points: 60,
     duration: "2.5 hours",
     isNew: false,
+    href: "/modules/learn/macos-basics",
   },
   {
     title: "Python Fundamentals",
@@ -144,6 +154,7 @@ const modules = [
     points: 200,
     duration: "6 hours",
     isNew: true,
+    href: "/modules/learn/python-fundamentals",
   },
   {
     title: "Bash Basics",
@@ -155,6 +166,7 @@ const modules = [
     points: 100,
     duration: "3 hours",
     isNew: false,
+    href: "/modules/learn/bash-basics",
   },
   {
     title: "JavaScript Basics",
@@ -166,6 +178,7 @@ const modules = [
     points: 150,
     duration: "5 hours",
     isNew: false,
+    href: "/modules/learn/javascript-basics",
   },
   {
     title: "Web Application Basics",
@@ -177,6 +190,7 @@ const modules = [
     points: 120,
     duration: "4 hours",
     isNew: true,
+    href: "/modules/learn/web-application-basics",
   },
   {
     title: "Web Requests",
@@ -188,6 +202,7 @@ const modules = [
     points: 80,
     duration: "3 hours",
     isNew: false,
+    href: "/modules/learn/web-requests",
   },
   {
     title: "Sessions & Cookies",
@@ -199,6 +214,7 @@ const modules = [
     points: 70,
     duration: "2.5 hours",
     isNew: false,
+    href: "/modules/learn/sessions-cookies",
   },
   {
     title: "Cyber Kill Chain",
@@ -210,6 +226,7 @@ const modules = [
     points: 150,
     duration: "4 hours",
     isNew: true,
+    href: "/modules/learn/cyber-kill-chain",
   },
   {
     title: "Penetration Testing Methodology",
@@ -221,6 +238,7 @@ const modules = [
     points: 250,
     duration: "7 hours",
     isNew: true,
+    href: "/modules/learn/penetration-testing",
   },
 ];
 
@@ -366,16 +384,9 @@ const Modules = () => {
                       <span className="text-sm text-muted-foreground">
                         Free Access
                       </span>
-                      {module.href ? (
-                        <Link to={module.href}>
-                          <Button size="sm" variant="outline">View Module</Button>
-                        </Link>
-                      ) : (
-                        <Button size="sm" variant="outline" disabled>
-                          Coming Soon
-                        </Button>
-                      )}
-
+                      <Link to={module.href}>
+                        <Button size="sm" variant="outline">View Module</Button>
+                      </Link>
                     </div>
                   </div>
                 </div>
