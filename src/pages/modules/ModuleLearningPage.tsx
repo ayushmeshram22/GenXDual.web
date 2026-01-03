@@ -2,519 +2,444 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  ArrowLeft, Terminal, Clock, CheckCircle2, 
-  Lock, ChevronRight, BookOpen, ArrowRight
+  ArrowLeft, Clock, CheckCircle2, Circle,
+  Play, FileText, BookOpen, FlaskConical, Sparkles,
+  Heart, MessageCircle, Share2, Bookmark
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 
-// Content block types
-type TextBlock = {
-  type: "text";
-  heading: string;
-  body: string; // Supports {{highlight}} syntax for highlighted terms
-};
+// Tab types
+type TabType = "watch" | "read" | "mcq" | "lab" | "flex";
 
-type CodeBlock = {
-  type: "code";
-  title: string;
+// MCQ question type
+interface MCQQuestion {
+  question: string;
+  options: { label: string; text: string }[];
+  correctAnswer: string;
+}
+
+// Flex creator card type
+interface FlexCard {
+  id: string;
+  category: string;
+  categoryColor: string;
+  username: string;
+  role: string;
+  avatar: string;
   description: string;
-  command: string;
-};
+  likes: string;
+  comments: string;
+  gradient: string;
+}
 
-type ListBlock = {
-  type: "list";
-  heading?: string;
-  ordered: boolean;
-  items: { term?: string; description: string }[];
-};
-
-type ContentBlock = TextBlock | CodeBlock | ListBlock;
+// Section content type
+interface SectionContent {
+  readContent: {
+    heading: string;
+    body: string;
+  }[];
+  mcqQuestions: MCQQuestion[];
+  flexCards: FlexCard[];
+}
 
 interface Section {
   id: number;
   title: string;
   completed: boolean;
-  current?: boolean;
-  locked?: boolean;
   duration: string;
-  objectives: string[];
-  content: ContentBlock[];
+  description: string;
+  content: SectionContent;
 }
 
 interface ModuleData {
   title: string;
-  difficulty: "easy" | "medium" | "hard";
   sections: Section[];
 }
 
 // Module content database
 const moduleDatabase: Record<string, ModuleData> = {
+  "cybersecurity-basics": {
+    title: "Cybersecurity Basics",
+    sections: [
+      {
+        id: 1,
+        title: "What is Cybersecurity?",
+        completed: true,
+        duration: "15 min",
+        description: "Understanding the basics of cybersecurity and why it matters.",
+        content: {
+          readContent: [
+            {
+              heading: "",
+              body: "Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. These cyberattacks typically aim to access, change, or destroy sensitive information, extort money from users, or interrupt normal business processes."
+            },
+            {
+              heading: "Why Cybersecurity Matters",
+              body: "In today's interconnected world, everyone benefits from advanced cyberdefense programs. At an individual level, a cybersecurity attack can result in identity theft, extortion attempts, or the loss of important data like family photos. At an organizational level, breaches can lead to financial losses, reputational damage, and legal consequences."
+            },
+            {
+              heading: "The Digital Landscape",
+              body: "The digital transformation has created unprecedented opportunities but also significant vulnerabilities. Organizations of all sizes face constant threats from: - Cybercriminals seeking financial gain - Nation-state actors conducting espionage - Insider threats from employees or contractors - Automated attacks scanning for vulnerabilities"
+            },
+            {
+              heading: "Key Areas of Focus",
+              body: ""
+            }
+          ],
+          mcqQuestions: [
+            {
+              question: "What is the primary goal of cybersecurity?",
+              options: [
+                { label: "A", text: "To make systems faster" },
+                { label: "B", text: "To protect systems, networks, and data from digital attacks" },
+                { label: "C", text: "To create new software" },
+                { label: "D", text: "To monitor employee activity" }
+              ],
+              correctAnswer: "B"
+            },
+            {
+              question: "Which of the following is NOT a common type of cyber threat?",
+              options: [
+                { label: "A", text: "Phishing" },
+                { label: "B", text: "Malware" },
+                { label: "C", text: "System updates" },
+                { label: "D", text: "Ransomware" }
+              ],
+              correctAnswer: "C"
+            },
+            {
+              question: "What does the 'C' in CIA triad stand for?",
+              options: [
+                { label: "A", text: "Compliance" },
+                { label: "B", text: "Confidentiality" },
+                { label: "C", text: "Control" },
+                { label: "D", text: "Communication" }
+              ],
+              correctAnswer: "B"
+            }
+          ],
+          flexCards: [
+            {
+              id: "1",
+              category: "Security",
+              categoryColor: "bg-primary",
+              username: "cyber_guardian",
+              role: "Flex Creator",
+              avatar: "🛡️",
+              description: "Breaking down the latest zero-day exploit 🔥...",
+              likes: "256K",
+              comments: "1.8K",
+              gradient: "from-primary/30 to-primary/10"
+            },
+            {
+              id: "2",
+              category: "Linux",
+              categoryColor: "bg-green-500",
+              username: "linux.master",
+              role: "Flex Creator",
+              avatar: "🐧",
+              description: "Linux terminal tricks that will blow your mind 🔥 #Linux...",
+              likes: "89K",
+              comments: "1.8K",
+              gradient: "from-green-500/30 to-green-500/10"
+            },
+            {
+              id: "3",
+              category: "Coding",
+              categoryColor: "bg-blue-500",
+              username: "code.ninja",
+              role: "Flex Creator",
+              avatar: "💻",
+              description: "Clean code principles every developer needs 📚...",
+              likes: "256K",
+              comments: "5.2K",
+              gradient: "from-blue-500/30 to-blue-500/10"
+            },
+            {
+              id: "4",
+              category: "AI & ML",
+              categoryColor: "bg-purple-500",
+              username: "ai.explorer",
+              role: "Flex Creator",
+              avatar: "🤖",
+              description: "Building your own AI assistant from scratch 🤖...",
+              likes: "178K",
+              comments: "3.1K",
+              gradient: "from-purple-500/30 to-purple-500/10"
+            }
+          ]
+        }
+      },
+      {
+        id: 2,
+        title: "Types of Cyber Threats",
+        completed: false,
+        duration: "20 min",
+        description: "Learn about different types of cyber attacks and threats.",
+        content: {
+          readContent: [
+            {
+              heading: "",
+              body: "Cyber threats come in many forms, each designed to exploit different vulnerabilities in systems and human behavior."
+            },
+            {
+              heading: "Malware",
+              body: "Malicious software designed to damage, disrupt, or gain unauthorized access to computer systems. This includes viruses, worms, trojans, and spyware."
+            },
+            {
+              heading: "Phishing",
+              body: "Social engineering attacks that trick users into revealing sensitive information through fraudulent emails, websites, or messages."
+            }
+          ],
+          mcqQuestions: [
+            {
+              question: "What type of malware encrypts files and demands payment?",
+              options: [
+                { label: "A", text: "Virus" },
+                { label: "B", text: "Ransomware" },
+                { label: "C", text: "Spyware" },
+                { label: "D", text: "Adware" }
+              ],
+              correctAnswer: "B"
+            }
+          ],
+          flexCards: []
+        }
+      },
+      {
+        id: 3,
+        title: "Security Principles",
+        completed: false,
+        duration: "25 min",
+        description: "Core security principles and the CIA triad.",
+        content: {
+          readContent: [
+            {
+              heading: "",
+              body: "Security principles form the foundation of any cybersecurity strategy."
+            }
+          ],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 4,
+        title: "Defense in Depth",
+        completed: false,
+        duration: "20 min",
+        description: "Understanding layered security approaches.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 5,
+        title: "Security Best Practices",
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      }
+    ]
+  },
   "linux-fundamentals": {
     title: "Linux Fundamentals",
-    difficulty: "medium",
     sections: [
       {
         id: 1,
         title: "Introduction to Linux",
         completed: true,
         duration: "15 min",
-        objectives: [
-          "Understand Linux origins and philosophy",
-          "Learn about Linux distributions",
-          "Navigate the terminal basics"
-        ],
-        content: [
-          {
-            type: "text",
-            heading: "What is Linux?",
-            body: "{{Linux}} is a family of open-source {{Unix-like}} operating systems based on the Linux kernel, first released by {{Linus Torvalds}} on September 17, 1991. It has since become one of the most widely used operating systems in the world, powering everything from smartphones to supercomputers."
-          },
-          {
-            type: "text",
-            heading: "Why Learn Linux?",
-            body: "Understanding Linux is essential for cybersecurity professionals. Most servers, cloud infrastructure, and security tools run on Linux. The {{command-line interface}} (CLI) provides powerful capabilities for automation, system administration, and penetration testing that are simply not available through graphical interfaces."
-          },
-          {
-            type: "code",
-            title: "Checking Linux version",
-            description: "You can check your Linux version using the `uname` command:",
-            command: "uname -a"
-          },
-          {
-            type: "list",
-            heading: "Popular Linux Distributions",
-            ordered: true,
-            items: [
-              { term: "Ubuntu", description: "User-friendly distribution perfect for beginners. Based on Debian with a large community and extensive documentation." },
-              { term: "Kali Linux", description: "Security-focused distribution pre-loaded with penetration testing tools. Essential for ethical hackers and security researchers." },
-              { term: "CentOS/Rocky Linux", description: "Enterprise-grade distributions commonly used in production servers. Known for stability and long-term support." }
-            ]
-          }
-        ]
+        description: "Getting started with Linux operating system.",
+        content: {
+          readContent: [
+            {
+              heading: "",
+              body: "Linux is a family of open-source Unix-like operating systems based on the Linux kernel, first released by Linus Torvalds on September 17, 1991."
+            },
+            {
+              heading: "Why Learn Linux?",
+              body: "Linux powers most of the internet's servers, cloud infrastructure, and is essential for cybersecurity professionals. Understanding Linux opens doors to system administration, DevOps, and security careers."
+            }
+          ],
+          mcqQuestions: [
+            {
+              question: "Who created the Linux kernel?",
+              options: [
+                { label: "A", text: "Bill Gates" },
+                { label: "B", text: "Steve Jobs" },
+                { label: "C", text: "Linus Torvalds" },
+                { label: "D", text: "Dennis Ritchie" }
+              ],
+              correctAnswer: "C"
+            }
+          ],
+          flexCards: []
+        }
       },
       {
         id: 2,
         title: "File System Navigation",
-        completed: true,
+        completed: false,
         duration: "20 min",
-        objectives: [
-          "Navigate the Linux file system",
-          "Understand directory structure",
-          "Use basic navigation commands"
-        ],
-        content: [
-          {
-            type: "text",
-            heading: "Linux Directory Structure",
-            body: "The Linux file system is organized in a {{hierarchical tree structure}}, with the root directory ({{/}}) at the top. Unlike Windows which uses drive letters (C:, D:), Linux mounts everything under a single root directory."
-          },
-          {
-            type: "text",
-            heading: "Understanding the Hierarchy",
-            body: "Each directory in the Linux file system has a specific purpose. The {{/home}} directory contains user files, {{/etc}} holds configuration files, {{/var}} stores variable data like logs, and {{/bin}} contains essential command binaries. This standardization allows system administrators to quickly locate files across different Linux systems."
-          },
-          {
-            type: "list",
-            heading: "Essential Directories",
-            ordered: false,
-            items: [
-              { term: "/home", description: "Contains home directories for all users. Your personal files, configurations, and data are stored here." },
-              { term: "/etc", description: "System-wide configuration files. Almost all system settings are stored in text files here." },
-              { term: "/var/log", description: "System log files. Critical for troubleshooting and security monitoring." },
-              { term: "/tmp", description: "Temporary files. Cleared on reboot, useful for storing temporary data during operations." }
-            ]
-          },
-          {
-            type: "code",
-            title: "Navigation commands",
-            description: "Use these essential commands to navigate the file system:",
-            command: "cd /home/user    # Change directory\npwd              # Print working directory\nls -la           # List all files with details"
-          }
-        ]
+        description: "Navigate the Linux file system with confidence.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
       },
       {
         id: 3,
         title: "Working with Files",
         completed: false,
-        current: true,
         duration: "20 min",
-        objectives: [
-          "Create, copy, move, and delete files",
-          "Understand file operations in Linux",
-          "Use wildcards and patterns"
-        ],
-        content: [
-          {
-            type: "text",
-            heading: "Creating Files",
-            body: "In Linux, there are multiple ways to create files. The most common methods are using the {{touch}} command and output redirection. Understanding these methods is fundamental for working effectively in the command line."
-          },
-          {
-            type: "code",
-            title: "Using touch",
-            description: "The `touch` command is primarily used to update file timestamps, but it is commonly used to create empty files:",
-            command: "touch newfile.txt"
-          },
-          {
-            type: "code",
-            title: "Using echo with redirection",
-            description: "You can create a file with content using echo and the `>` operator:",
-            command: "echo \"Hello World\" > hello.txt"
-          },
-          {
-            type: "text",
-            heading: "Copying and Moving Files",
-            body: "The {{cp}} command copies files and directories, while {{mv}} moves or renames them. Both commands support various options for different behaviors. When copying directories, remember to use the {{-r}} (recursive) flag to include all subdirectories and their contents."
-          },
-          {
-            type: "code",
-            title: "Copy and move operations",
-            description: "Common file manipulation commands:",
-            command: "cp source.txt destination.txt     # Copy a file\ncp -r folder1 folder2              # Copy directory recursively\nmv oldname.txt newname.txt         # Rename a file\nmv file.txt /path/to/destination/  # Move a file"
-          },
-          {
-            type: "list",
-            heading: "Wildcards and Patterns",
-            ordered: true,
-            items: [
-              { term: "* (asterisk)", description: "Matches any number of characters. For example, *.txt matches all text files." },
-              { term: "? (question mark)", description: "Matches exactly one character. file?.txt matches file1.txt, file2.txt, etc." },
-              { term: "[] (brackets)", description: "Matches any character within the brackets. [abc]*.txt matches files starting with a, b, or c." }
-            ]
-          }
-        ]
+        description: "Create, edit, and manage files in Linux.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
       },
       {
         id: 4,
-        title: "Text Processing",
+        title: "User Permissions",
         completed: false,
-        locked: true,
         duration: "25 min",
-        objectives: [],
-        content: []
-      },
-      {
-        id: 5,
-        title: "User Management",
-        completed: false,
-        locked: true,
-        duration: "20 min",
-        objectives: [],
-        content: []
-      },
-      {
-        id: 6,
-        title: "Permissions & Ownership",
-        completed: false,
-        locked: true,
-        duration: "25 min",
-        objectives: [],
-        content: []
-      },
-      {
-        id: 7,
-        title: "Process Management",
-        completed: false,
-        locked: true,
-        duration: "20 min",
-        objectives: [],
-        content: []
-      },
-      {
-        id: 8,
-        title: "Network Basics",
-        completed: false,
-        locked: true,
-        duration: "30 min",
-        objectives: [],
-        content: []
-      }
-    ]
-  },
-  "cybersecurity-basics": {
-    title: "Cybersecurity Basics",
-    difficulty: "easy",
-    sections: [
-      {
-        id: 1,
-        title: "What is Cybersecurity?",
-        completed: false,
-        current: true,
-        duration: "15 min",
-        objectives: [
-          "Define cybersecurity and its importance",
-          "Understand the threat landscape",
-          "Learn about security domains"
-        ],
-        content: [
-          {
-            type: "text",
-            heading: "Introduction to Cybersecurity",
-            body: "{{Cybersecurity}} is the practice of protecting systems, networks, programs, and data from digital attacks, unauthorized access, and damage. It encompasses a wide range of technologies, processes, and practices designed to safeguard information assets in our increasingly connected world."
-          },
-          {
-            type: "text",
-            heading: "Why Cybersecurity Matters",
-            body: "In today's digital age, cyber threats are evolving at an unprecedented rate. Organizations face risks from {{malware}}, {{phishing attacks}}, {{ransomware}}, and sophisticated {{Advanced Persistent Threats}} (APTs). A single successful attack can result in millions of dollars in damages, loss of customer trust, and regulatory penalties."
-          },
-          {
-            type: "list",
-            heading: "Key Security Domains",
-            ordered: true,
-            items: [
-              { term: "Network Security", description: "Protecting the integrity, confidentiality, and availability of computer networks and data using both software and hardware technologies." },
-              { term: "Application Security", description: "Measures taken to improve the security of an application by finding, fixing, and preventing security vulnerabilities." },
-              { term: "Information Security", description: "Protecting information and information systems from unauthorized access, use, disclosure, disruption, or destruction." },
-              { term: "Operational Security", description: "Processes and decisions for handling and protecting data assets, including user permissions and data storage procedures." }
-            ]
-          }
-        ]
-      },
-      {
-        id: 2,
-        title: "The CIA Triad",
-        completed: false,
-        duration: "20 min",
-        objectives: [
-          "Understand Confidentiality",
-          "Learn about Integrity",
-          "Explore Availability concepts"
-        ],
-        content: [
-          {
-            type: "text",
-            heading: "The Foundation of Security",
-            body: "The {{CIA Triad}} is a widely-used model that guides policies for information security within an organization. CIA stands for {{Confidentiality}}, {{Integrity}}, and {{Availability}} - the three core principles that should be guaranteed in any secure system."
-          },
-          {
-            type: "list",
-            heading: "CIA Triad Components",
-            ordered: true,
-            items: [
-              { term: "Confidentiality", description: "Ensures that information is accessible only to authorized individuals. Implemented through encryption, access controls, and authentication mechanisms." },
-              { term: "Integrity", description: "Maintains the accuracy and completeness of data. Achieved through hashing, digital signatures, and version control systems." },
-              { term: "Availability", description: "Ensures that authorized users have reliable access to information when needed. Maintained through redundancy, backups, and disaster recovery plans." }
-            ]
-          }
-        ]
-      },
-      {
-        id: 3,
-        title: "Common Threats",
-        completed: false,
-        locked: true,
-        duration: "25 min",
-        objectives: [],
-        content: []
-      },
-      {
-        id: 4,
-        title: "Security Best Practices",
-        completed: false,
-        locked: true,
-        duration: "20 min",
-        objectives: [],
-        content: []
+        description: "Understanding file permissions and ownership.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
       }
     ]
   }
 };
 
-const difficultyColors = {
-  easy: "bg-difficulty-easy/20 text-difficulty-easy border-difficulty-easy/40",
-  medium: "bg-difficulty-medium/20 text-difficulty-medium border-difficulty-medium/40",
-  hard: "bg-difficulty-hard/20 text-difficulty-hard border-difficulty-hard/40",
+// Parse text with highlighted terms (for key areas)
+const parseKeyAreas = (text: string) => {
+  const keyAreas = [
+    { term: "Network Security:", description: "Protecting the integrity and usability of networks and data through firewalls, intrusion detection systems, and access controls." },
+    { term: "Application Security:", description: "Ensuring software and devices are free from threats through secure coding practices." },
+    { term: "Information Security:", description: "Protecting the integrity and privacy of data during storage and transmission." },
+    { term: "Operational Security:", description: "Processes for handling and protecting data assets and user permissions." }
+  ];
+  
+  return keyAreas;
 };
-
-// Parse text with {{highlighted}} terms
-const parseHighlightedText = (text: string) => {
-  const parts = text.split(/(\{\{[^}]+\}\})/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("{{") && part.endsWith("}}")) {
-      const term = part.slice(2, -2);
-      return (
-        <code key={i} className="px-1.5 py-0.5 bg-difficulty-easy/20 text-difficulty-easy rounded text-sm font-mono">
-          {term}
-        </code>
-      );
-    }
-    return part;
-  });
-};
-
-// Parse code descriptions with `backticks`
-const parseInlineCode = (text: string) => {
-  const parts = text.split(/(`[^`]+`)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("`") && part.endsWith("`")) {
-      const code = part.slice(1, -1);
-      return (
-        <code key={i} className="px-1.5 py-0.5 bg-difficulty-hard/20 text-difficulty-hard rounded text-xs font-mono">
-          {code}
-        </code>
-      );
-    }
-    return part;
-  });
-};
-
-interface CodeBlockProps {
-  title: string;
-  description: string;
-  command: string;
-}
-
-const CodeBlockComponent = ({ title, description, command }: CodeBlockProps) => (
-  <div className="bg-surface-elevated border border-border rounded-xl overflow-hidden my-6">
-    <div className="px-4 py-3 border-b border-border bg-surface">
-      <span className="text-sm text-muted-foreground font-mono">{title}</span>
-    </div>
-    <div className="p-5">
-      <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-        {parseInlineCode(description)}
-      </p>
-      <div className="bg-[#0d1117] rounded-lg p-4 font-mono text-sm overflow-x-auto">
-        {command.split("\n").map((line, i) => (
-          <div key={i} className="flex items-start gap-2 whitespace-pre">
-            <span className="text-difficulty-easy select-none">$</span>
-            <span className="text-foreground">{line}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-interface ListBlockProps {
-  heading?: string;
-  ordered: boolean;
-  items: { term?: string; description: string }[];
-}
-
-const ListBlockComponent = ({ heading, ordered, items }: ListBlockProps) => (
-  <div className="my-6">
-    {heading && (
-      <h3 className="text-lg font-semibold text-foreground mb-4">{heading}</h3>
-    )}
-    <div className="space-y-3">
-      {items.map((item, idx) => (
-        <div 
-          key={idx} 
-          className="bg-surface-elevated border border-border rounded-lg p-4 flex gap-3"
-        >
-          {ordered && (
-            <span className="flex items-center justify-center w-6 h-6 rounded bg-primary/20 text-primary text-sm font-mono shrink-0">
-              {idx + 1}.
-            </span>
-          )}
-          <div className="flex-1">
-            {item.term && (
-              <code className="px-1.5 py-0.5 bg-difficulty-easy/20 text-difficulty-easy rounded text-sm font-mono mr-2">
-                {item.term}
-              </code>
-            )}
-            <span className="text-muted-foreground leading-relaxed">
-              {parseHighlightedText(item.description)}
-            </span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
 
 export default function ModuleLearningPage() {
   const { moduleId } = useParams();
+  const [activeTab, setActiveTab] = useState<TabType>("watch");
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   
-  // Get module data or default to linux-fundamentals
-  const module = moduleDatabase[moduleId || "linux-fundamentals"] || moduleDatabase["linux-fundamentals"];
+  // Get module data or default to cybersecurity-basics
+  const module = moduleDatabase[moduleId || "cybersecurity-basics"] || moduleDatabase["cybersecurity-basics"];
   
-  // Find current section index
-  const initialSection = module.sections.findIndex(s => s.current) !== -1 
-    ? module.sections.findIndex(s => s.current) 
-    : 0;
-  const [activeSection, setActiveSection] = useState(initialSection);
+  // Find current section index (first incomplete or first completed)
+  const initialSection = module.sections.findIndex(s => !s.completed);
+  const [activeSection, setActiveSection] = useState(initialSection === -1 ? 0 : initialSection);
   
   const currentSection = module.sections[activeSection];
-  const completedCount = module.sections.filter(s => s.completed).length;
   const totalSections = module.sections.length;
-  const progressPercentage = (completedCount / totalSections) * 100;
 
   const handleNextSection = () => {
     if (activeSection < totalSections - 1) {
       setActiveSection(activeSection + 1);
+      setActiveTab("watch");
+      setSelectedAnswer(null);
+      setCurrentQuestionIndex(0);
     }
   };
 
   const handlePrevSection = () => {
     if (activeSection > 0) {
       setActiveSection(activeSection - 1);
+      setActiveTab("watch");
+      setSelectedAnswer(null);
+      setCurrentQuestionIndex(0);
     }
   };
+
+  const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
+    { id: "watch", label: "Watch", icon: <Play className="w-4 h-4" /> },
+    { id: "read", label: "Read", icon: <FileText className="w-4 h-4" /> },
+    { id: "mcq", label: "MCQ", icon: <BookOpen className="w-4 h-4" /> },
+    { id: "lab", label: "Lab", icon: <FlaskConical className="w-4 h-4" /> },
+    { id: "flex", label: "Flex", icon: <Sparkles className="w-4 h-4" /> },
+  ];
+
+  const keyAreas = parseKeyAreas("");
 
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-border bg-surface shrink-0 flex flex-col sticky top-0 h-screen">
-        <div className="p-4 border-b border-border">
+      <aside className="w-72 border-r border-border bg-card shrink-0 flex flex-col sticky top-0 h-screen">
+        <div className="p-6 border-b border-border">
           <Link 
             to="/modules" 
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Modules
           </Link>
+          <h2 className="font-semibold text-foreground text-lg">Lessons</h2>
         </div>
 
-        <div className="p-4 border-b border-border">
-          <h2 className="font-bold text-foreground text-lg">{module.title}</h2>
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-sm mb-2">
-              <span className="text-muted-foreground">Progress</span>
-              <span className="text-difficulty-easy font-mono">{completedCount}/{totalSections}</span>
-            </div>
-            <Progress value={progressPercentage} className="h-1.5 bg-surface-elevated" />
-          </div>
-        </div>
-
-        <nav className="flex-1 overflow-y-auto p-2">
+        <nav className="flex-1 overflow-y-auto p-3">
           {module.sections.map((section, idx) => (
             <button
               key={section.id}
-              onClick={() => !section.locked && setActiveSection(idx)}
-              disabled={section.locked}
+              onClick={() => {
+                setActiveSection(idx);
+                setActiveTab("watch");
+                setSelectedAnswer(null);
+                setCurrentQuestionIndex(0);
+              }}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-all mb-1",
+                "w-full flex items-start gap-3 px-4 py-4 rounded-lg text-left transition-all mb-2",
                 activeSection === idx
-                  ? "bg-difficulty-easy text-background font-medium"
-                  : section.completed
-                    ? "text-foreground hover:bg-surface-elevated"
-                    : section.locked
-                      ? "text-muted-foreground/50 cursor-not-allowed"
-                      : "text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
+                  ? "bg-primary/10 border-l-4 border-primary"
+                  : "hover:bg-muted/50"
               )}
             >
-              <div className={cn(
-                "w-6 h-6 rounded flex items-center justify-center shrink-0 text-xs font-mono",
-                activeSection === idx
-                  ? "bg-background/20 text-background"
-                  : section.completed
-                    ? "bg-difficulty-easy/20 text-difficulty-easy"
-                    : section.locked
-                      ? "bg-muted/20 text-muted-foreground/50"
-                      : "bg-surface-elevated text-muted-foreground border border-border"
-              )}>
+              <div className="mt-0.5">
                 {section.completed ? (
-                  <CheckCircle2 className="w-4 h-4" />
-                ) : section.locked ? (
-                  <Lock className="w-3 h-3" />
+                  <CheckCircle2 className={cn(
+                    "w-5 h-5",
+                    activeSection === idx ? "text-primary" : "text-primary"
+                  )} />
                 ) : (
-                  idx + 1
+                  <Circle className={cn(
+                    "w-5 h-5",
+                    activeSection === idx ? "text-primary" : "text-muted-foreground"
+                  )} />
                 )}
               </div>
-              <span className="text-sm truncate">{section.title}</span>
+              <div className="flex-1">
+                <span className={cn(
+                  "text-sm font-medium block",
+                  activeSection === idx ? "text-primary" : "text-foreground"
+                )}>
+                  {section.title}
+                </span>
+                <span className={cn(
+                  "text-xs mt-1 block",
+                  activeSection === idx ? "text-primary/70" : "text-muted-foreground"
+                )}>
+                  {section.duration}
+                </span>
+              </div>
             </button>
           ))}
         </nav>
@@ -525,96 +450,244 @@ export default function ModuleLearningPage() {
         <div className="max-w-4xl mx-auto px-8 py-8">
           {/* Header */}
           <motion.header 
-            key={activeSection}
+            key={`${activeSection}-header`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-start justify-between mb-8"
+            className="mb-8"
           >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-surface-elevated border border-border flex items-center justify-center">
-                <Terminal className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">{currentSection.title}</h1>
-                <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                  <span>Section {activeSection + 1} of {totalSections}</span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    ~{currentSection.duration}
-                  </span>
-                </div>
-              </div>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
+              <span>Lesson {activeSection + 1} of {totalSections}</span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                {currentSection.duration}
+              </span>
             </div>
-            <span className={cn(
-              "px-3 py-1 rounded-md text-xs font-bold uppercase border",
-              difficultyColors[module.difficulty]
-            )}>
-              {module.difficulty}
-            </span>
+            <h1 className="text-3xl font-bold text-foreground mb-2">{currentSection.title}</h1>
+            <p className="text-muted-foreground">{currentSection.description}</p>
           </motion.header>
 
-          {/* Learning Objectives */}
-          {currentSection.objectives.length > 0 && (
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="mb-10"
-            >
-              <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
-                <span className="text-difficulty-medium">💡</span>
-                Learning Objectives
-              </h2>
-              <div className="bg-surface-elevated border border-border rounded-xl p-5">
-                <ul className="space-y-3">
-                  {currentSection.objectives.map((objective, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-muted-foreground">
-                      <ChevronRight className="w-4 h-4 text-difficulty-medium shrink-0 mt-0.5" />
-                      <span>{objective}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.section>
-          )}
+          {/* Tabs */}
+          <div className="border-b border-border mb-8">
+            <div className="flex gap-6">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    "flex items-center gap-2 pb-3 px-1 text-sm font-medium transition-all border-b-2 -mb-[2px]",
+                    activeTab === tab.id
+                      ? "text-primary border-primary"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
+                  )}
+                >
+                  {tab.icon}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {/* Content */}
+          {/* Tab Content */}
           <motion.div
+            key={`${activeSection}-${activeTab}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-8"
+            className="min-h-[400px]"
           >
-            {currentSection.content.map((block, idx) => (
-              <div key={idx}>
-                {block.type === "text" && (
-                  <div>
-                    <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-                      <BookOpen className="w-5 h-5 text-primary" />
-                      {block.heading}
-                    </h2>
-                    <p className="text-muted-foreground leading-relaxed text-[15px]">
-                      {parseHighlightedText(block.body)}
-                    </p>
+            {/* Watch Tab */}
+            {activeTab === "watch" && (
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="aspect-video flex items-center justify-center bg-gradient-to-br from-muted to-card">
+                  <div className="text-center">
+                    <div className="w-20 h-20 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center mx-auto mb-4">
+                      <Play className="w-8 h-8 text-primary ml-1" />
+                    </div>
+                    <p className="text-foreground font-medium mb-2">Video content coming soon</p>
+                    <p className="text-muted-foreground text-sm">Interactive video lessons for this module</p>
+                  </div>
+                </div>
+                <div className="p-4 border-t border-border flex items-center gap-4">
+                  <button className="text-muted-foreground hover:text-foreground">
+                    <Play className="w-5 h-5" />
+                  </button>
+                  <div className="flex-1 h-1 bg-muted rounded-full">
+                    <div className="h-full w-0 bg-primary rounded-full"></div>
+                  </div>
+                  <span className="text-primary text-sm font-mono">0:00 / {currentSection.duration}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Read Tab */}
+            {activeTab === "read" && (
+              <div className="prose prose-invert max-w-none">
+                {currentSection.content.readContent.map((content, idx) => (
+                  <div key={idx} className="mb-6">
+                    {content.heading && (
+                      <h2 className="text-xl font-semibold text-foreground mb-3">{content.heading}</h2>
+                    )}
+                    <p className="text-muted-foreground leading-relaxed">{content.body}</p>
+                  </div>
+                ))}
+                
+                {/* Key Areas of Focus */}
+                {currentSection.id === 1 && moduleId === "cybersecurity-basics" && (
+                  <div className="mt-8">
+                    <h2 className="text-xl font-semibold text-foreground mb-4">Key Areas of Focus</h2>
+                    <div className="space-y-4">
+                      {keyAreas.map((area, idx) => (
+                        <div key={idx} className="flex">
+                          <span className="text-primary font-medium mr-2">{area.term}</span>
+                          <span className="text-muted-foreground">{area.description}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
-                {block.type === "code" && (
-                  <CodeBlockComponent 
-                    title={block.title}
-                    description={block.description}
-                    command={block.command}
-                  />
-                )}
-                {block.type === "list" && (
-                  <ListBlockComponent
-                    heading={block.heading}
-                    ordered={block.ordered}
-                    items={block.items}
-                  />
+
+                {currentSection.content.readContent.length === 0 && (
+                  <div className="text-center py-16">
+                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Reading content coming soon</p>
+                  </div>
                 )}
               </div>
-            ))}
+            )}
+
+            {/* MCQ Tab */}
+            {activeTab === "mcq" && (
+              <div>
+                {currentSection.content.mcqQuestions.length > 0 ? (
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <h3 className="text-lg font-medium text-foreground mb-6">
+                      Question {currentQuestionIndex + 1}: {currentSection.content.mcqQuestions[currentQuestionIndex]?.question}
+                    </h3>
+                    <div className="space-y-3">
+                      {currentSection.content.mcqQuestions[currentQuestionIndex]?.options.map((option) => (
+                        <button
+                          key={option.label}
+                          onClick={() => setSelectedAnswer(option.label)}
+                          className={cn(
+                            "w-full text-left p-4 rounded-lg border transition-all",
+                            selectedAnswer === option.label
+                              ? "bg-primary/10 border-primary text-foreground"
+                              : "bg-muted/30 border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                          )}
+                        >
+                          {option.label}. {option.text}
+                        </button>
+                      ))}
+                    </div>
+                    {currentSection.content.mcqQuestions.length > 1 && (
+                      <div className="flex justify-between mt-6 pt-4 border-t border-border">
+                        <Button
+                          variant="outline"
+                          disabled={currentQuestionIndex === 0}
+                          onClick={() => {
+                            setCurrentQuestionIndex(currentQuestionIndex - 1);
+                            setSelectedAnswer(null);
+                          }}
+                        >
+                          Previous Question
+                        </Button>
+                        <Button
+                          disabled={currentQuestionIndex === currentSection.content.mcqQuestions.length - 1}
+                          onClick={() => {
+                            setCurrentQuestionIndex(currentQuestionIndex + 1);
+                            setSelectedAnswer(null);
+                          }}
+                          className="bg-primary hover:bg-primary/90"
+                        >
+                          Next Question
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-16">
+                    <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Quiz questions coming soon</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Lab Tab */}
+            {activeTab === "lab" && (
+              <div className="flex items-center justify-center py-16">
+                <div className="bg-card border border-border rounded-xl p-12 text-center max-w-md">
+                  <div className="w-16 h-16 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center mx-auto mb-4">
+                    <Play className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-medium text-foreground mb-2">Interactive Lab Coming Soon</h3>
+                  <p className="text-muted-foreground text-sm">Practice your skills with hands-on exercises</p>
+                </div>
+              </div>
+            )}
+
+            {/* Flex Tab */}
+            {activeTab === "flex" && (
+              <div>
+                {currentSection.content.flexCards.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                      {currentSection.content.flexCards.map((card) => (
+                        <div
+                          key={card.id}
+                          className={cn(
+                            "bg-gradient-to-b rounded-xl overflow-hidden border border-border",
+                            card.gradient
+                          )}
+                        >
+                          <div className="p-4">
+                            <div className="flex justify-between items-start mb-24">
+                              <span className={cn("px-2 py-1 rounded text-xs font-medium text-white", card.categoryColor)}>
+                                {card.category}
+                              </span>
+                              <Heart className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                            
+                            <div className="absolute right-3 top-16 space-y-3">
+                              <div className="flex flex-col items-center text-xs text-muted-foreground">
+                                <Heart className="w-4 h-4 mb-1" />
+                                <span>{card.likes}</span>
+                              </div>
+                              <div className="flex flex-col items-center text-xs text-muted-foreground">
+                                <MessageCircle className="w-4 h-4 mb-1" />
+                                <span>{card.comments}</span>
+                              </div>
+                              <Share2 className="w-4 h-4 text-muted-foreground" />
+                              <Bookmark className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                          </div>
+                          
+                          <div className="p-4 bg-card/80 backdrop-blur">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-2xl">{card.avatar}</span>
+                              <div>
+                                <p className="text-sm font-medium text-foreground">{card.username}</p>
+                                <p className="text-xs text-primary">{card.role}</p>
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{card.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="border-t border-border pt-8">
+                      <h3 className="text-xl font-semibold text-foreground mb-6">Featured Creators</h3>
+                      <p className="text-muted-foreground">More creator content coming soon...</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-16">
+                    <Sparkles className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Flex content coming soon</p>
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
 
           {/* Navigation */}
@@ -623,18 +696,16 @@ export default function ModuleLearningPage() {
               variant="outline"
               onClick={handlePrevSection}
               disabled={activeSection === 0}
-              className="gap-2"
+              className="px-6"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Previous
+              Previous Lesson
             </Button>
             <Button
               onClick={handleNextSection}
               disabled={activeSection === totalSections - 1}
-              className="gap-2 bg-primary hover:bg-primary/90"
+              className="px-6 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Next Section
-              <ArrowRight className="w-4 h-4" />
+              Next Lesson
             </Button>
           </div>
         </div>
