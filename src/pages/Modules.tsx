@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { 
-  Shield, Lock, Network, Terminal, Globe, Server, 
-  Code, FileCode, Bug, Target, Heart, Clock, Award, Search
+
+import {
+  Shield, Lock, Network, Terminal, Globe, Server,
+  Code, FileCode, Bug, Target, Heart, Clock, Award, Search, Filter
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+
+const levels = ["Tier 0", "Tier I", "Tier II", "Tier III"];
+const categories = ["Fundamental", "General", "Offensive", "Defensive"];
 
 const modules = [
   {
@@ -272,13 +277,21 @@ const getTypeColor = (type: string) => {
 
 const Modules = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const filteredModules = modules.filter((module) =>
-    module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    module.tier.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    module.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    module.difficulty.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredModules = modules.filter((module) => {
+    const matchesSearch =
+      module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      module.tier.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      module.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      module.difficulty.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesLevel = selectedLevel ? module.tier === selectedLevel : true;
+    const matchesCategory = selectedCategory ? module.type === selectedCategory : true;
+
+    return matchesSearch && matchesLevel && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -304,24 +317,65 @@ const Modules = () => {
             </p>
           </motion.div>
 
-          {/* Search Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-10 max-w-md"
-          >
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search modules by name, tier, type..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-card border-border focus:border-primary"
-              />
+          {/* Filters */}
+          <section className="py-8 border-y border-border bg-card/50 mb-10">
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+
+              {/* Search */}
+              <div className="relative w-full lg:w-96">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Search modules..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              {/* Level Filter */}
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <Button
+                  size="sm"
+                  variant={selectedLevel === null ? "default" : "ghost"}
+                  onClick={() => setSelectedLevel(null)}
+                >
+                  All
+                </Button>
+                {levels.map((level) => (
+                  <Button
+                    key={level}
+                    size="sm"
+                    variant={selectedLevel === level ? "default" : "ghost"}
+                    onClick={() => setSelectedLevel(level)}
+                  >
+                    {level}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Category Filter */}
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant={selectedCategory === null ? "default" : "ghost"}
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  All
+                </Button>
+                {categories.map((cat) => (
+                  <Button
+                    key={cat}
+                    size="sm"
+                    variant={selectedCategory === cat ? "default" : "ghost"}
+                    onClick={() => setSelectedCategory(cat)}
+                  >
+                    {cat}
+                  </Button>
+                ))}
+              </div>
             </div>
-          </motion.div>
+          </section>
 
           {/* Module Cards Grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -341,11 +395,19 @@ const Modules = () => {
                         NEW
                       </Badge>
                     )}
+
                     <button className="absolute top-3 right-3 text-muted-foreground hover:text-red-400 transition-colors">
                       <Heart className="w-5 h-5" />
                     </button>
-                    <module.icon className="w-16 h-16 text-primary opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" />
+
+                    {(() => {
+                      const Icon = module.icon;
+                      return (
+                        <Icon className="w-16 h-16 text-primary opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" />
+                      );
+                    })()}
                   </div>
+
 
                   {/* Card Content */}
                   <div className="p-5 flex flex-col flex-grow">
