@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -38,41 +39,39 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/training" element={<Training />} />
-          <Route path="/get-started" element={<GetStarted />} />
-          <Route path="/modules" element={<Modules />} />
-          <Route path="/modules/beginner" element={<Beginner />} />
-          <Route path="/modules/intermediate" element={<Intermediate />} />
-          <Route path="/modules/advanced" element={<Advanced />} />
+      <ScrollToTop />
 
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/enroll" element={<Enrollment />} />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/services/training" element={<Training />} />
+        <Route path="/get-started" element={<GetStarted />} />
+        <Route path="/modules" element={<Modules />} />
+        <Route path="/modules/beginner" element={<Beginner />} />
+        <Route path="/modules/intermediate" element={<Intermediate />} />
+        <Route path="/modules/advanced" element={<Advanced />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/careers" element={<Careers />} />
+        <Route path="/enroll" element={<Enrollment />} />
 
-          <Route path="/services/ai-security" element={<AISecurity />} />
-          <Route path="/services/penetration-testing" element={<PenetrationTesting />} />
-          <Route path="/services/red-team" element={<RedTeam />} />
-          <Route path="/services/web-security" element={<WebSecurity />} />
-          <Route path="/services/cloud-security" element={<CloudSecurity />} />
-          <Route path="/services/blue-team" element={<BlueTeam />} />
-          <Route path="/modules/cybersecurity" element={<IntroductionToCybersecurity />} />
-          <Route path="/modules/cybersecurity/test" element={<CybersecurityTest />} />
-          <Route path="/modules/learn/:moduleId" element={<ModuleLearningPage />} />
+        <Route path="/services/ai-security" element={<AISecurity />} />
+        <Route path="/services/penetration-testing" element={<PenetrationTesting />} />
+        <Route path="/services/red-team" element={<RedTeam />} />
+        <Route path="/services/web-security" element={<WebSecurity />} />
+        <Route path="/services/cloud-security" element={<CloudSecurity />} />
+        <Route path="/services/blue-team" element={<BlueTeam />} />
 
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+        <Route path="/modules/cybersecurity" element={<IntroductionToCybersecurity />} />
+        <Route path="/modules/cybersecurity/test" element={<CybersecurityTest />} />
+        <Route path="/modules/learn/:moduleId" element={<ModuleLearningPage />} />
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </TooltipProvider>
   </QueryClientProvider>
 );
