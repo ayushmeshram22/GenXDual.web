@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Calendar, User, ArrowRight, Edit, Trash2 } from "lucide-react";
+import { Search, Tag, Calendar, Clock, Plus, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/layout/Navbar";
@@ -22,7 +24,22 @@ interface Blog {
   published: boolean;
   created_at: string;
   user_id: string;
+  tags: string[] | null;
+  read_time: number | null;
 }
+
+const AVAILABLE_TAGS = [
+  "ethical-hacking",
+  "beginner",
+  "career",
+  "tools",
+  "pentesting",
+  "owasp",
+  "web-security",
+  "network",
+  "malware",
+  "cloud",
+];
 
 const Blog = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -30,6 +47,8 @@ const Blog = () => {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Form state
@@ -38,9 +57,9 @@ const Blog = () => {
   const [excerpt, setExcerpt] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [published, setPublished] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
-    // Check auth state
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
@@ -89,6 +108,8 @@ const Blog = () => {
 
     setSubmitting(true);
 
+    const readTime = Math.max(1, Math.ceil(content.split(/\s+/).length / 200));
+
     const { error } = await supabase.from("blogs").insert({
       title,
       content,
@@ -96,6 +117,8 @@ const Blog = () => {
       cover_image_url: coverImageUrl || null,
       published,
       user_id: user.id,
+      tags: selectedTags,
+      read_time: readTime,
     });
 
     if (error) {
@@ -110,12 +133,12 @@ const Blog = () => {
         title: "Success",
         description: "Blog post created successfully!",
       });
-      // Reset form
       setTitle("");
       setContent("");
       setExcerpt("");
       setCoverImageUrl("");
       setPublished(false);
+      setSelectedTags([]);
       setShowUploadForm(false);
       fetchBlogs();
     }
@@ -149,55 +172,111 @@ const Blog = () => {
     });
   };
 
+  const toggleFormTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesSearch =
+      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (blog.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+    const matchesTag =
+      !selectedTag || (blog.tags && blog.tags.includes(selectedTag));
+    return matchesSearch && matchesTag;
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
-          {/* Header */}
+          {/* Hero Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Security <span className="text-primary">Blog</span>
+            <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">
+              <Tag className="w-3 h-3 mr-1" />
+              Security Blog
+            </Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+              <span className="text-foreground">Cybersecurity</span>{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-primary">
+                Insights
+              </span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Stay updated with the latest cybersecurity insights, tutorials, and industry news
+              Stay updated with the latest security trends, tutorials, and best practices
             </p>
           </motion.div>
 
-          {/* Upload Section */}
+          {/* Search and Tags */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-10 border-y border-border/50 py-6"
+          >
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="relative w-full md:w-80">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-card border-border/50"
+                />
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm text-muted-foreground">Tags:</span>
+                <Badge
+                  variant={selectedTag === null ? "default" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => setSelectedTag(null)}
+                >
+                  All
+                </Badge>
+                {AVAILABLE_TAGS.slice(0, 5).map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant={selectedTag === tag ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-primary/20"
+                    onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                  >
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Create Blog Button / Form */}
           {user && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-12"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mb-10"
             >
               {!showUploadForm ? (
                 <div className="flex justify-center">
-                  <Button
-                    onClick={() => setShowUploadForm(true)}
-                    className="gap-2"
-                    size="lg"
-                  >
-                    <Plus className="w-5 h-5" />
+                  <Button onClick={() => setShowUploadForm(true)} className="gap-2">
+                    <Plus className="w-4 h-4" />
                     Create New Blog Post
                   </Button>
                 </div>
               ) : (
-                <Card className="max-w-2xl mx-auto border-primary/20">
-                  <CardHeader>
-                    <h2 className="text-2xl font-bold text-foreground">
+                <Card className="max-w-2xl mx-auto border-primary/20 bg-card/50">
+                  <CardContent className="p-6">
+                    <h2 className="text-xl font-bold text-foreground mb-6">
                       Create New Blog Post
                     </h2>
-                  </CardHeader>
-                  <form onSubmit={handleSubmit}>
-                    <CardContent className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="title">Title *</Label>
                         <Input
@@ -206,6 +285,7 @@ const Blog = () => {
                           onChange={(e) => setTitle(e.target.value)}
                           placeholder="Enter blog title"
                           required
+                          className="bg-background"
                         />
                       </div>
 
@@ -216,6 +296,7 @@ const Blog = () => {
                           value={excerpt}
                           onChange={(e) => setExcerpt(e.target.value)}
                           placeholder="Brief description of your blog"
+                          className="bg-background"
                         />
                       </div>
 
@@ -226,7 +307,24 @@ const Blog = () => {
                           value={coverImageUrl}
                           onChange={(e) => setCoverImageUrl(e.target.value)}
                           placeholder="https://example.com/image.jpg"
+                          className="bg-background"
                         />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Tags</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {AVAILABLE_TAGS.map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant={selectedTags.includes(tag) ? "default" : "outline"}
+                              className="cursor-pointer"
+                              onClick={() => toggleFormTag(tag)}
+                            >
+                              #{tag}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="space-y-2">
@@ -238,6 +336,7 @@ const Blog = () => {
                           placeholder="Write your blog content here..."
                           rows={8}
                           required
+                          className="bg-background"
                         />
                       </div>
 
@@ -249,20 +348,21 @@ const Blog = () => {
                         />
                         <Label htmlFor="published">Publish immediately</Label>
                       </div>
-                    </CardContent>
-                    <CardFooter className="flex gap-3">
-                      <Button type="submit" disabled={submitting}>
-                        {submitting ? "Creating..." : "Create Post"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setShowUploadForm(false)}
-                      >
-                        Cancel
-                      </Button>
-                    </CardFooter>
-                  </form>
+
+                      <div className="flex gap-3 pt-4">
+                        <Button type="submit" disabled={submitting}>
+                          {submitting ? "Creating..." : "Create Post"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setShowUploadForm(false)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
                 </Card>
               )}
             </motion.div>
@@ -272,78 +372,107 @@ const Blog = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-center mb-12 p-6 bg-card rounded-xl border border-border"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-center mb-10 p-6 bg-card/50 rounded-xl border border-border/50"
             >
               <p className="text-muted-foreground mb-4">
                 Sign in to create and manage your own blog posts
               </p>
               <Button asChild>
-                <a href="/auth">Sign In</a>
+                <Link to="/auth">Sign In</Link>
               </Button>
             </motion.div>
           )}
 
-          {/* Blog List */}
+          {/* Blog Grid */}
           {loading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Loading blogs...</p>
             </div>
-          ) : blogs.length === 0 ? (
+          ) : filteredBlogs.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No blog posts yet. Be the first to create one!</p>
+              <p className="text-muted-foreground">
+                {searchQuery || selectedTag
+                  ? "No blogs match your search criteria."
+                  : "No blog posts yet. Be the first to create one!"}
+              </p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {blogs.map((blog, index) => (
+              {filteredBlogs.map((blog, index) => (
                 <motion.div
                   key={blog.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  <Card className="h-full flex flex-col overflow-hidden hover:border-primary/50 transition-colors">
-                    {blog.cover_image_url && (
-                      <div className="aspect-video overflow-hidden">
+                  <Card className="h-full flex flex-col overflow-hidden bg-gradient-to-br from-card to-card/80 border-border/50 hover:border-primary/50 transition-all duration-300 group">
+                    {/* Cover Image / Placeholder */}
+                    <div className="aspect-[16/10] bg-gradient-to-br from-cyan-900/30 to-primary/20 relative overflow-hidden">
+                      {blog.cover_image_url ? (
                         <img
                           src={blog.cover_image_url}
                           alt={blog.title}
                           className="w-full h-full object-cover"
                         />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Tag className="w-12 h-12 text-cyan-500/50" />
+                        </div>
+                      )}
+                      {user && user.id === blog.user_id && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleDelete(blog.id);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Tags */}
+                    <CardContent className="flex-1 p-4">
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {(blog.tags || []).slice(0, 2).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="outline"
+                            className="text-xs bg-primary/10 border-primary/30 text-primary"
+                          >
+                            #{tag}
+                          </Badge>
+                        ))}
                       </div>
-                    )}
-                    <CardHeader>
-                      <h3 className="text-xl font-semibold text-foreground line-clamp-2">
-                        {blog.title}
-                      </h3>
-                    </CardHeader>
-                    <CardContent className="flex-1">
-                      <p className="text-muted-foreground line-clamp-3">
-                        {blog.excerpt || blog.content.substring(0, 150) + "..."}
+
+                      {/* Title */}
+                      <Link to={`/blog/${blog.id}`}>
+                        <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
+                          {blog.title}
+                        </h3>
+                      </Link>
+
+                      {/* Excerpt */}
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                        {blog.excerpt || blog.content.substring(0, 120) + "..."}
                       </p>
-                      <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
+
+                      {/* Meta */}
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
                         <span className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
+                          <Calendar className="w-3 h-3" />
                           {formatDate(blog.created_at)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {blog.read_time || 1} min read
                         </span>
                       </div>
                     </CardContent>
-                    <CardFooter className="flex justify-between items-center">
-                      <Button variant="ghost" size="sm" className="gap-1">
-                        Read More <ArrowRight className="w-4 h-4" />
-                      </Button>
-                      {user && user.id === blog.user_id && (
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(blog.id)}
-                          >
-                            <Trash2 className="w-4 h-4 text-destructive" />
-                          </Button>
-                        </div>
-                      )}
-                    </CardFooter>
                   </Card>
                 </motion.div>
               ))}

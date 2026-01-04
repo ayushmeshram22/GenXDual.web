@@ -22,6 +22,8 @@ export type Database = {
           excerpt: string | null
           id: string
           published: boolean
+          read_time: number | null
+          tags: string[] | null
           title: string
           updated_at: string
           user_id: string
@@ -33,6 +35,8 @@ export type Database = {
           excerpt?: string | null
           id?: string
           published?: boolean
+          read_time?: number | null
+          tags?: string[] | null
           title: string
           updated_at?: string
           user_id: string
@@ -44,6 +48,8 @@ export type Database = {
           excerpt?: string | null
           id?: string
           published?: boolean
+          read_time?: number | null
+          tags?: string[] | null
           title?: string
           updated_at?: string
           user_id?: string
