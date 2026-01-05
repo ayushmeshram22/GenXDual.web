@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { CommentSection } from "@/components/blog/CommentSection";
 
 interface Blog {
   id: string;
@@ -227,19 +228,14 @@ const BlogDetail = () => {
             </motion.p>
           )}
 
-          {/* Content */}
+          {/* Content - Render HTML */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="prose prose-invert prose-lg max-w-none mb-10"
-          >
-            {blog.content.split("\n").map((paragraph, index) => (
-              <p key={index} className="text-muted-foreground mb-4">
-                {paragraph}
-              </p>
-            ))}
-          </motion.div>
+            className="prose prose-invert prose-lg max-w-none mb-10 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-muted-foreground prose-img:rounded-lg"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
 
           {/* Share / Bookmark */}
           <motion.div
@@ -259,12 +255,16 @@ const BlogDetail = () => {
             </Button>
           </motion.div>
 
+          {/* Comments Section */}
+          <CommentSection blogId={blog.id} />
+
           {/* Related Articles */}
           {relatedBlogs.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
+              className="mt-12"
             >
               <h2 className="text-2xl font-bold text-foreground mb-6">Related Articles</h2>
               <div className="grid md:grid-cols-2 gap-4">
@@ -280,7 +280,7 @@ const BlogDetail = () => {
                         </h3>
                       </Link>
                       <p className="text-sm text-muted-foreground line-clamp-2">
-                        {related.excerpt || related.content.substring(0, 100) + "..."}
+                        {related.excerpt || related.content.replace(/<[^>]*>/g, " ").substring(0, 100) + "..."}
                       </p>
                     </CardContent>
                   </Card>

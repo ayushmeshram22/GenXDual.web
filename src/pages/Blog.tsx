@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Tag, Calendar, Clock, Plus, Trash2 } from "lucide-react";
+import { Search, Tag, Calendar, Clock, Plus, Trash2, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
+import { FeaturedPosts } from "@/components/blog/FeaturedPosts";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface Blog {
@@ -26,6 +27,7 @@ interface Blog {
   user_id: string;
   tags: string[] | null;
   read_time: number | null;
+  featured: boolean;
 }
 
 const AVAILABLE_TAGS = [
@@ -57,6 +59,7 @@ const Blog = () => {
   const [excerpt, setExcerpt] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [published, setPublished] = useState(false);
+  const [featured, setFeatured] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
@@ -90,7 +93,7 @@ const Blog = () => {
         variant: "destructive",
       });
     } else {
-      setBlogs(data || []);
+      setBlogs((data as Blog[]) || []);
     }
     setLoading(false);
   };
@@ -108,7 +111,9 @@ const Blog = () => {
 
     setSubmitting(true);
 
-    const readTime = Math.max(1, Math.ceil(content.split(/\s+/).length / 200));
+    // Strip HTML tags for word count
+    const plainText = content.replace(/<[^>]*>/g, " ");
+    const readTime = Math.max(1, Math.ceil(plainText.split(/\s+/).length / 200));
 
     const { error } = await supabase.from("blogs").insert({
       title,
@@ -116,6 +121,7 @@ const Blog = () => {
       excerpt: excerpt || null,
       cover_image_url: coverImageUrl || null,
       published,
+      featured,
       user_id: user.id,
       tags: selectedTags,
       read_time: readTime,
@@ -138,6 +144,7 @@ const Blog = () => {
       setExcerpt("");
       setCoverImageUrl("");
       setPublished(false);
+      setFeatured(false);
       setSelectedTags([]);
       setShowUploadForm(false);
       fetchBlogs();
@@ -186,6 +193,9 @@ const Blog = () => {
       !selectedTag || (blog.tags && blog.tags.includes(selectedTag));
     return matchesSearch && matchesTag;
   });
+
+  const featuredBlogs = filteredBlogs.filter((blog) => blog.featured && blog.published);
+  const regularBlogs = filteredBlogs.filter((blog) => !blog.featured);
 
   return (
     <div className="min-h-screen bg-background">
@@ -271,7 +281,7 @@ const Blog = () => {
                   </Button>
                 </div>
               ) : (
-                <Card className="max-w-2xl mx-auto border-primary/20 bg-card/50">
+                <Card className="max-w-3xl mx-auto border-primary/20 bg-card/50">
                   <CardContent className="p-6">
                     <h2 className="text-xl font-bold text-foreground mb-6">
                       Create New Blog Post
@@ -328,29 +338,34 @@ const Blog = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="content">Content *</Label>
-                        <Textarea
-                          id="content"
-                          value={content}
-                          onChange={(e) => setContent(e.target.value)}
-                          placeholder="Write your blog content here..."
-                          rows={8}
-                          required
-                          className="bg-background"
-                        />
+                        <Label>Content *</Label>
+                        <RichTextEditor content={content} onChange={setContent} />
                       </div>
 
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id="published"
-                          checked={published}
-                          onCheckedChange={setPublished}
-                        />
-                        <Label htmlFor="published">Publish immediately</Label>
+                      <div className="flex items-center gap-6">
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            id="published"
+                            checked={published}
+                            onCheckedChange={setPublished}
+                          />
+                          <Label htmlFor="published">Publish immediately</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            id="featured"
+                            checked={featured}
+                            onCheckedChange={setFeatured}
+                          />
+                          <Label htmlFor="featured" className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-yellow-500" />
+                            Featured
+                          </Label>
+                        </div>
                       </div>
 
                       <div className="flex gap-3 pt-4">
-                        <Button type="submit" disabled={submitting}>
+                        <Button type="submit" disabled={submitting || !content.trim()}>
                           {submitting ? "Creating..." : "Create Post"}
                         </Button>
                         <Button
@@ -384,12 +399,15 @@ const Blog = () => {
             </motion.div>
           )}
 
+          {/* Featured Posts */}
+          {featuredBlogs.length > 0 && <FeaturedPosts posts={featuredBlogs} />}
+
           {/* Blog Grid */}
           {loading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Loading blogs...</p>
             </div>
-          ) : filteredBlogs.length === 0 ? (
+          ) : regularBlogs.length === 0 && featuredBlogs.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
                 {searchQuery || selectedTag
@@ -398,85 +416,89 @@ const Blog = () => {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredBlogs.map((blog, index) => (
-                <motion.div
-                  key={blog.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="h-full flex flex-col overflow-hidden bg-gradient-to-br from-card to-card/80 border-border/50 hover:border-primary/50 transition-all duration-300 group">
-                    {/* Cover Image / Placeholder */}
-                    <div className="aspect-[16/10] bg-gradient-to-br from-cyan-900/30 to-primary/20 relative overflow-hidden">
-                      {blog.cover_image_url ? (
-                        <img
-                          src={blog.cover_image_url}
-                          alt={blog.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Tag className="w-12 h-12 text-cyan-500/50" />
+            <>
+              {regularBlogs.length > 0 && (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {regularBlogs.map((blog, index) => (
+                    <motion.div
+                      key={blog.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <Card className="h-full flex flex-col overflow-hidden bg-gradient-to-br from-card to-card/80 border-border/50 hover:border-primary/50 transition-all duration-300 group">
+                        {/* Cover Image / Placeholder */}
+                        <div className="aspect-[16/10] bg-gradient-to-br from-cyan-900/30 to-primary/20 relative overflow-hidden">
+                          {blog.cover_image_url ? (
+                            <img
+                              src={blog.cover_image_url}
+                              alt={blog.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Tag className="w-12 h-12 text-cyan-500/50" />
+                            </div>
+                          )}
+                          {user && user.id === blog.user_id && (
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleDelete(blog.id);
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
-                      )}
-                      {user && user.id === blog.user_id && (
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDelete(blog.id);
-                          }}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
 
-                    {/* Tags */}
-                    <CardContent className="flex-1 p-4">
-                      <div className="flex flex-wrap gap-1.5 mb-3">
-                        {(blog.tags || []).slice(0, 2).map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className="text-xs bg-primary/10 border-primary/30 text-primary"
-                          >
-                            #{tag}
-                          </Badge>
-                        ))}
-                      </div>
+                        {/* Tags */}
+                        <CardContent className="flex-1 p-4">
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {(blog.tags || []).slice(0, 2).map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="outline"
+                                className="text-xs bg-primary/10 border-primary/30 text-primary"
+                              >
+                                #{tag}
+                              </Badge>
+                            ))}
+                          </div>
 
-                      {/* Title */}
-                      <Link to={`/blog/${blog.id}`}>
-                        <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
-                          {blog.title}
-                        </h3>
-                      </Link>
+                          {/* Title */}
+                          <Link to={`/blog/${blog.id}`}>
+                            <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
+                              {blog.title}
+                            </h3>
+                          </Link>
 
-                      {/* Excerpt */}
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {blog.excerpt || blog.content.substring(0, 120) + "..."}
-                      </p>
+                          {/* Excerpt */}
+                          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                            {blog.excerpt || blog.content.replace(/<[^>]*>/g, " ").substring(0, 120) + "..."}
+                          </p>
 
-                      {/* Meta */}
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {formatDate(blog.created_at)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {blog.read_time || 1} min read
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                          {/* Meta */}
+                          <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {formatDate(blog.created_at)}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {blog.read_time || 1} min read
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
