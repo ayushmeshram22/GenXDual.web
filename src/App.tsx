@@ -12,6 +12,7 @@ import GetStarted from "./pages/GetStarted";
 import Modules from "./pages/Modules";
 import Auth from "./pages/Auth";
 import Blog from "./pages/Blog";
+import Flex from "./pages/Flex";
 import BlogDetail from "./pages/BlogDetail";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
+          <Route path="/flex" element={<Flex />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
