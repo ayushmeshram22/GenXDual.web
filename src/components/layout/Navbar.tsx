@@ -25,6 +25,7 @@ const navLinks = [
   },
   { name: "Modules", href: "/modules" },
   { name: "Blog", href: "/blog" },
+  { name: "Flex", href: "/flex" },
   { name: "Careers", href: "/careers" },
   { name: "Contact", href: "/contact" },
 ];
