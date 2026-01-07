@@ -5,10 +5,7 @@ import { modules } from "@/data/modules";
 import { getDifficultyColor, getTypeColor } from "@/utils/moduleColors";
 
 const beginnerModules = modules.filter(
-  (m) =>
-    m.difficulty === "Easy" ||
-    m.tier === "Tier 0" ||
-    m.tier === "Tier I"
+  (m) => m.difficulty === "Fundamental" || m.tier === "Level 1"
 );
 
 const Beginner = () => {
