@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -6,39 +6,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Mail, Phone, Calendar, Globe, Target, GraduationCap, Briefcase, Camera } from "lucide-react";
+import { User, Camera, Save, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const countries = [
-  "Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh",
-  "Belgium", "Brazil", "Canada", "China", "Colombia", "Denmark", "Egypt", "Ethiopia",
-  "Finland", "France", "Germany", "Ghana", "Greece", "India", "Indonesia", "Iran",
-  "Iraq", "Ireland", "Israel", "Italy", "Japan", "Jordan", "Kenya", "Malaysia",
-  "Mexico", "Morocco", "Nepal", "Netherlands", "New Zealand", "Nigeria", "Norway",
-  "Pakistan", "Philippines", "Poland", "Portugal", "Qatar", "Russia", "Saudi Arabia",
-  "Singapore", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden",
-  "Switzerland", "Thailand", "Turkey", "UAE", "UK", "USA", "Vietnam", "Other"
-];
 
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     full_name: "",
-    phone: "",
-    age: "",
-    country: "",
-    has_prior_experience: "",
-    experience_details: "",
+    username: "",
+    bio: "",
     skill_level: "",
-    goal: "",
     avatar_url: "",
   });
 
@@ -72,15 +58,81 @@ const Profile = () => {
     if (data) {
       setFormData({
         full_name: data.full_name || "",
-        phone: data.phone || "",
-        age: data.age?.toString() || "",
-        country: data.country || "",
-        has_prior_experience: data.has_prior_experience === true ? "yes" : data.has_prior_experience === false ? "no" : "",
-        experience_details: data.experience_details || "",
+        username: data.display_name || "",
+        bio: data.bio || "",
         skill_level: data.skill_level || "",
-        goal: data.goal || "",
         avatar_url: data.avatar_url || "",
       });
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a JPG, PNG, GIF, or WebP image.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/avatar.${fileExt}`;
+
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // Add cache buster to force refresh
+      const urlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
+
+      // Update local state
+      setFormData(prev => ({ ...prev, avatar_url: urlWithCacheBuster }));
+
+      // Update profile in database
+      await supabase
+        .from("profiles")
+        .update({ avatar_url: urlWithCacheBuster })
+        .eq("user_id", user.id);
+
+      toast({
+        title: "Success",
+        description: "Profile picture updated!",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message || "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -93,13 +145,9 @@ const Profile = () => {
       .from("profiles")
       .update({
         full_name: formData.full_name,
-        phone: formData.phone,
-        age: formData.age ? parseInt(formData.age) : null,
-        country: formData.country,
-        has_prior_experience: formData.has_prior_experience === "yes",
-        experience_details: formData.has_prior_experience === "yes" ? formData.experience_details : null,
+        display_name: formData.username,
+        bio: formData.bio,
         skill_level: formData.skill_level || null,
-        goal: formData.goal || null,
         avatar_url: formData.avatar_url || null,
       })
       .eq("user_id", user.id);
@@ -120,253 +168,189 @@ const Profile = () => {
     }
   };
 
+  const getInitials = () => {
+    if (formData.full_name) {
+      return formData.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+    }
+    return user?.email?.slice(0, 2).toUpperCase() || "U";
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 pt-24 pb-16">
-        <div className="container max-w-3xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Complete Your Profile
+        <div className="container max-w-2xl mx-auto px-4">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Profile Settings
             </h1>
             <p className="text-muted-foreground">
-              Help us understand you better to personalize your learning experience
+              Manage your personal information and preferences
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Avatar Section */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Camera className="w-5 h-5 text-primary" />
-                  Profile Picture
-                </CardTitle>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Profile Picture Section */}
+            <Card className="border-border/50 bg-card/80 backdrop-blur">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold">Profile Picture</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 <div className="flex items-center gap-6">
-                  <Avatar className="w-24 h-24 border-2 border-primary/30">
-                    <AvatarImage src={formData.avatar_url || undefined} />
-                    <AvatarFallback className="bg-primary/20 text-primary text-2xl">
-                      {formData.full_name ? formData.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : user?.email?.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-2">
-                    <Label htmlFor="avatar_url">Avatar URL</Label>
-                    <Input
-                      id="avatar_url"
-                      type="url"
-                      placeholder="https://example.com/your-photo.jpg"
-                      value={formData.avatar_url}
-                      onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
+                  <div className="relative">
+                    <Avatar className="w-20 h-20 border-2 border-primary/30">
+                      <AvatarImage src={formData.avatar_url || undefined} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/60 to-primary text-primary-foreground text-2xl font-semibold">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="absolute -bottom-1 -right-1 p-1.5 bg-primary rounded-full text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    >
+                      {uploading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Camera className="w-4 h-4" />
+                      )}
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      onChange={handleAvatarUpload}
+                      className="hidden"
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Enter a URL to your profile picture (e.g., from Gravatar, LinkedIn, or any image host)
+                  </div>
+                  <div>
+                    <p className="text-sm text-foreground">
+                      Upload a photo to personalize your profile.
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      JPG, PNG or GIF. Max 5MB.
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Experience Questions */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Briefcase className="w-5 h-5 text-primary" />
-                  Experience & Goals
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Prior Experience */}
-                <div className="space-y-3">
-                  <Label className="text-base font-medium">
-                    Do you have any prior experience in cybersecurity?
-                  </Label>
-                  <RadioGroup
-                    value={formData.has_prior_experience}
-                    onValueChange={(value) => setFormData({ ...formData, has_prior_experience: value })}
-                    className="flex gap-6"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="exp-yes" />
-                      <Label htmlFor="exp-yes" className="cursor-pointer">Yes</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="exp-no" />
-                      <Label htmlFor="exp-no" className="cursor-pointer">No</Label>
-                    </div>
-                  </RadioGroup>
-                  {formData.has_prior_experience === "yes" && (
-                    <Textarea
-                      placeholder="Please describe your experience..."
-                      value={formData.experience_details}
-                      onChange={(e) => setFormData({ ...formData, experience_details: e.target.value })}
-                      className="mt-3"
-                      rows={3}
-                    />
-                  )}
-                </div>
-
-                {/* Skill Level */}
-                <div className="space-y-3">
-                  <Label className="text-base font-medium flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-primary" />
-                    What is your current skill level?
-                  </Label>
-                  <RadioGroup
-                    value={formData.skill_level}
-                    onValueChange={(value) => setFormData({ ...formData, skill_level: value })}
-                    className="grid grid-cols-3 gap-4"
-                  >
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="beginner" id="skill-beginner" />
-                      <Label htmlFor="skill-beginner" className="cursor-pointer">Beginner</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="intermediate" id="skill-intermediate" />
-                      <Label htmlFor="skill-intermediate" className="cursor-pointer">Intermediate</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="advanced" id="skill-advanced" />
-                      <Label htmlFor="skill-advanced" className="cursor-pointer">Advanced</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {/* Goal */}
-                <div className="space-y-3">
-                  <Label className="text-base font-medium flex items-center gap-2">
-                    <Target className="w-4 h-4 text-primary" />
-                    What is your goal?
-                  </Label>
-                  <RadioGroup
-                    value={formData.goal}
-                    onValueChange={(value) => setFormData({ ...formData, goal: value })}
-                    className="grid grid-cols-2 md:grid-cols-3 gap-3"
-                  >
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="job" id="goal-job" />
-                      <Label htmlFor="goal-job" className="cursor-pointer text-sm">Job</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="freelancing" id="goal-freelancing" />
-                      <Label htmlFor="goal-freelancing" className="cursor-pointer text-sm">Freelancing</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="bug_bounty" id="goal-bugbounty" />
-                      <Label htmlFor="goal-bugbounty" className="cursor-pointer text-sm">Bug Bounty</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="personal_knowledge" id="goal-personal" />
-                      <Label htmlFor="goal-personal" className="cursor-pointer text-sm">Personal Knowledge</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:border-primary/50 transition-colors">
-                      <RadioGroupItem value="own_company" id="goal-company" />
-                      <Label htmlFor="goal-company" className="cursor-pointer text-sm">Own Company</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Basic Details */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <User className="w-5 h-5 text-primary" />
-                  Basic Details
-                </CardTitle>
+            {/* Personal Information Section */}
+            <Card className="border-border/50 bg-card/80 backdrop-blur">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold">Personal Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
-                {/* Full Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="full_name" className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    Full Name
-                  </Label>
-                  <Input
-                    id="full_name"
-                    type="text"
-                    placeholder="Enter your full name"
-                    value={formData.full_name}
-                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Full Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="full_name" className="text-sm font-medium">
+                      Full Name
+                    </Label>
+                    <Input
+                      id="full_name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={formData.full_name}
+                      onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                      className="bg-background/50"
+                    />
+                  </div>
+
+                  {/* Username */}
+                  <div className="space-y-2">
+                    <Label htmlFor="username" className="text-sm font-medium">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      placeholder="Choose a username"
+                      value={formData.username}
+                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                      className="bg-background/50"
+                    />
+                  </div>
                 </div>
 
-                {/* Email (read-only from auth) */}
+                {/* Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    Email Address
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={user?.email || ""}
                     disabled
-                    className="bg-muted"
+                    className="bg-muted/50"
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Email cannot be changed
+                  </p>
                 </div>
 
-                {/* Phone */}
+                {/* Bio */}
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    Phone / WhatsApp
+                  <Label htmlFor="bio" className="text-sm font-medium">
+                    Bio
                   </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  <Textarea
+                    id="bio"
+                    placeholder="Tell us about yourself..."
+                    value={formData.bio}
+                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                    className="bg-background/50 min-h-[100px] resize-none"
                   />
-                </div>
-
-                {/* Age */}
-                <div className="space-y-2">
-                  <Label htmlFor="age" className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    Age
-                  </Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    placeholder="Enter your age"
-                    min="10"
-                    max="100"
-                    value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                  />
-                </div>
-
-                {/* Country */}
-                <div className="space-y-2">
-                  <Label htmlFor="country" className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-muted-foreground" />
-                    Country
-                  </Label>
-                  <Select
-                    value={formData.country}
-                    onValueChange={(value) => setFormData({ ...formData, country: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((country) => (
-                        <SelectItem key={country} value={country}>
-                          {country}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Saving..." : "Save Profile"}
+            {/* Learning Preferences Section */}
+            <Card className="border-border/50 bg-card/80 backdrop-blur">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold">Learning Preferences</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="skill_level" className="text-sm font-medium">
+                    Learning Level
+                  </Label>
+                  <Select
+                    value={formData.skill_level}
+                    onValueChange={(value) => setFormData({ ...formData, skill_level: value })}
+                  >
+                    <SelectTrigger className="bg-background/50">
+                      <SelectValue placeholder="Select your level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    We'll tailor content recommendations based on your level
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Save Button */}
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-primary via-primary to-accent hover:opacity-90 transition-opacity" 
+              size="lg" 
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              {loading ? "Saving..." : "Save Changes"}
             </Button>
           </form>
         </div>
