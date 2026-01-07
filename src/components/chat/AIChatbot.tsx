@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from "react-markdown";
+
 type Message = {
   role: "user" | "assistant";
   content: string;
@@ -208,7 +210,15 @@ export default function AIChatbot() {
                       {msg.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                     </div>
                     <div className={`rounded-lg px-4 py-2 max-w-[80%] ${msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                      <p className="text-sm whitespace-pre-wrap">{msg.content || (isLoading && msg.role === "assistant" ? "..." : "")}</p>
+                      {msg.role === "assistant" ? (
+                        <div className="text-sm prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-pre:bg-background/50 prose-pre:p-2 prose-pre:rounded prose-code:text-xs prose-code:bg-background/50 prose-code:px-1 prose-code:rounded prose-headings:my-2 prose-headings:text-sm">
+                          <ReactMarkdown>
+                            {msg.content || (isLoading ? "..." : "")}
+                          </ReactMarkdown>
+                        </div>
+                      ) : (
+                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      )}
                     </div>
                   </motion.div>)}
                 
