@@ -1,21 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  Plus,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Trash2,
-  Send,
-  Upload,
-  Sparkles,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+import { Heart, MessageCircle, Share2, Plus, Play, Pause, Volume2, VolumeX, Trash2, Send, Upload, Sparkles, ChevronUp, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,23 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/layout/Navbar";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-
 interface Reel {
   id: string;
   user_id: string;
@@ -50,7 +24,6 @@ interface Reel {
   likes_count: number;
   created_at: string;
 }
-
 interface Comment {
   id: string;
   reel_id: string;
@@ -58,9 +31,7 @@ interface Comment {
   content: string;
   created_at: string;
 }
-
 const SWIPE_THRESHOLD = 50;
-
 const Flex = () => {
   const [reels, setReels] = useState<Reel[]>([]);
   const [user, setUser] = useState<SupabaseUser | null>(null);
@@ -81,33 +52,36 @@ const Flex = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
 
   // Form state
   const [caption, setCaption] = useState("");
-
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({
+      data: {
+        session
+      }
+    }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserLikes(session.user.id);
       }
     });
-
     const {
-      data: { subscription },
+      data: {
+        subscription
+      }
     } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserLikes(session.user.id);
       }
     });
-
     fetchReels();
-
     return () => subscription.unsubscribe();
   }, []);
-
   useEffect(() => {
     if (reels.length > 0 && showComments) {
       fetchComments(reels[currentIndex].id);
@@ -128,7 +102,6 @@ const Flex = () => {
         togglePlay();
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentIndex, reels.length]);
@@ -137,15 +110,12 @@ const Flex = () => {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
     let lastScrollTime = 0;
     const scrollCooldown = 500;
-
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const now = Date.now();
       if (now - lastScrollTime < scrollCooldown) return;
-
       if (e.deltaY > 30) {
         goToNext();
         lastScrollTime = now;
@@ -154,18 +124,19 @@ const Flex = () => {
         lastScrollTime = now;
       }
     };
-
-    container.addEventListener("wheel", handleWheel, { passive: false });
+    container.addEventListener("wheel", handleWheel, {
+      passive: false
+    });
     return () => container.removeEventListener("wheel", handleWheel);
   }, [currentIndex, reels.length]);
-
   const fetchReels = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("flex_reels")
-      .select("*")
-      .order("created_at", { ascending: false });
-
+    const {
+      data,
+      error
+    } = await supabase.from("flex_reels").select("*").order("created_at", {
+      ascending: false
+    });
     if (error) {
       console.error("Error fetching reels:", error);
     } else {
@@ -173,28 +144,22 @@ const Flex = () => {
     }
     setLoading(false);
   };
-
   const fetchUserLikes = async (userId: string) => {
-    const { data } = await supabase
-      .from("flex_likes")
-      .select("reel_id")
-      .eq("user_id", userId);
-
+    const {
+      data
+    } = await supabase.from("flex_likes").select("reel_id").eq("user_id", userId);
     if (data) {
-      setLikedReels(new Set(data.map((l) => l.reel_id)));
+      setLikedReels(new Set(data.map(l => l.reel_id)));
     }
   };
-
   const fetchComments = async (reelId: string) => {
-    const { data } = await supabase
-      .from("flex_comments")
-      .select("*")
-      .eq("reel_id", reelId)
-      .order("created_at", { ascending: true });
-
+    const {
+      data
+    } = await supabase.from("flex_comments").select("*").eq("reel_id", reelId).order("created_at", {
+      ascending: true
+    });
     setComments(data || []);
   };
-
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -202,7 +167,7 @@ const Flex = () => {
         toast({
           title: "Invalid file",
           description: "Please select a video file",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
@@ -210,38 +175,34 @@ const Flex = () => {
         toast({
           title: "File too large",
           description: "Video must be under 100MB",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
       setVideoFile(file);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
       toast({
         title: "Sign in required",
         description: "Please sign in to upload a reel",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     if (!videoFile) {
       toast({
         title: "No video selected",
         description: "Please select a video file to upload",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setSubmitting(true);
     setIsUploading(true);
     setUploadProgress(0);
-
     try {
       // Upload video to storage
       const fileExt = videoFile.name.split(".").pop();
@@ -249,42 +210,38 @@ const Flex = () => {
 
       // Simulate progress (actual progress tracking requires XHR)
       const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => Math.min(prev + 10, 90));
+        setUploadProgress(prev => Math.min(prev + 10, 90));
       }, 200);
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("flex-videos")
-        .upload(fileName, videoFile, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
+      const {
+        data: uploadData,
+        error: uploadError
+      } = await supabase.storage.from("flex-videos").upload(fileName, videoFile, {
+        cacheControl: "3600",
+        upsert: false
+      });
       clearInterval(progressInterval);
-
       if (uploadError) throw uploadError;
-
       setUploadProgress(100);
 
       // Get public URL
-      const { data: urlData } = supabase.storage
-        .from("flex-videos")
-        .getPublicUrl(uploadData.path);
+      const {
+        data: urlData
+      } = supabase.storage.from("flex-videos").getPublicUrl(uploadData.path);
 
       // Create reel record
-      const { error: insertError } = await supabase.from("flex_reels").insert({
+      const {
+        error: insertError
+      } = await supabase.from("flex_reels").insert({
         user_id: user.id,
         video_url: urlData.publicUrl,
         caption: caption || null,
-        thumbnail_url: null,
+        thumbnail_url: null
       });
-
       if (insertError) throw insertError;
-
       toast({
         title: "Success",
-        description: "Reel uploaded successfully!",
+        description: "Reel uploaded successfully!"
       });
-
       setVideoFile(null);
       setCaption("");
       setShowUploadDialog(false);
@@ -294,7 +251,7 @@ const Flex = () => {
       toast({
         title: "Upload failed",
         description: error.message || "Failed to upload reel",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setSubmitting(false);
@@ -302,72 +259,63 @@ const Flex = () => {
       setUploadProgress(0);
     }
   };
-
   const handleLike = async (reelId: string) => {
     if (!user) {
       toast({
         title: "Sign in required",
         description: "Please sign in to like reels",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     const isLiked = likedReels.has(reelId);
-
     if (isLiked) {
-      const { error } = await supabase
-        .from("flex_likes")
-        .delete()
-        .eq("reel_id", reelId)
-        .eq("user_id", user.id);
-
+      const {
+        error
+      } = await supabase.from("flex_likes").delete().eq("reel_id", reelId).eq("user_id", user.id);
       if (!error) {
-        setLikedReels((prev) => {
+        setLikedReels(prev => {
           const next = new Set(prev);
           next.delete(reelId);
           return next;
         });
-        setReels((prev) =>
-          prev.map((r) =>
-            r.id === reelId ? { ...r, likes_count: r.likes_count - 1 } : r
-          )
-        );
+        setReels(prev => prev.map(r => r.id === reelId ? {
+          ...r,
+          likes_count: r.likes_count - 1
+        } : r));
       }
     } else {
-      const { error } = await supabase.from("flex_likes").insert({
+      const {
+        error
+      } = await supabase.from("flex_likes").insert({
         reel_id: reelId,
-        user_id: user.id,
+        user_id: user.id
       });
-
       if (!error) {
-        setLikedReels((prev) => new Set([...prev, reelId]));
-        setReels((prev) =>
-          prev.map((r) =>
-            r.id === reelId ? { ...r, likes_count: r.likes_count + 1 } : r
-          )
-        );
+        setLikedReels(prev => new Set([...prev, reelId]));
+        setReels(prev => prev.map(r => r.id === reelId ? {
+          ...r,
+          likes_count: r.likes_count + 1
+        } : r));
       }
     }
   };
-
   const handleComment = async () => {
     if (!user || !newComment.trim() || reels.length === 0) return;
-
-    const { error } = await supabase.from("flex_comments").insert({
+    const {
+      error
+    } = await supabase.from("flex_comments").insert({
       reel_id: reels[currentIndex].id,
       user_id: user.id,
-      content: newComment.trim(),
+      content: newComment.trim()
     });
-
     if (!error) {
       setNewComment("");
       fetchComments(reels[currentIndex].id);
     }
   };
-
   const handleDeleteReel = async (reelId: string) => {
-    const reel = reels.find((r) => r.id === reelId);
+    const reel = reels.find(r => r.id === reelId);
     if (!reel) return;
 
     // Delete from storage if it's a storage URL
@@ -377,38 +325,35 @@ const Flex = () => {
         await supabase.storage.from("flex-videos").remove([path]);
       }
     }
-
-    const { error } = await supabase.from("flex_reels").delete().eq("id", reelId);
-
+    const {
+      error
+    } = await supabase.from("flex_reels").delete().eq("id", reelId);
     if (error) {
       toast({
         title: "Error",
         description: "Failed to delete reel",
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       toast({
         title: "Deleted",
-        description: "Reel removed",
+        description: "Reel removed"
       });
       fetchReels();
       if (currentIndex > 0) {
-        setCurrentIndex((prev) => prev - 1);
+        setCurrentIndex(prev => prev - 1);
       }
     }
   };
-
   const handleShare = async () => {
     if (reels.length === 0) return;
-
     const url = `${window.location.origin}/flex?reel=${reels[currentIndex].id}`;
-
     if (navigator.share) {
       try {
         await navigator.share({
           title: "Check out this Flex!",
           text: reels[currentIndex].caption || "Amazing reel!",
-          url,
+          url
         });
       } catch (err) {
         console.log("Share cancelled");
@@ -417,11 +362,10 @@ const Flex = () => {
       await navigator.clipboard.writeText(url);
       toast({
         title: "Link Copied",
-        description: "Reel link copied to clipboard!",
+        description: "Reel link copied to clipboard!"
       });
     }
   };
-
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -432,67 +376,55 @@ const Flex = () => {
       setIsPlaying(!isPlaying);
     }
   };
-
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
-
   const goToNext = useCallback(() => {
     if (currentIndex < reels.length - 1) {
       setDirection(1);
-      setCurrentIndex((prev) => prev + 1);
+      setCurrentIndex(prev => prev + 1);
       setIsPlaying(true);
     }
   }, [currentIndex, reels.length]);
-
   const goToPrev = useCallback(() => {
     if (currentIndex > 0) {
       setDirection(-1);
-      setCurrentIndex((prev) => prev - 1);
+      setCurrentIndex(prev => prev - 1);
       setIsPlaying(true);
     }
   }, [currentIndex]);
-
-  const handleDragEnd = (
-    event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
-  ) => {
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (info.offset.y < -SWIPE_THRESHOLD && info.velocity.y < 0) {
       goToNext();
     } else if (info.offset.y > SWIPE_THRESHOLD && info.velocity.y > 0) {
       goToPrev();
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
-      day: "numeric",
+      day: "numeric"
     });
   };
-
   const currentReel = reels[currentIndex];
-
   const slideVariants = {
     enter: (direction: number) => ({
       y: direction > 0 ? "100%" : "-100%",
-      opacity: 0,
+      opacity: 0
     }),
     center: {
       y: 0,
-      opacity: 1,
+      opacity: 1
     },
     exit: (direction: number) => ({
       y: direction > 0 ? "-100%" : "100%",
-      opacity: 0,
-    }),
+      opacity: 0
+    })
   };
-
-  return (
-    <div className="min-h-screen bg-black">
+  return <div className="min-h-screen bg-black">
       <Navbar />
 
       <main className="pt-16 pb-4 h-screen flex flex-col">
@@ -502,195 +434,104 @@ const Flex = () => {
             <Sparkles className="w-6 h-6 text-primary" />
             <h1 className="text-xl font-bold text-white">Flex</h1>
           </div>
-          {user && (
-            <Button
-              onClick={() => setShowUploadDialog(true)}
-              size="sm"
-              className="gap-1"
-            >
+          {user && <Button onClick={() => setShowUploadDialog(true)} size="sm" className="gap-1">
               <Plus className="w-4 h-4" />
               Upload
-            </Button>
-          )}
+            </Button>}
         </div>
 
         {/* Reels Container */}
-        {loading ? (
-          <div className="flex-1 flex items-center justify-center">
+        {loading ? <div className="flex-1 flex items-center justify-center">
             <p className="text-muted-foreground">Loading reels...</p>
-          </div>
-        ) : reels.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
+          </div> : reels.length === 0 ? <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
             <Sparkles className="w-16 h-16 text-primary/50 mb-4" />
             <h2 className="text-xl font-bold text-white mb-2">No Flex yet</h2>
             <p className="text-muted-foreground mb-4">
               Be the first to share your skills!
             </p>
-            {user ? (
-              <Button onClick={() => setShowUploadDialog(true)}>
+            {user ? <Button onClick={() => setShowUploadDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Upload First Reel
-              </Button>
-            ) : (
-              <Button asChild>
+              </Button> : <Button asChild>
                 <Link to="/auth">Sign In to Upload</Link>
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div
-            ref={containerRef}
-            className="flex-1 relative flex items-center justify-center overflow-hidden touch-none"
-          >
+              </Button>}
+          </div> : <div ref={containerRef} className="flex-1 relative flex items-center justify-center overflow-hidden touch-none">
             {/* Video Container */}
             <div className="relative w-full max-w-md h-full max-h-[80vh] mx-auto">
               <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={currentReel.id}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    y: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.2 },
-                  }}
-                  drag="y"
-                  dragConstraints={{ top: 0, bottom: 0 }}
-                  dragElastic={0.2}
-                  onDragEnd={handleDragEnd}
-                  className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-card cursor-grab active:cursor-grabbing"
-                >
-                  <video
-                    ref={videoRef}
-                    src={currentReel.video_url}
-                    className="w-full h-full object-cover"
-                    loop
-                    autoPlay
-                    muted={isMuted}
-                    playsInline
-                    onClick={togglePlay}
-                  />
+                <motion.div key={currentReel.id} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{
+              y: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30
+              },
+              opacity: {
+                duration: 0.2
+              }
+            }} drag="y" dragConstraints={{
+              top: 0,
+              bottom: 0
+            }} dragElastic={0.2} onDragEnd={handleDragEnd} className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-card cursor-grab active:cursor-grabbing">
+                  <video ref={videoRef} src={currentReel.video_url} className="w-full h-full object-cover" loop autoPlay muted={isMuted} playsInline onClick={togglePlay} />
 
                   {/* Play/Pause Overlay */}
-                  {!isPlaying && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none">
+                  {!isPlaying && <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none">
                       <Play className="w-16 h-16 text-white" />
-                    </div>
-                  )}
+                    </div>}
 
                   {/* Swipe Hints */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                    {currentIndex > 0 && (
-                      <ChevronUp className="w-6 h-6 text-white/50 animate-bounce" />
-                    )}
-                    {currentIndex < reels.length - 1 && (
-                      <ChevronDown className="w-6 h-6 text-white/50 animate-bounce" />
-                    )}
+                    {currentIndex > 0 && <ChevronUp className="w-6 h-6 text-white/50 animate-bounce" />}
+                    {currentIndex < reels.length - 1 && <ChevronDown className="w-6 h-6 text-white/50 animate-bounce" />}
                   </div>
 
                   {/* Caption */}
-                  {currentReel.caption && (
-                    <div className="absolute bottom-20 left-4 right-16 p-3 bg-black/50 backdrop-blur-sm rounded-lg">
+                  {currentReel.caption && <div className="absolute bottom-20 left-4 right-16 p-3 bg-black/50 backdrop-blur-sm rounded-lg">
                       <p className="text-white text-sm">{currentReel.caption}</p>
-                    </div>
-                  )}
+                    </div>}
 
                   {/* Delete Button */}
-                  {user?.id === currentReel.user_id && (
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-4 right-4"
-                      onClick={() => handleDeleteReel(currentReel.id)}
-                    >
+                  {user?.id === currentReel.user_id && <Button variant="destructive" size="icon" className="absolute top-4 right-4" onClick={() => handleDeleteReel(currentReel.id)}>
                       <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
+                    </Button>}
 
                   {/* Volume Control */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-4 left-4 bg-black/50 hover:bg-black/70 text-white"
-                    onClick={toggleMute}
-                  >
-                    {isMuted ? (
-                      <VolumeX className="w-5 h-5" />
-                    ) : (
-                      <Volume2 className="w-5 h-5" />
-                    )}
+                  <Button variant="ghost" size="icon" className="absolute top-4 left-4 bg-black/50 hover:bg-black/70 text-white" onClick={toggleMute}>
+                    {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                   </Button>
                 </motion.div>
               </AnimatePresence>
 
               {/* Side Actions */}
               <div className="absolute right-4 bottom-28 flex flex-col gap-4 z-10">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`bg-black/50 hover:bg-black/70 rounded-full h-12 w-12 ${
-                    likedReels.has(currentReel.id) ? "text-red-500" : "text-white"
-                  }`}
-                  onClick={() => handleLike(currentReel.id)}
-                >
-                  <Heart
-                    className={`w-6 h-6 ${
-                      likedReels.has(currentReel.id) ? "fill-current" : ""
-                    }`}
-                  />
+                <Button variant="ghost" size="icon" className={`bg-black/50 hover:bg-black/70 rounded-full h-12 w-12 ${likedReels.has(currentReel.id) ? "text-red-500" : "text-white"}`} onClick={() => handleLike(currentReel.id)}>
+                  <Heart className={`w-6 h-6 ${likedReels.has(currentReel.id) ? "fill-current" : ""}`} />
                 </Button>
                 <span className="text-white text-xs text-center -mt-2">
                   {currentReel.likes_count}
                 </span>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-black/50 hover:bg-black/70 text-white rounded-full h-12 w-12"
-                  onClick={() => setShowComments(true)}
-                >
+                <Button variant="ghost" size="icon" className="bg-black/50 hover:bg-black/70 text-white rounded-full h-12 w-12" onClick={() => setShowComments(true)}>
                   <MessageCircle className="w-6 h-6" />
                 </Button>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-black/50 hover:bg-black/70 text-white rounded-full h-12 w-12"
-                  onClick={handleShare}
-                >
+                <Button variant="ghost" size="icon" className="bg-black/50 hover:bg-black/70 text-white rounded-full h-12 w-12" onClick={handleShare}>
                   <Share2 className="w-6 h-6" />
                 </Button>
               </div>
 
               {/* Navigation Indicators */}
               <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-3 z-10">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-black/50 text-white h-8 w-8"
-                  onClick={goToPrev}
-                  disabled={currentIndex === 0}
-                >
+                <Button variant="ghost" size="icon" className="bg-black/50 text-white h-8 w-8" onClick={goToPrev} disabled={currentIndex === 0}>
                   <ChevronUp className="w-5 h-5" />
                 </Button>
-                <Badge className="bg-black/50 text-white">
-                  {currentIndex + 1} / {reels.length}
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-black/50 text-white h-8 w-8"
-                  onClick={goToNext}
-                  disabled={currentIndex === reels.length - 1}
-                >
+                
+                <Button variant="ghost" size="icon" className="bg-black/50 text-white h-8 w-8" onClick={goToNext} disabled={currentIndex === reels.length - 1}>
                   <ChevronDown className="w-5 h-5" />
                 </Button>
               </div>
             </div>
-          </div>
-        )}
+          </div>}
       </main>
 
       {/* Upload Dialog */}
@@ -705,68 +546,42 @@ const Flex = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label>Video File *</Label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="video/*"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
-              >
-                {videoFile ? (
-                  <div className="space-y-2">
+              <input ref={fileInputRef} type="file" accept="video/*" onChange={handleFileSelect} className="hidden" />
+              <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors">
+                {videoFile ? <div className="space-y-2">
                     <p className="text-foreground font-medium">{videoFile.name}</p>
                     <p className="text-muted-foreground text-sm">
                       {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
                     </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
+                  </div> : <div className="space-y-2">
                     <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
                     <p className="text-muted-foreground">
                       Click to select a video (max 100MB)
                     </p>
-                  </div>
-                )}
+                  </div>}
               </div>
             </div>
 
-            {isUploading && (
-              <div className="space-y-2">
+            {isUploading && <div className="space-y-2">
                 <Progress value={uploadProgress} className="h-2" />
                 <p className="text-sm text-muted-foreground text-center">
                   Uploading... {uploadProgress}%
                 </p>
-              </div>
-            )}
+              </div>}
 
             <div className="space-y-2">
               <Label htmlFor="caption">Caption</Label>
-              <Textarea
-                id="caption"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                placeholder="What's this about?"
-                rows={3}
-                className="bg-background"
-              />
+              <Textarea id="caption" value={caption} onChange={e => setCaption(e.target.value)} placeholder="What's this about?" rows={3} className="bg-background" />
             </div>
 
             <div className="flex gap-3 pt-2">
               <Button type="submit" disabled={submitting || !videoFile}>
                 {submitting ? "Uploading..." : "Upload Flex"}
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setShowUploadDialog(false);
-                  setVideoFile(null);
-                }}
-              >
+              <Button type="button" variant="outline" onClick={() => {
+              setShowUploadDialog(false);
+              setVideoFile(null);
+            }}>
                 Cancel
               </Button>
             </div>
@@ -787,13 +602,9 @@ const Flex = () => {
           <div className="flex flex-col h-full pt-4">
             {/* Comments List */}
             <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-              {comments.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
+              {comments.length === 0 ? <p className="text-center text-muted-foreground py-8">
                   No comments yet. Be the first!
-                </p>
-              ) : (
-                comments.map((comment) => (
-                  <div key={comment.id} className="flex gap-3">
+                </p> : comments.map(comment => <div key={comment.id} className="flex gap-3">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-primary/20 text-primary text-xs">
                         {comment.user_id.substring(0, 2).toUpperCase()}
@@ -807,49 +618,31 @@ const Flex = () => {
                         {formatDate(comment.created_at)}
                       </span>
                     </div>
-                  </div>
-                ))
-              )}
+                  </div>)}
             </div>
 
             {/* Comment Input */}
-            {user ? (
-              <div className="flex gap-2 pt-4 border-t border-border mt-4">
-                <Input
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add a comment..."
-                  className="flex-1 bg-background"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleComment();
-                    }
-                  }}
-                />
-                <Button
-                  onClick={handleComment}
-                  disabled={!newComment.trim()}
-                  size="icon"
-                >
+            {user ? <div className="flex gap-2 pt-4 border-t border-border mt-4">
+                <Input value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Add a comment..." className="flex-1 bg-background" onKeyDown={e => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleComment();
+              }
+            }} />
+                <Button onClick={handleComment} disabled={!newComment.trim()} size="icon">
                   <Send className="w-4 h-4" />
                 </Button>
-              </div>
-            ) : (
-              <div className="text-center pt-4 border-t border-border mt-4">
+              </div> : <div className="text-center pt-4 border-t border-border mt-4">
                 <p className="text-muted-foreground text-sm mb-2">
                   Sign in to comment
                 </p>
                 <Button asChild size="sm">
                   <Link to="/auth">Sign In</Link>
                 </Button>
-              </div>
-            )}
+              </div>}
           </div>
         </SheetContent>
       </Sheet>
-    </div>
-  );
+    </div>;
 };
-
 export default Flex;
