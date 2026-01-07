@@ -195,6 +195,7 @@ export type Database = {
         Row: {
           age: number | null
           avatar_url: string | null
+          bio: string | null
           country: string | null
           created_at: string
           display_name: string | null
@@ -207,10 +208,12 @@ export type Database = {
           skill_level: string | null
           updated_at: string
           user_id: string
+          username: string | null
         }
         Insert: {
           age?: number | null
           avatar_url?: string | null
+          bio?: string | null
           country?: string | null
           created_at?: string
           display_name?: string | null
@@ -223,10 +226,12 @@ export type Database = {
           skill_level?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
         }
         Update: {
           age?: number | null
           avatar_url?: string | null
+          bio?: string | null
           country?: string | null
           created_at?: string
           display_name?: string | null
@@ -239,6 +244,7 @@ export type Database = {
           skill_level?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
         }
         Relationships: []
       }
