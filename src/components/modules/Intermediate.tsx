@@ -5,7 +5,7 @@ import { modules } from "@/data/modules";
 import { getDifficultyColor, getTypeColor } from "@/utils/moduleColors";
 
 const intermediateModules = modules.filter(
-  (m) => m.tier === "Tier II" && m.difficulty === "Medium"
+  (m) => m.difficulty === "Easy" || m.difficulty === "Medium" || m.tier === "Level 2" || m.tier === "Level 3"
 );
 
 export default function Intermediate() {

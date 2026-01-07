@@ -5,7 +5,7 @@ import { modules } from "@/data/modules";
 import { getDifficultyColor, getTypeColor } from "@/utils/moduleColors";
 
 const advancedModules = modules.filter(
-  (m) => m.tier === "Tier III" && m.difficulty === "Hard"
+  (m) => m.difficulty === "Hard" || m.tier === "Level 4" || m.tier === "Level 5"
 );
 
 export default function Advanced() {
