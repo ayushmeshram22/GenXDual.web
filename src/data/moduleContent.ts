@@ -28,7 +28,6 @@ interface SectionContent {
 
 interface Section {
   id: number;
-  title: string;
   completed: boolean;
   duration: string;
   description: string;
@@ -41,13 +40,12 @@ interface ModuleData {
 }
 
 export const moduleDatabase: Record<string, ModuleData> = {
-  "cybersecurity-basics": {
+  "introduction-to-cybersecurity": {
     title: "Cybersecurity Basics",
     sections: [
       {
         id: 1,
-        title: "What is Cybersecurity?",
-        completed: true,
+        completed: false,
         duration: "15 min",
         description: "Understanding the basics of cybersecurity and why it matters.",
         content: {
@@ -155,7 +153,6 @@ export const moduleDatabase: Record<string, ModuleData> = {
       },
       {
         id: 2,
-        title: "Types of Cyber Threats",
         completed: false,
         duration: "20 min",
         description: "Learn about different types of cyber attacks and threats.",
@@ -191,7 +188,6 @@ export const moduleDatabase: Record<string, ModuleData> = {
       },
       {
         id: 3,
-        title: "Security Principles",
         completed: false,
         duration: "25 min",
         description: "Core security principles and the CIA triad.",
@@ -208,7 +204,6 @@ export const moduleDatabase: Record<string, ModuleData> = {
       },
       {
         id: 4,
-        title: "Defense in Depth",
         completed: false,
         duration: "20 min",
         description: "Understanding layered security approaches.",
@@ -220,7 +215,105 @@ export const moduleDatabase: Record<string, ModuleData> = {
       },
       {
         id: 5,
-        title: "Security Best Practices",
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 6,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 7,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 8,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 9,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 10,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 11,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 12,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 13,
+        completed: false,
+        duration: "15 min",
+        description: "Essential security practices for organizations.",
+        content: {
+          readContent: [],
+          mcqQuestions: [],
+          flexCards: []
+        }
+      },
+      {
+        id: 14,
         completed: false,
         duration: "15 min",
         description: "Essential security practices for organizations.",
@@ -230,79 +323,8 @@ export const moduleDatabase: Record<string, ModuleData> = {
           flexCards: []
         }
       }
-    ]
-  },
-  "linux-fundamentals": {
-    title: "Linux Fundamentals",
-    sections: [
-      {
-        id: 1,
-        title: "Introduction to Linux",
-        completed: true,
-        duration: "15 min",
-        description: "Getting started with Linux operating system.",
-        content: {
-          readContent: [
-            {
-              heading: "",
-              body: "Linux is a family of open-source Unix-like operating systems based on the Linux kernel, first released by Linus Torvalds on September 17, 1991."
-            },
-            {
-              heading: "Why Learn Linux?",
-              body: "Linux powers most of the internet's servers, cloud infrastructure, and is essential for cybersecurity professionals. Understanding Linux opens doors to system administration, DevOps, and security careers."
-            }
-          ],
-          mcqQuestions: [
-            {
-              question: "Who created the Linux kernel?",
-              options: [
-                { label: "A", text: "Bill Gates" },
-                { label: "B", text: "Steve Jobs" },
-                { label: "C", text: "Linus Torvalds" },
-                { label: "D", text: "Dennis Ritchie" }
-              ],
-              correctAnswer: "C"
-            }
-          ],
-          flexCards: []
-        }
-      },
-      {
-        id: 2,
-        title: "File System Navigation",
-        completed: false,
-        duration: "20 min",
-        description: "Navigate the Linux file system with confidence.",
-        content: {
-          readContent: [],
-          mcqQuestions: [],
-          flexCards: []
-        }
-      },
-      {
-        id: 3,
-        title: "Working with Files",
-        completed: false,
-        duration: "20 min",
-        description: "Create, edit, and manage files in Linux.",
-        content: {
-          readContent: [],
-          mcqQuestions: [],
-          flexCards: []
-        }
-      },
-      {
-        id: 4,
-        title: "User Permissions",
-        completed: false,
-        duration: "25 min",
-        description: "Understanding file permissions and ownership.",
-        content: {
-          readContent: [],
-          mcqQuestions: [],
-          flexCards: []
-        }
-      }
+      
+
     ]
   }
 };

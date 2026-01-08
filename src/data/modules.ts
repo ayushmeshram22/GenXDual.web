@@ -53,7 +53,7 @@ export interface ModuleMeta {
 export const modules: ModuleMeta[] = [
   // Level 1 - Fundamental
   {
-    id: "cybersecurity-basics",
+    id: "introduction-to-cybersecurity",
     title: "Introduction to Cybersecurity",
     icon: Shield,
     tier: "Level 1",

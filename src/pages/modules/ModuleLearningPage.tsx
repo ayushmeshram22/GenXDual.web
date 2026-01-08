@@ -16,16 +16,30 @@ import { modules } from "@/data/modules";
 type TabType = "watch" | "read" | "mcq" | "lab" | "flex";
 
 // Parse text with highlighted terms (for key areas)
-const parseKeyAreas = (text: string) => {
-  const keyAreas = [
-    { term: "Network Security:", description: "Protecting the integrity and usability of networks and data through firewalls, intrusion detection systems, and access controls." },
-    { term: "Application Security:", description: "Ensuring software and devices are free from threats through secure coding practices." },
-    { term: "Information Security:", description: "Protecting the integrity and privacy of data during storage and transmission." },
-    { term: "Operational Security:", description: "Processes for handling and protecting data assets and user permissions." }
-  ];
-  
-  return keyAreas;
-};
+// Key Areas of Focus (static data)
+const keyAreas = [
+  {
+    term: "Network Security:",
+    description:
+      "Protecting the integrity and usability of networks and data through firewalls, intrusion detection systems, and access controls.",
+  },
+  {
+    term: "Application Security:",
+    description:
+      "Ensuring software and devices are free from threats through secure coding practices.",
+  },
+  {
+    term: "Information Security:",
+    description:
+      "Protecting the integrity and privacy of data during storage and transmission.",
+  },
+  {
+    term: "Operational Security:",
+    description:
+      "Processes for handling and protecting data assets and user permissions.",
+  },
+];
+
 
 const parseTopics = (topics: string): string[] =>
   topics.split(",").map(t => t.trim());
@@ -33,44 +47,76 @@ const parseTopics = (topics: string): string[] =>
 
 export default function ModuleLearningPage() {
   const { moduleId } = useParams();
+
   const [activeTab, setActiveTab] = useState<TabType>("watch");
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+  const resetLessonState = () => {
+    setActiveTab("watch");
+    setSelectedAnswer(null);
+    setCurrentQuestionIndex(0);
+  };
+
+
   const moduleMeta = modules.find(m => m.id === moduleId);
   const topics = moduleMeta ? parseTopics(moduleMeta.topics) : [];
-
   
   // Get module data or default to cybersecurity-basics
-  const module = moduleDatabase[moduleId || "cybersecurity-basics"] || moduleDatabase["cybersecurity-basics"];
+  const module =
+    moduleDatabase[moduleId!] ??
+    (moduleMeta
+      ? {
+          title: moduleMeta.title,
+          sections: Array.from({ length: moduleMeta.sections }).map((_, i) => ({
+            id: i + 1,
+            completed: false,
+            duration: "15 min",
+            description: "Content coming soon",
+            content: {
+              readContent: [],
+              mcqQuestions: [],
+              flexCards: []
+            },
+          })),
+        } 
+      : null
+    );
   
   // Find current section index (first incomplete or first completed)
-  const initialSection = module.sections.findIndex(s => !s.completed);
-  const [activeSection, setActiveSection] = useState(initialSection === -1 ? 0 : initialSection);
+  const initialSection =
+    module.sections.findIndex(s => s.completed === false);
+
+  const [activeSection, setActiveSection] = useState(
+    initialSection === -1 ? 0 : initialSection
+  );
+
+  if (topics.length !== module.sections.length) {
+    console.warn(
+      `Topic count (${topics.length}) does not match section count (${module.sections.length}) for ${moduleId}`
+    );
+  }
   
   const currentSection = {
     ...module.sections[activeSection],
-    title: topics[activeSection] || module.sections[activeSection].title,
+    title: topics[activeSection] ?? `Lesson ${activeSection + 1}`,
   };
 
   
   const totalSections = module.sections.length;
 
   const handleNextSection = () => {
+    module.sections[activeSection].completed = true;
     if (activeSection < totalSections - 1) {
       setActiveSection(activeSection + 1);
-      setActiveTab("watch");
-      setSelectedAnswer(null);
-      setCurrentQuestionIndex(0);
+      resetLessonState();
     }
   };
 
   const handlePrevSection = () => {
     if (activeSection > 0) {
       setActiveSection(activeSection - 1);
-      setActiveTab("watch");
-      setSelectedAnswer(null);
-      setCurrentQuestionIndex(0);
+      resetLessonState();
     }
   };
 
@@ -82,7 +128,12 @@ export default function ModuleLearningPage() {
     { id: "flex", label: "Flex", icon: <Sparkles className="w-4 h-4" /> },
   ];
 
-  const keyAreas = parseKeyAreas("");
+  const currentMCQ =
+    currentSection.content.mcqQuestions[currentQuestionIndex];
+
+  const isCorrect =
+    selectedAnswer === currentMCQ?.correctAnswer;
+
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -105,9 +156,7 @@ export default function ModuleLearningPage() {
               key={section.id}
               onClick={() => {
                 setActiveSection(idx);
-                setActiveTab("watch");
-                setSelectedAnswer(null);
-                setCurrentQuestionIndex(0);
+                resetLessonState();
               }}
               className={cn(
                 "w-full flex items-start gap-3 px-4 py-4 rounded-lg text-left transition-all mb-2",
@@ -134,7 +183,7 @@ export default function ModuleLearningPage() {
                   "text-sm font-medium block",
                   activeSection === idx ? "text-primary" : "text-foreground"
                 )}>
-                  {topics[idx] || section.title}
+                  {topics[idx] ?? `Lesson ${idx + 1}`}
                 </span>
                 <span className={cn(
                   "text-xs mt-1 block",
@@ -234,7 +283,7 @@ export default function ModuleLearningPage() {
                 ))}
                 
                 {/* Key Areas of Focus */}
-                {currentSection.id === 1 && moduleId === "cybersecurity-basics" && (
+                {activeSection === 0 && moduleId === "cybersecurity-basics" && (
                   <div className="mt-8">
                     <h2 className="text-xl font-semibold text-foreground mb-4">Key Areas of Focus</h2>
                     <div className="space-y-4">
@@ -273,7 +322,9 @@ export default function ModuleLearningPage() {
                           className={cn(
                             "w-full text-left p-4 rounded-lg border transition-all",
                             selectedAnswer === option.label
-                              ? "bg-primary/10 border-primary text-foreground"
+                              ? option.label === currentMCQ?.correctAnswer
+                                ? "bg-green-500/10 border-green-500 text-green-400"
+                                : "bg-red-500/10 border-red-500 text-red-400"
                               : "bg-muted/30 border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                           )}
                         >
@@ -342,7 +393,7 @@ export default function ModuleLearningPage() {
                             card.gradient
                           )}
                         >
-                          <div className="p-4">
+                          <div className="relative p-4">
                             <div className="flex justify-between items-start mb-24">
                               <span className={cn("px-2 py-1 rounded text-xs font-medium text-white", card.categoryColor)}>
                                 {card.category}

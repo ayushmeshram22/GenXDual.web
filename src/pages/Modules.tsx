@@ -285,7 +285,7 @@ const Modules = () => {
                 const isExpanded = expandedModule === module.title;
                 const Icon = module.icon;
                 const topicsList = module.topics ? module.topics.split(", ") : [];
-                const moduleHref = `/modules/learn/${module.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+                const moduleHref = `/modules/learn/${module.id}`;
 
                 return (
                   <motion.div
