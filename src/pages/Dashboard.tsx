@@ -18,7 +18,8 @@ import {
   ChevronRight,
   Shield,
   Zap,
-  TrendingUp
+  TrendingUp,
+  AlertCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -30,6 +31,7 @@ interface ProfileData {
   goal: string | null;
   has_prior_experience: boolean | null;
   country: string | null;
+  bio: string | null;
 }
 
 const Dashboard = () => {
@@ -66,9 +68,9 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("display_name, avatar_url, full_name, skill_level, goal, has_prior_experience, country")
+        .select("display_name, avatar_url, full_name, skill_level, goal, has_prior_experience, country, bio")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== "PGRST116") {
         console.error("Error fetching profile:", error);
@@ -104,6 +106,22 @@ const Dashboard = () => {
     }
   };
 
+  // Calculate profile completion
+  const calculateProfileCompletion = () => {
+    if (!profile) return 0;
+    const fields = [
+      profile.full_name,
+      profile.display_name,
+      profile.bio,
+      profile.skill_level,
+      profile.avatar_url,
+    ];
+    const filledFields = fields.filter((field) => field && field.trim() !== "").length;
+    return Math.round((filledFields / fields.length) * 100);
+  };
+
+  const profileCompletion = calculateProfileCompletion();
+
   // Mock learning progress data
   const learningModules = [
     { name: "Network Security Fundamentals", progress: 75, icon: Shield },
@@ -138,6 +156,46 @@ const Dashboard = () => {
               Track your cybersecurity learning journey
             </p>
           </motion.div>
+
+          {/* Profile Completion Banner */}
+          {profileCompletion < 100 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="mb-6"
+            >
+              <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border-primary/20">
+                <CardContent className="py-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="p-2 rounded-full bg-primary/20">
+                        <AlertCircle className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-sm font-medium text-foreground">
+                            Complete your profile
+                          </p>
+                          <span className="text-sm font-semibold text-primary">{profileCompletion}%</span>
+                        </div>
+                        <Progress value={profileCompletion} className="h-2" />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          A complete profile helps us personalize your learning experience
+                        </p>
+                      </div>
+                    </div>
+                    <Link to="/profile">
+                      <Button variant="cyber" size="sm">
+                        Complete Now
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profile Summary Card */}
