@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { User, Camera, Save, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -175,6 +176,18 @@ const Profile = () => {
     return user?.email?.slice(0, 2).toUpperCase() || "U";
   };
 
+  const calculateCompletion = () => {
+    const fields = [
+      formData.full_name,
+      formData.username,
+      formData.bio,
+      formData.skill_level,
+      formData.avatar_url,
+    ];
+    const filledFields = fields.filter((field) => field && field.trim() !== "").length;
+    return Math.round((filledFields / fields.length) * 100);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -189,6 +202,22 @@ const Profile = () => {
               Manage your personal information and preferences
             </p>
           </div>
+
+          {/* Profile Completion Card */}
+          <Card className="border-border/50 bg-card/80 backdrop-blur mb-6">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-foreground">Profile Completion</span>
+                <span className="text-sm font-semibold text-primary">{calculateCompletion()}%</span>
+              </div>
+              <Progress value={calculateCompletion()} className="h-2" />
+              <p className="text-xs text-muted-foreground mt-2">
+                {calculateCompletion() === 100 
+                  ? "Your profile is complete! 🎉" 
+                  : "Complete your profile to get personalized recommendations"}
+              </p>
+            </CardContent>
+          </Card>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Profile Picture Section */}

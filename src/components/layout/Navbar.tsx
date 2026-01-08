@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import white_logo from "@/assets/white_logo.png";
 
 const navLinks = [
@@ -35,6 +36,7 @@ export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<{ avatar_url: string | null; display_name: string | null } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -51,14 +53,31 @@ export const Navbar = () => {
   }, [location]);
 
   useEffect(() => {
+    const fetchProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url, display_name")
+        .eq("user_id", userId)
+        .single();
+      setProfile(data);
+    };
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      } else {
+        setProfile(null);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -165,10 +184,17 @@ export const Navbar = () => {
                 </Button>
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 text-sm"
+                  className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
                 >
-                  <User className="w-4 h-4" />
-                  {user.email?.split("@")[0]}
+                  <Avatar className="w-8 h-8 border border-primary/30">
+                    <AvatarImage src={profile?.avatar_url || undefined} />
+                    <AvatarFallback className="bg-gradient-to-br from-primary/60 to-primary text-primary-foreground text-xs font-semibold">
+                      {profile?.display_name?.slice(0, 2).toUpperCase() || user.email?.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="max-w-[100px] truncate">
+                    {profile?.display_name || user.email?.split("@")[0]}
+                  </span>
                 </Link>
                 <Button
                   variant="cyberOutline"
