@@ -33,9 +33,27 @@ import {
   Scroll,
 } from "lucide-react";
 
-export const modules = [
+import type { LucideIcon } from "lucide-react";
+
+export interface ModuleMeta {
+  id: string;               // ✅ REQUIRED
+  title: string;
+  icon: LucideIcon;
+  tier: string;
+  difficulty: string;
+  type: string;
+  sections: number;
+  points: number;
+  duration: string;
+  isNew: boolean;
+  topics: string;
+}
+
+
+export const modules: ModuleMeta[] = [
   // Level 1 - Fundamental
   {
+    id: "cybersecurity-basics",
     title: "Introduction to Cybersecurity",
     icon: Shield,
     tier: "Level 1",
@@ -48,6 +66,7 @@ export const modules = [
     topics: "Introduction, CIA Triad, Security Principles, Threat Landscape, Risk Management, Vulnerability Types, Attack Vectors, Defense in Depth, Security Policies, Compliance Frameworks, Incident Response Basics, Security Awareness, Data Classification, Conclusion",
   },
   {
+    id: "cybersecurity-terminology",
     title: "Cybersecurity Terminology & Concepts",
     icon: FileText,
     tier: "Level 1",
@@ -60,6 +79,7 @@ export const modules = [
     topics: "Introduction, Common Security Terms, Attack Vectors, Defense Strategies, Security Models, Threat Actors, Malware Types, Exploit Development, Zero-Day Vulnerabilities, Security Controls, Access Control Models, Encryption Basics, Authentication Methods, Conclusion",
   },
   {
+    id: "linux-os-essentials",
     title: "Linux Operating System Essentials",
     icon: Terminal,
     tier: "Level 1",
@@ -72,6 +92,7 @@ export const modules = [
     topics: "Introduction, Linux Filesystem, Basic Commands, File Permissions, User Management, Shell Basics, Package Management, Process Management, System Services, Cron Jobs, Log Files, Network Configuration, SSH Access, Conclusion",
   },
   {
+    id: "file-inclusion-vulnerabilities",
     title: "File Inclusion Vulnerabilities",
     icon: Bug,
     tier: "Level 1",
@@ -84,6 +105,7 @@ export const modules = [
     topics: "Introduction, Local File Inclusion (LFI), Remote File Inclusion (RFI), Path Traversal, Directory Traversal, Filter Bypass Techniques, Null Byte Injection, Log Poisoning, PHP Wrappers, File Upload Bypass, Session File Inclusion, Conclusion",
   },
   {
+    id: "secure-file-transfer",
     title: "Secure File Transfer Methods",
     icon: FileCode,
     tier: "Level 1",
@@ -96,6 +118,7 @@ export const modules = [
     topics: "Introduction, SCP Protocol, SFTP Usage, wget Commands, curl Utilities, Base64 Encoding/Decoding, PowerShell Downloads, Python HTTP Server, FTP/TFTP, SMB File Transfers, Netcat File Transfer, Living Off The Land Binaries, Conclusion",
   },
   {
+    id: "linux-x86-buffer-overflow-exploitation",
     title: "Linux x86 Buffer Overflow Exploitation",
     icon: Code,
     tier: "Level 1",
@@ -108,6 +131,7 @@ export const modules = [
     topics: "Introduction, Stack Layout Analysis, EIP Control, Return Address Overwrite, Shellcode Development, NOP Sled Creation, Bad Characters, Exploit Development, Pattern Creation, Offset Calculation, ASLR Bypass, DEP Bypass Techniques, Conclusion",
   },
   {
+    id: "sql-injection-basics",
     title: "SQL Injection Basics",
     icon: Database,
     tier: "Level 1",
@@ -120,6 +144,7 @@ export const modules = [
     topics: "Introduction, SQL Syntax, Union-Based Injection, Error-Based Injection, Boolean-Based Blind, Time-Based Blind, Database Enumeration, Data Exfiltration, Authentication Bypass, Second-Order Injection, Stacked Queries, Comment Injection, Conclusion",
   },
   {
+    id: "networking-fundamentals",
     title: "Networking Fundamentals",
     icon: Network,
     tier: "Level 1",
@@ -132,6 +157,7 @@ export const modules = [
     topics: "Introduction, OSI Model Layers, TCP/IP Protocol Suite, IP Addressing, Subnetting/CIDR, Network Protocols (HTTP, FTP, SSH, DNS), Ports and Services, Routing Basics, NAT/PAT, VLANs, Network Topologies, Packet Analysis, Conclusion",
   },
   {
+    id: "http-request-analysis",
     title: "HTTP Request Analysis",
     icon: Globe,
     tier: "Level 1",
@@ -144,6 +170,7 @@ export const modules = [
     topics: "Introduction, HTTP Methods (GET, POST, PUT, DELETE), Request/Response Headers, Cookies and Sessions, Status Codes, Content Types, User Agents, Referrer Headers, Authentication Headers, Encoding Methods, MIME Types, Cache Control, Conclusion",
   },
   {
+    id: "exploitation-framework-usage",
     title: "Exploitation Framework Usage",
     icon: Target,
     tier: "Level 1",
@@ -156,6 +183,7 @@ export const modules = [
     topics: "Introduction, Metasploit Console (msfconsole), MSF Modules, Exploit Selection, Payload Generation, Encoders, Meterpreter, Post-Exploitation, Auxiliary Modules, Database Integration, Resource Scripts, Handler Configuration, Module Development, Conclusion",
   },
   {
+    id: "javascript-code-analysis",
     title: "JavaScript Code Analysis",
     icon: Code,
     tier: "Level 1",
@@ -168,6 +196,7 @@ export const modules = [
     topics: "Introduction, Obfuscation Techniques, Code Beautification, Deobfuscation Methods, Malicious Script Analysis, JavaScript Debugging, Browser Console, Code Patterns, String Manipulation, Character Encoding, Eval Functions, Dynamic Code Execution, Conclusion",
   },
   {
+    id: "windows-operating-system-essentials",
     title: "Windows Operating System Essentials",
     icon: Terminal,
     tier: "Level 1",
@@ -180,6 +209,7 @@ export const modules = [
     topics: "Introduction, Windows Filesystem, CMD Commands, PowerShell Basics, Registry Structure, Windows Services, User Accounts, Group Policy, Task Scheduler, Event Logs, System Configuration, Network Commands, Administrative Tools, Conclusion",
   },
   {
+    id: "web-application-fuzzing",
     title: "Web Application Fuzzing",
     icon: Search,
     tier: "Level 1",
@@ -192,6 +222,7 @@ export const modules = [
     topics: "Introduction, Fuzzing Techniques, Directory Discovery, Parameter Enumeration, Brute Force Attacks, Custom Wordlists, Rate Limiting, Virtual Host Discovery, File Extension Discovery, Recursive Fuzzing, Header Fuzzing, POST Data Fuzzing, Conclusion",
   },
   {
+    id: "active-directory-basics",
     title: "Active Directory Basics",
     icon: Server,
     tier: "Level 1",
@@ -204,6 +235,7 @@ export const modules = [
     topics: "Introduction, AD Structure, Domain Controllers, Objects (Users, Computers, Groups), Organizational Units, Group Policy Objects (GPO), Domain Services, LDAP, Kerberos, NTLM, Trust Relationships, Forest/Domain/Tree Architecture, Conclusion",
   },
   {
+    id: "web-application-architecture",
     title: "Web Application Architecture",
     icon: Layers,
     tier: "Level 1",
@@ -216,6 +248,7 @@ export const modules = [
     topics: "Introduction, Client-Server Model, Frontend Technologies (HTML, CSS, JavaScript), Backend Languages, Web Servers (Apache, Nginx, IIS), Application Servers, Databases, APIs, MVC Architecture, RESTful Services, Microservices, Cloud Hosting, Conclusion",
   },
   {
+    id: "getting-started-with-penetration-testing",
     title: "Getting Started with Penetration Testing",
     icon: Target,
     tier: "Level 1",
@@ -228,6 +261,7 @@ export const modules = [
     topics: "Introduction, Virtual Machine Setup, Kali Linux, Testing Tools, Lab Environment, Network Configuration, Tool Installation, Methodology Overview, Legal Considerations, Documentation, Report Writing, Ethics and Professionalism, Conclusion",
   },
   {
+    id: "network-traffic-analysis-basics",
     title: "Network Traffic Analysis Basics",
     icon: Network,
     tier: "Level 1",
@@ -240,6 +274,7 @@ export const modules = [
     topics: "Introduction, Packet Capture, Wireshark Usage, Protocol Analysis, TCP Three-Way Handshake, Traffic Filtering, Display Filters, Capture Filters, Stream Analysis, Export Objects, Statistics Analysis, Network Anomalies, Conclusion",
   },
   {
+    id: "lab-environment-setup",
     title: "Lab Environment Setup",
     icon: Server,
     tier: "Level 1",
@@ -252,6 +287,7 @@ export const modules = [
     topics: "Introduction, Virtualization (VMware, VirtualBox), Operating System Installation, Network Adapters, Snapshots, Virtual Networking, Vulnerable VMs, Docker Containers, Cloud Labs, Tool Configuration, Documentation Setup, Backup Strategies, Conclusion",
   },
   {
+    id: "windows-x86-buffer-overflow-exploitation",
     title: "Windows x86 Buffer Overflow Exploitation",
     icon: Code,
     tier: "Level 1",
@@ -264,6 +300,7 @@ export const modules = [
     topics: "Introduction, Stack Buffer Overflow, SEH (Structured Exception Handling), DEP Bypass, ASLR Bypass, Shellcode Encoding, Egg Hunters, JMP ESP, Pattern Offset, Bad Characters, Exploit Development Workflow, Immunity Debugger, Conclusion",
   },
   {
+    id: "security-vulnerability-assessment",
     title: "Security Vulnerability Assessment",
     icon: ShieldAlert,
     tier: "Level 1",
@@ -276,6 +313,7 @@ export const modules = [
     topics: "Introduction, Vulnerability Scanning, Network Enumeration, Service Detection, Vulnerability Classification (CVSS), False Positives, Risk Assessment, Remediation Prioritization, Compliance Scanning, Report Generation, Patch Management, Continuous Monitoring, Conclusion",
   },
   {
+    id: "macos-operating-system-essentials",
     title: "MacOS Operating System Essentials",
     icon: Terminal,
     tier: "Level 1",
@@ -288,6 +326,7 @@ export const modules = [
     topics: "Introduction, MacOS Filesystem, Terminal Commands, File Permissions, User Management, System Preferences, Homebrew Package Manager, System Integrity Protection, Keychain Access, Launch Daemons, Security Settings, Network Utilities, Conclusion",
   },
   {
+    id: "android-system-basics",
     title: "Android System Basics",
     icon: Smartphone,
     tier: "Level 1",
@@ -300,6 +339,7 @@ export const modules = [
     topics: "Introduction, Android Architecture, ADB (Android Debug Bridge), APK Structure, Android Manifest, Permissions Model, Activities/Services, Intent System, File System, Package Manager, Logcat, Application Sandboxing, Root Detection, Conclusion",
   },
   {
+    id: "hardware-security-testing",
     title: "Hardware Security Testing",
     icon: Cpu,
     tier: "Level 1",
@@ -312,6 +352,7 @@ export const modules = [
     topics: "Introduction, Hardware Interfaces (UART, JTAG, SPI, I2C), Firmware Extraction, Binary Analysis, Bootloader Exploitation, Side-Channel Attacks, Fault Injection, Bus Pirate, Logic Analyzers, Flash Chip Dumping, PCB Analysis, Conclusion",
   },
   {
+    id: "web-application-fuzzing-techniques",
     title: "Web Application Fuzzing Techniques",
     icon: Search,
     tier: "Level 1",
@@ -324,6 +365,7 @@ export const modules = [
     topics: "Introduction, Advanced Fuzzing Strategies, Custom Wordlist Generation, Parameter Discovery, Mutation-Based Fuzzing, Template-Based Fuzzing, Response Analysis, False Positive Filtering, Rate Limit Evasion, WAF Bypass, Encoding Techniques, Conclusion",
   },
   {
+    id: "network-architecture-foundations",
     title: "Network Architecture Foundations",
     icon: Network,
     tier: "Level 1",
@@ -336,6 +378,7 @@ export const modules = [
     topics: "Introduction, Network Topologies (Star, Mesh, Ring), Network Devices (Routers, Switches, Firewalls), Protocol Layering, Network Segmentation, DMZ, VPN, Network Design Principles, Scalability, Redundancy, Security Zones, Conclusion",
   },
   {
+    id: "artificial-intelligence-fundamentals",
     title: "Artificial Intelligence Fundamentals",
     icon: Bot,
     tier: "Level 1",
@@ -348,6 +391,7 @@ export const modules = [
     topics: "Introduction, AI Concepts, Machine Learning Types, Supervised/Unsupervised Learning, Neural Networks, Deep Learning, Training Data, Model Evaluation, Overfitting/Underfitting, Feature Engineering, Algorithms (Decision Trees, SVM, KNN), Conclusion",
   },
   {
+    id: "ai-in-information-security",
     title: "AI in Information Security",
     icon: Bot,
     tier: "Level 1",
@@ -360,6 +404,7 @@ export const modules = [
     topics: "Introduction, AI-Powered Threat Detection, Anomaly Detection, Malware Classification, SIEM Integration, Automated Response, False Positive Reduction, Behavioral Analysis, Predictive Analytics, Security Automation, AI-Based SOAR, Conclusion",
   },
   {
+    id: "information-security-overview",
     title: "Information Security Overview",
     icon: Shield,
     tier: "Level 1",
@@ -372,6 +417,7 @@ export const modules = [
     topics: "Introduction, Security Domains, CIA Triad, Risk Management, Compliance (GDPR, HIPAA, PCI-DSS), Security Standards (ISO 27001, NIST), Security Frameworks, Governance, Audit, Best Practices, Security Culture, Conclusion",
   },
   {
+    id: "penetration-testing-fundamentals",
     title: "Penetration Testing Fundamentals",
     icon: Target,
     tier: "Level 1",
@@ -384,6 +430,7 @@ export const modules = [
     topics: "Introduction, Testing Phases (Recon, Scanning, Exploitation, Post-Exploitation), PTES Methodology, OWASP Testing Guide, Information Gathering, Vulnerability Assessment, Exploitation, Privilege Escalation, Lateral Movement, Reporting, Ethics, Conclusion",
   },
   {
+    id: "penetration-testing-overview",
     title: "Penetration Testing Overview",
     icon: Target,
     tier: "Level 1",
@@ -396,6 +443,7 @@ export const modules = [
     topics: "Introduction, Engagement Types (Black/White/Gray Box), Scope Definition, Rules of Engagement, Testing Objectives, Client Communication, Deliverables, Timeline Management, Legal Agreements, Non-Disclosure, Liability, Conclusion",
   },
   {
+    id: "introduction-to-purple-team-operations",
     title: "Introduction to Purple Team Operations",
     icon: ShieldCheck,
     tier: "Level 1",
@@ -410,6 +458,7 @@ export const modules = [
 
   // Level 2 - Easy
   {
+    id: "network-scanning-and-enumeration",
     title: "Network Scanning & Enumeration",
     icon: Network,
     tier: "Level 2",
@@ -422,6 +471,7 @@ export const modules = [
     topics: "Introduction, Nmap Scanning Techniques, Port Scanning Types (SYN, Connect, UDP), Service Version Detection, OS Fingerprinting, NSE Scripts, Timing Templates, Firewall Evasion, Output Formats, Network Mapping, Banner Grabbing, Conclusion",
   },
   {
+    id: "bash-scripting-fundamentals",
     title: "Bash Scripting Fundamentals",
     icon: FileCode,
     tier: "Level 2",
@@ -434,6 +484,7 @@ export const modules = [
     topics: "Introduction, Bash Syntax, Variables, Control Structures (if/else, loops), Functions, Command Substitution, Pipes and Redirection, Regular Expressions, Text Processing (sed, awk, grep), Error Handling, Script Arguments, Automation Tasks, Conclusion",
   },
   {
+    id: "dns-intelligence-gathering",
     title: "DNS Intelligence Gathering",
     icon: Globe,
     tier: "Level 2",
@@ -446,6 +497,7 @@ export const modules = [
     topics: "Introduction, DNS Records (A, AAAA, MX, TXT, CNAME, NS), Zone Transfers, DNS Enumeration, Subdomain Discovery, Reverse DNS, Python DNS Libraries (dnspython), DNS Tunneling Detection, DNS Cache Snooping, DNSSEC, Conclusion",
   },
   {
+    id: "python-programming-basics",
     title: "Python Programming Basics",
     icon: Code,
     tier: "Level 2",
@@ -458,6 +510,7 @@ export const modules = [
     topics: "Introduction, Python Syntax, Data Types (Lists, Dictionaries, Tuples), Functions and Modules, File I/O, Exception Handling, Object-Oriented Programming, Standard Library, pip Package Manager, Virtual Environments, Security Scripting, Conclusion",
   },
   {
+    id: "penetration-testing-methodology",
     title: "Penetration Testing Methodology",
     icon: Target,
     tier: "Level 2",
@@ -470,6 +523,7 @@ export const modules = [
     topics: "Introduction, Reconnaissance (Passive/Active), Scanning and Enumeration, Vulnerability Analysis, Exploitation Techniques, Post-Exploitation, Privilege Escalation, Lateral Movement, Data Exfiltration, Cleanup, Documentation and Reporting, Conclusion",
   },
   {
+    id: "command-shells-and-payload-generation",
     title: "Command Shells & Payload Generation",
     icon: Terminal,
     tier: "Level 2",
@@ -482,6 +536,7 @@ export const modules = [
     topics: "Introduction, Reverse Shells, Bind Shells, Shell Stabilization, TTY Upgrade, Payload Formats, Staged vs Non-Staged, Encoders, Shellcode, Handlers, Multi/Handler, Web Shells, Backdoors, Persistence Mechanisms, Conclusion",
   },
   {
+    id: "password-cracking-techniques",
     title: "Password Cracking Techniques",
     icon: Lock,
     tier: "Level 2",
@@ -494,6 +549,7 @@ export const modules = [
     topics: "Introduction, Hash Types (MD5, SHA, NTLM, bcrypt), Hash Identification, Dictionary Attacks, Brute Force, Mask Attacks, Rule-Based Attacks, Rainbow Tables, John the Ripper, Password Policies, Salting, Key Derivation Functions, Conclusion",
   },
   {
+    id: "security-incident-response",
     title: "Security Incident Response",
     icon: ShieldAlert,
     tier: "Level 2",
@@ -506,6 +562,7 @@ export const modules = [
     topics: "Introduction, Incident Response Phases (Preparation, Detection, Analysis, Containment, Eradication, Recovery), NIST IR Framework, Playbooks, Forensic Collection, Evidence Preservation, Communication Plans, Lessons Learned, Post-Incident Review, Conclusion",
   },
   {
+    id: "vulnerability-disclosure-programs",
     title: "Vulnerability Disclosure Programs",
     icon: Bug,
     tier: "Level 2",
@@ -518,6 +575,7 @@ export const modules = [
     topics: "Introduction, Bug Bounty Platforms (HackerOne, Bugcrowd, Synack), Program Scope, Asset Types, Severity Ratings, Responsible Disclosure, Report Writing, Proof of Concept, Bounty Payments, Ethics and Legality, Hall of Fame, Conclusion",
   },
   {
+    id: "windows-command-line-basics",
     title: "Windows Command Line Basics",
     icon: Terminal,
     tier: "Level 2",
@@ -530,6 +588,7 @@ export const modules = [
     topics: "Introduction, CMD Commands, System Information, File Management, Network Commands (ipconfig, netstat, ping), User Management, Service Control, Task Management, Registry Commands, Batch Scripting, Environment Variables, Administrative Tasks, Conclusion",
   },
   {
+    id: "c-programming-fundamentals",
     title: "C# Programming Fundamentals",
     icon: Code,
     tier: "Level 2",
@@ -542,6 +601,7 @@ export const modules = [
     topics: "Introduction, C# Syntax, Object-Oriented Programming, .NET Framework, Classes and Objects, Inheritance, Polymorphism, Exception Handling, LINQ, File I/O, Async Programming, Windows Application Development, Security Tools Development, Conclusion",
   },
   {
+    id: "incident-documentation-and-reporting",
     title: "Incident Documentation & Reporting",
     icon: FileText,
     tier: "Level 2",
@@ -554,6 +614,7 @@ export const modules = [
     topics: "Introduction, Report Structure, Executive Summary, Technical Findings, Evidence Documentation, Timeline Creation, Impact Assessment, Remediation Recommendations, Appendices, Communication Strategies, Templates, Chain of Custody, Conclusion",
   },
   {
+    id: "offensive-ai-operations",
     title: "Offensive AI Operations",
     icon: Bot,
     tier: "Level 2",
@@ -568,6 +629,7 @@ export const modules = [
 
   // Level 3 - Easy/Medium
   {
+    id: "linux-digital-forensics",
     title: "Linux Digital Forensics",
     icon: HardDrive,
     tier: "Level 3",
@@ -580,6 +642,7 @@ export const modules = [
     topics: "Introduction, Evidence Collection, Forensic Imaging, Filesystem Analysis (ext4, XFS), Log Analysis (syslog, auth.log), Timeline Analysis, Memory Forensics, Artifact Recovery, Deleted File Recovery, Chain of Custody, Write Blockers, Forensic Tools (Autopsy, Sleuth Kit), Conclusion",
   },
   {
+    id: "wireless-security-testing-tools",
     title: "Wireless Security Testing Tools",
     icon: Wifi,
     tier: "Level 3",
@@ -592,6 +655,7 @@ export const modules = [
     topics: "Introduction, Aircrack-ng Suite, Kismet, Wireshark, Wireless Adapters, Monitor Mode, Packet Injection, Deauthentication, Capture Handshakes, Cracking Tools, WiFi Pineapple, Reaver, Bully, Wifite, Conclusion",
   },
   {
+    id: "enterprise-wireless-network-testing",
     title: "Enterprise Wireless Network Testing",
     icon: Wifi,
     tier: "Level 3",
@@ -604,6 +668,7 @@ export const modules = [
     topics: "Introduction, Corporate Wi-Fi Architecture, 802.1X Authentication, EAP Methods, RADIUS, WPA2-Enterprise, Certificate-Based Auth, Rogue AP Detection, Network Segmentation, Guest Networks, WIPS/WIDS, MDM Integration, Conclusion",
   },
   {
+    id: "defending-ai-systems",
     title: "Defending AI Systems",
     icon: ShieldCheck,
     tier: "Level 3",
@@ -616,6 +681,7 @@ export const modules = [
     topics: "Introduction, Model Security, Input Validation, Adversarial Training, Defensive Distillation, Certified Defenses, Monitoring and Detection, Rate Limiting, Input Sanitization, Model Hardening, Security by Design, Threat Modeling, Conclusion",
   },
   {
+    id: "privacy-in-ai-systems",
     title: "Privacy in AI Systems",
     icon: Eye,
     tier: "Level 3",
@@ -628,6 +694,7 @@ export const modules = [
     topics: "Introduction, Data Privacy, PII Protection, Anonymization Techniques, Differential Privacy, K-Anonymity, Data Minimization, GDPR Compliance, Consent Management, Privacy-Preserving ML, Federated Learning, Homomorphic Encryption, Conclusion",
   },
   {
+    id: "wordpress-security-testing",
     title: "WordPress Security Testing",
     icon: Globe,
     tier: "Level 3",
@@ -640,6 +707,7 @@ export const modules = [
     topics: "Introduction, WordPress Core Vulnerabilities, Plugin Vulnerabilities, Theme Security, Authentication Bypass, SQL Injection, XSS, File Upload, XML-RPC Abuse, WPScan, REST API Security, Configuration Issues, Privilege Escalation, Conclusion",
   },
   {
+    id: "advanced-password-recovery",
     title: "Advanced Password Recovery",
     icon: Lock,
     tier: "Level 3",
@@ -652,6 +720,7 @@ export const modules = [
     topics: "Introduction, Hashcat Modes, GPU Cracking, Rule-Based Attacks, Mask Attacks, Combinator Attacks, Hybrid Attacks, Custom Character Sets, Optimization Techniques, Distributed Cracking, Hash Types, Performance Tuning, Wordlist Strategies, Conclusion",
   },
   {
+    id: "linux-post-exploitation-techniques",
     title: "Linux Post-Exploitation Techniques",
     icon: Terminal,
     tier: "Level 3",
@@ -664,6 +733,7 @@ export const modules = [
     topics: "Introduction, SUID/SGID Binaries, Linux Capabilities, Kernel Exploits, Cron Job Abuse, Path Hijacking, LD_PRELOAD, Sudo Exploitation, Docker Escape, Container Breakout, Persistence Mechanisms, Log Cleanup, Anti-Forensics, Conclusion",
   },
   {
+    id: "authentication-brute-force-attacks",
     title: "Authentication Brute Force Attacks",
     icon: Key,
     tier: "Level 3",
@@ -676,6 +746,7 @@ export const modules = [
     topics: "Introduction, Hydra, Medusa, Ncrack, Protocol-Specific Attacks (SSH, FTP, RDP, SMB), Username Enumeration, Password Spraying, Credential Stuffing, Rate Limiting Bypass, Account Lockout, Login Portal Attacks, Dictionary Generation, Conclusion",
   },
   {
+    id: "automated-sql-injection-testing",
     title: "Automated SQL Injection Testing",
     icon: Database,
     tier: "Level 3",
@@ -688,6 +759,7 @@ export const modules = [
     topics: "Introduction, SQLMap Commands, Database Detection, Table Enumeration, Column Extraction, Data Dumping, OS Command Execution, File Reading/Writing, WAF Detection and Bypass, Tamper Scripts, Advanced Options, Batch Processing, Conclusion",
   },
   {
+    id: "windows-post-exploitation-techniques",
     title: "Windows Post-Exploitation Techniques",
     icon: Terminal,
     tier: "Level 3",
@@ -700,6 +772,7 @@ export const modules = [
     topics: "Introduction, Token Manipulation, UAC Bypass, AlwaysInstallElevated, Unquoted Service Paths, DLL Hijacking, Registry Exploitation, Scheduled Tasks, Hot Potato, Juicy Potato, Print Spooler, SeImpersonate, Service Exploitation, Conclusion",
   },
   {
+    id: "authentication-vulnerabilities",
     title: "Authentication Vulnerabilities",
     icon: Lock,
     tier: "Level 3",
@@ -712,6 +785,7 @@ export const modules = [
     topics: "Introduction, Broken Authentication, Session Fixation, Session Hijacking, Weak Password Policy, Default Credentials, Missing Account Lockout, Insufficient Session Timeout, Credential Storage Issues, Multi-Factor Bypass, CAPTCHA Bypass, Conclusion",
   },
   {
+    id: "xss-vulnerability-exploitation",
     title: "XSS Vulnerability Exploitation",
     icon: Bug,
     tier: "Level 3",
@@ -724,6 +798,7 @@ export const modules = [
     topics: "Introduction, Reflected XSS, Stored XSS, DOM-Based XSS, Blind XSS, Mutation XSS, Filter Bypass Techniques, Encoding Methods, JavaScript Execution, Cookie Theft, Session Hijacking, BeEF Framework, XSS Polyglots, Conclusion",
   },
   {
+    id: "web-proxy-tools-and-techniques",
     title: "Web Proxy Tools & Techniques",
     icon: Globe,
     tier: "Level 3",
@@ -736,6 +811,7 @@ export const modules = [
     topics: "Introduction, Burp Suite (Proxy, Repeater, Intruder, Scanner), OWASP ZAP, Request Interception, Response Modification, Match and Replace, Session Handling, Extensions, Collaborator, Active/Passive Scanning, Automated Testing, Conclusion",
   },
   {
+    id: "information-gathering-and-reconnaissance",
     title: "Information Gathering & Reconnaissance",
     icon: Search,
     tier: "Level 3",
@@ -748,6 +824,7 @@ export const modules = [
     topics: "Introduction, OSINT Techniques, Google Dorking, Shodan, Social Media Intelligence, Domain Enumeration, Subdomain Discovery, Email Harvesting, Metadata Analysis, Archive.org, DNS Records, WHOIS, Certificate Transparency, Dark Web, Conclusion",
   },
   {
+    id: "application-security-testing",
     title: "Application Security Testing",
     icon: Bug,
     tier: "Level 3",
@@ -760,6 +837,7 @@ export const modules = [
     topics: "Introduction, Common Applications (Tomcat, Jenkins, Jira, Confluence), Default Configurations, Known Vulnerabilities, CVE Database, Exploit-DB, Exploit Adaptation, Version Detection, Service-Specific Attacks, Credential Attacks, Configuration Review, Conclusion",
   },
   {
+    id: "service-exploitation-techniques",
     title: "Service Exploitation Techniques",
     icon: Target,
     tier: "Level 3",
@@ -772,6 +850,7 @@ export const modules = [
     topics: "Introduction, SMB Vulnerabilities (EternalBlue, SMBGhost), FTP Exploitation, SSH Attacks, RDP Vulnerabilities, SMTP Exploitation, Service-Specific Exploits, Banner Grabbing, Version Identification, Exploit Modification, Payload Delivery, Conclusion",
   },
   {
+    id: "advanced-web-attack-vectors",
     title: "Advanced Web Attack Vectors",
     icon: Bug,
     tier: "Level 3",
@@ -784,6 +863,7 @@ export const modules = [
     topics: "Introduction, Server-Side Request Forgery (SSRF), XML External Entity (XXE), Cross-Site Request Forgery (CSRF), Template Injection, SSTI, Prototype Pollution, HTTP Request Smuggling, Host Header Injection, CORS Misconfiguration, Conclusion",
   },
   {
+    id: "file-upload-vulnerability-exploitation",
     title: "File Upload Vulnerability Exploitation",
     icon: FileCode,
     tier: "Level 3",
@@ -796,6 +876,7 @@ export const modules = [
     topics: "Introduction, MIME Type Bypass, Extension Validation Bypass, Magic Bytes, Double Extensions, Null Byte Injection, Content-Type Manipulation, Path Traversal, Race Conditions, Webshell Upload, Image-Based Exploits, Polyglot Files, Conclusion",
   },
   {
+    id: "active-directory-exploitation",
     title: "Active Directory Exploitation",
     icon: Server,
     tier: "Level 3",
@@ -808,6 +889,7 @@ export const modules = [
     topics: "Introduction, Kerberoasting, AS-REP Roasting, DCSync, Golden Ticket, Silver Ticket, Pass-the-Hash, Pass-the-Ticket, Overpass-the-Hash, Skeleton Key, AdminSDHolder, LAPS Exploitation, GPO Abuse, ACL Abuse, Conclusion",
   },
   {
+    id: "web-application-reconnaissance",
     title: "Web Application Reconnaissance",
     icon: Search,
     tier: "Level 3",
@@ -820,6 +902,7 @@ export const modules = [
     topics: "Introduction, Subdomain Enumeration, Technology Stack Detection, CMS Identification, JavaScript Analysis, Source Code Review, Wayback Machine, Google Dorking, Certificate Transparency, API Discovery, Hidden Parameters, Developer Tools, Conclusion",
   },
   {
+    id: "server-side-vulnerability-exploitation",
     title: "Server-Side Vulnerability Exploitation",
     icon: Server,
     tier: "Level 3",
@@ -832,6 +915,7 @@ export const modules = [
     topics: "Introduction, SSRF Exploitation, Template Injection (Jinja2, Twig), SSTI, Command Injection, Code Injection, XXE, XPATH Injection, LDAP Injection, Expression Language Injection, Unsafe Deserialization, Conclusion",
   },
   {
+    id: "session-management-security",
     title: "Session Management Security",
     icon: Key,
     tier: "Level 3",
@@ -844,6 +928,7 @@ export const modules = [
     topics: "Introduction, Session Token Generation, Cookie Security (Secure, HttpOnly, SameSite), Session Fixation, Session Hijacking, Session Timeout, Token Entropy, CSRF Tokens, JWT Security, Session Storage, Cookie Poisoning, Conclusion",
   },
   {
+    id: "network-pivoting-and-tunneling",
     title: "Network Pivoting & Tunneling",
     icon: Network,
     tier: "Level 3",
@@ -856,6 +941,7 @@ export const modules = [
     topics: "Introduction, SSH Tunneling (Local/Remote/Dynamic), Chisel, Ligolo, Proxychains, Port Forwarding, SOCKS Proxy, VPN Tunneling, Metasploit Routing, Double Pivoting, Network Segmentation Bypass, Traffic Encapsulation, Conclusion",
   },
   {
+    id: "api-security-testing",
     title: "API Security Testing",
     icon: Code,
     tier: "Level 3",
@@ -868,6 +954,7 @@ export const modules = [
     topics: "Introduction, REST API Testing, GraphQL, SOAP, API Authentication (OAuth, JWT, API Keys), Rate Limiting, IDOR, Mass Assignment, Excessive Data Exposure, API Versioning, Documentation Analysis, Swagger/OpenAPI, Conclusion",
   },
   {
+    id: "penetration-test-reporting",
     title: "Penetration Test Reporting",
     icon: FileText,
     tier: "Level 3",
@@ -880,6 +967,7 @@ export const modules = [
     topics: "Introduction, Executive Summary, Risk Ratings, Technical Findings, Vulnerability Details, Proof of Concept, Screenshots, Remediation Recommendations, CVSS Scoring, Appendices, Retesting Results, Compliance Mapping, Report Templates, Conclusion",
   },
   {
+    id: "enterprise-network-penetration-testing",
     title: "Enterprise Network Penetration Testing",
     icon: Network,
     tier: "Level 3",
@@ -892,6 +980,7 @@ export const modules = [
     topics: "Introduction, Internal Network Testing, Network Segmentation Testing, Lateral Movement, Domain Compromise, Privilege Escalation, Persistence, Data Exfiltration, Active Directory Attacks, Network Protocol Analysis, Trust Exploitation, Conclusion",
   },
   {
+    id: "windows-security-operations",
     title: "Windows Security Operations",
     icon: ShieldCheck,
     tier: "Level 3",
@@ -904,6 +993,7 @@ export const modules = [
     topics: "Introduction, Defensive Techniques, Attack Detection, Event Log Monitoring, Sysmon Configuration, Windows Defender, AppLocker, WDAC, Attack Surface Reduction, Credential Guard, Device Guard, Security Baselines, Hardening, Conclusion",
   },
   {
+    id: "wep-security-exploitation",
     title: "WEP Security Exploitation",
     icon: Wifi,
     tier: "Level 3",
@@ -916,6 +1006,7 @@ export const modules = [
     topics: "Introduction, WEP Weaknesses, IV (Initialization Vector) Attacks, Packet Injection, Fake Authentication, ARP Request Replay, Fragmentation Attack, Chopchop Attack, Key Recovery, Aircrack-ng, Statistical Analysis, Conclusion",
   },
   {
+    id: "wps-vulnerability-testing",
     title: "WPS Vulnerability Testing",
     icon: Wifi,
     tier: "Level 3",
@@ -928,6 +1019,7 @@ export const modules = [
     topics: "Introduction, WPS Protocol, PIN Brute Force, Pixie Dust Attack, Online/Offline Attacks, Reaver Tool, Bully Tool, PixieWPS, Router Vulnerabilities, WPS Lockout, PBC (Push Button) Exploitation, Conclusion",
   },
   {
+    id: "siem-and-security-monitoring",
     title: "SIEM & Security Monitoring",
     icon: Eye,
     tier: "Level 3",
@@ -940,6 +1032,7 @@ export const modules = [
     topics: "Introduction, Log Collection, Normalization, Correlation Rules, Alerting, Dashboards, Use Cases, Threat Intelligence Integration, Incident Investigation, Retention Policies, SIEM Architecture, Data Sources, Query Languages, Conclusion",
   },
   {
+    id: "threat-hunting-fundamentals",
     title: "Threat Hunting Fundamentals",
     icon: Search,
     tier: "Level 3",
@@ -952,6 +1045,7 @@ export const modules = [
     topics: "Introduction, Hypothesis Creation, Threat Intelligence, IOC (Indicators of Compromise), TTP Mapping (MITRE ATT&CK), Data Analysis, Hunting Queries, Elastic Stack, Kibana, Log Analysis, Anomaly Detection, Proactive Defense, Conclusion",
   },
   {
+    id: "windows-log-analysis",
     title: "Windows Log Analysis",
     icon: FileSearch,
     tier: "Level 3",
@@ -964,6 +1058,7 @@ export const modules = [
     topics: "Introduction, Event Log Types (Security, System, Application), Event IDs, Log Forwarding, Centralized Logging, PowerShell Logging, Audit Policies, Log Rotation, Sysmon Integration, Windows Event Forwarding, Analysis Tools, Conclusion",
   },
   {
+    id: "windows-digital-forensics",
     title: "Windows Digital Forensics",
     icon: HardDrive,
     tier: "Level 3",
@@ -976,6 +1071,7 @@ export const modules = [
     topics: "Introduction, Evidence Collection, Registry Analysis, Event Logs, Prefetch Files, NTFS Artifacts ($MFT, $UsnJrnl), ShimCache, Amcache, Jump Lists, Shellbags, Browser Artifacts, Timeline Analysis, Autopsy Tool, Conclusion",
   },
   {
+    id: "intrusion-detection-systems",
     title: "Intrusion Detection Systems",
     icon: ShieldAlert,
     tier: "Level 3",
@@ -988,6 +1084,7 @@ export const modules = [
     topics: "Introduction, Snort, Suricata, Rule Syntax, Signature-Based Detection, Anomaly-Based Detection, Protocol Analysis, Packet Inspection, Alert Analysis, False Positives, Rule Tuning, IDS vs IPS, Deployment Modes, Conclusion",
   },
   {
+    id: "malware-analysis-fundamentals",
     title: "Malware Analysis Fundamentals",
     icon: Bug,
     tier: "Level 3",
@@ -1000,6 +1097,7 @@ export const modules = [
     topics: "Introduction, Static Analysis, Dynamic Analysis, Behavioral Analysis, Code Analysis, Sandbox Environment, Cuckoo Sandbox, Process Monitor, Wireshark, Strings Analysis, Packing/Unpacking, IOC Extraction, YARA Rules, Conclusion",
   },
   {
+    id: "advanced-network-traffic-analysis",
     title: "Advanced Network Traffic Analysis",
     icon: Network,
     tier: "Level 3",
@@ -1012,6 +1110,7 @@ export const modules = [
     topics: "Introduction, Deep Packet Inspection, Protocol Anomalies, Traffic Baseline, Threat Detection, C2 Communications, Data Exfiltration Detection, Encrypted Traffic Analysis, JA3 Fingerprinting, Flow Analysis, PCAP Analysis, Conclusion",
   },
   {
+    id: "windows-attack-detection",
     title: "Windows Attack Detection",
     icon: ShieldAlert,
     tier: "Level 3",
@@ -1024,6 +1123,7 @@ export const modules = [
     topics: "Introduction, Attack Patterns, Splunk Detection Rules, Correlation Searches, MITRE ATT&CK Mapping, Lateral Movement Detection, Privilege Escalation Detection, Persistence Detection, Command and Control, Data Exfiltration Detection, Conclusion",
   },
   {
+    id: "detection-rules-and-signatures",
     title: "Detection Rules & Signatures",
     icon: Fingerprint,
     tier: "Level 3",
@@ -1036,6 +1136,7 @@ export const modules = [
     topics: "Introduction, YARA Rule Syntax, Sigma Rule Format, IOC Types (File Hash, IP, Domain, Registry), Detection Engineering, Rule Testing, False Positive Reduction, Threat Intelligence Integration, Rule Libraries, Community Rules, Conclusion",
   },
   {
+    id: "digital-forensics-fundamentals",
     title: "Digital Forensics Fundamentals",
     icon: HardDrive,
     tier: "Level 3",
@@ -1048,6 +1149,7 @@ export const modules = [
     topics: "Introduction, Forensic Process, Evidence Collection, Chain of Custody, Write Blockers, Forensic Imaging, Hash Verification (MD5, SHA), File System Analysis, Timeline Analysis, Artifact Recovery, Report Writing, Legal Considerations, Conclusion",
   },
   {
+    id: "api-vulnerability-testing",
     title: "API Vulnerability Testing",
     icon: Code,
     tier: "Level 3",
@@ -1060,6 +1162,7 @@ export const modules = [
     topics: "Introduction, API Enumeration, Endpoint Discovery, Authentication Testing, Authorization Bypass, IDOR (Insecure Direct Object Reference), Mass Assignment, Rate Limiting, Excessive Data Exposure, API Versioning, GraphQL Introspection, Conclusion",
   },
   {
+    id: "graphql-security-testing",
     title: "GraphQL Security Testing",
     icon: Code,
     tier: "Level 3",
@@ -1072,6 +1175,7 @@ export const modules = [
     topics: "Introduction, GraphQL Introspection, Query Depth Attacks, Query Cost Analysis, Batching Attacks, Field Suggestions, Schema Discovery, Authorization Testing, Nested Queries, Mutation Testing, Subscription Abuse, Rate Limiting, Conclusion",
   },
   {
+    id: "wireless-password-recovery",
     title: "Wireless Password Recovery",
     icon: Wifi,
     tier: "Level 3",
@@ -1084,6 +1188,7 @@ export const modules = [
     topics: "Introduction, WPA Handshake Capture, 4-Way Handshake, EAPOL Frames, Dictionary Attack, Brute Force, GPU Acceleration, Hashcat, Aircrack-ng, PMKID Attack, Wordlist Generation, Rainbow Tables, Mask Attacks, Conclusion",
   },
   {
+    id: "ai-prompt-injection-testing",
     title: "AI Prompt Injection Testing",
     icon: Bot,
     tier: "Level 3",
@@ -1096,6 +1201,7 @@ export const modules = [
     topics: "Introduction, Prompt Manipulation, Context Injection, System Prompt Extraction, Jailbreaking Techniques, Instruction Bypassing, Multi-Turn Attacks, Indirect Injection, Payload Encoding, Delimiter Confusion, Chain-of-Thought Exploitation, Conclusion",
   },
   {
+    id: "large-language-model-exploitation",
     title: "Large Language Model Exploitation",
     icon: Bot,
     tier: "Level 3",
@@ -1108,6 +1214,7 @@ export const modules = [
     topics: "Introduction, Output Manipulation, Training Data Extraction, Data Poisoning, Model Inversion, Membership Inference, Bias Exploitation, Hallucination Exploitation, Context Window Abuse, Token Limit Bypass, Fine-Tuning Attacks, Conclusion",
   },
   {
+    id: "ai-system-security-testing",
     title: "AI System Security Testing",
     icon: Bot,
     tier: "Level 3",
@@ -1120,6 +1227,7 @@ export const modules = [
     topics: "Introduction, Model Testing, API Fuzzing, Input Validation, Application Layer Attacks, System Architecture Exploitation, Data Pipeline Security, Model Serving Vulnerabilities, Authentication Bypass, Rate Limiting, Resource Exhaustion, Conclusion",
   },
   {
+    id: "ai-evasion-techniques-basics",
     title: "AI Evasion Techniques Basics",
     icon: Bot,
     tier: "Level 3",
@@ -1132,6 +1240,7 @@ export const modules = [
     topics: "Introduction, Adversarial Examples, Model Evasion Fundamentals, Perturbation Types, White-Box vs Black-Box Attacks, Attack Success Metrics, Defense Mechanisms, Transferability, Universal Perturbations, Physical Attacks, Conclusion",
   },
   {
+    id: "first-order-ai-evasion",
     title: "First-Order AI Evasion",
     icon: Bot,
     tier: "Level 3",
@@ -1144,6 +1253,7 @@ export const modules = [
     topics: "Introduction, Gradient-Based Attacks, FGSM (Fast Gradient Sign Method), PGD (Projected Gradient Descent), C&W Attack, DeepFool, Momentum Iterative Method, Optimization-Based Attacks, Targeted vs Untargeted, Attack Evaluation, Conclusion",
   },
   {
+    id: "sparse-ai-evasion-techniques",
     title: "Sparse AI Evasion Techniques",
     icon: Bot,
     tier: "Level 3",
@@ -1158,6 +1268,7 @@ export const modules = [
 
   // Level 4 - Medium/Hard
   {
+    id: "ldap-protocol-exploitation",
     title: "LDAP Protocol Exploitation",
     icon: Server,
     tier: "Level 4",
@@ -1170,6 +1281,7 @@ export const modules = [
     topics: "Introduction, LDAP Injection, Anonymous Bind, LDAP Enumeration, Filter Injection, Blind LDAP Injection, LDAP Pass-Back Attack, Data Extraction, LDAP Relay, Configuration Exploitation, Service Account Abuse, Conclusion",
   },
   {
+    id: "kerberos-protocol-exploitation",
     title: "Kerberos Protocol Exploitation",
     icon: Key,
     tier: "Level 4",
@@ -1182,6 +1294,7 @@ export const modules = [
     topics: "Introduction, Kerberos Architecture, TGT/TGS, AS-REP Roasting, Kerberoasting, Silver Ticket, Golden Ticket, Skeleton Key, Overpass-the-Hash, Kerberos Delegation, Constrained Delegation, Unconstrained Delegation, S4U2Self/Proxy, Conclusion",
   },
   {
+    id: "source-code-analysis-command-injection",
     title: "Source Code Analysis - Command Injection",
     icon: Code,
     tier: "Level 4",
@@ -1194,6 +1307,7 @@ export const modules = [
     topics: "Introduction, Code Review Methodology, Source Code Navigation, Input Validation Analysis, Sanitization Bypass, Function Tracing, Dangerous Functions, Data Flow Analysis, Taint Analysis, Context-Aware Testing, Exploit Development, Conclusion",
   },
   {
+    id: "powerview-for-ad-enumeration",
     title: "PowerView for AD Enumeration",
     icon: Search,
     tier: "Level 4",
@@ -1206,6 +1320,7 @@ export const modules = [
     topics: "Introduction, PowerView Commands, Domain Enumeration, User Enumeration, Computer Enumeration, Group Membership, ACL Analysis, GPO Enumeration, Trust Mapping, Domain Controller Discovery, Service Principal Names, Delegation Rights, Conclusion",
   },
   {
+    id: "bloodhound-for-ad-analysis",
     title: "BloodHound for AD Analysis",
     icon: Target,
     tier: "Level 4",
@@ -1218,6 +1333,7 @@ export const modules = [
     topics: "Introduction, Neo4j Graph Database, SharpHound Collection, BloodHound GUI, Attack Path Analysis, Shortest Path to Domain Admin, High-Value Targets, Custom Queries, Cypher Query Language, Edge Types, Node Analysis, Conclusion",
   },
   {
+    id: "crackmapexec-for-network-testing",
     title: "CrackMapExec for Network Testing",
     icon: Network,
     tier: "Level 4",
@@ -1230,6 +1346,7 @@ export const modules = [
     topics: "Introduction, CME Protocols (SMB, WinRM, MSSQL, SSH), Credential Spraying, Password Spraying, Credential Validation, Command Execution, Share Enumeration, SAM Dumping, LSA Secrets, Module System, Database Integration, Conclusion",
   },
   {
+    id: "assembly-language-basics",
     title: "Assembly Language Basics",
     icon: Binary,
     tier: "Level 4",
@@ -1242,6 +1359,7 @@ export const modules = [
     topics: "Introduction, Assembly Syntax (Intel, AT&T), CPU Registers (EAX, EBX, ECX, EDX, ESP, EBP, EIP), Instructions (MOV, PUSH, POP, CALL, JMP), Stack Operations, Function Calling Conventions, Addressing Modes, Flags Register, Conclusion",
   },
   {
+    id: "command-injection-exploitation",
     title: "Command Injection Exploitation",
     icon: Terminal,
     tier: "Level 4",
@@ -1254,6 +1372,7 @@ export const modules = [
     topics: "Introduction, OS Command Injection, Blind Command Injection, Filter Bypass, Special Characters, Command Separators (;, &&, ||, |), Time-Based Detection, Out-of-Band Exploitation, Command Chaining, Input Sanitization Bypass, Conclusion",
   },
   {
+    id: "deserialization-vulnerability-basics",
     title: "Deserialization Vulnerability Basics",
     icon: Bug,
     tier: "Level 4",
@@ -1266,6 +1385,7 @@ export const modules = [
     topics: "Introduction, Serialization Concepts, Object Deserialization, Gadget Chains, Magic Methods, Remote Code Execution, PHP Deserialization, Java Deserialization, Python Pickle, .NET Deserialization, ysoserial Tool, Conclusion",
   },
   {
+    id: "authentication-bypass-techniques",
     title: "Authentication Bypass Techniques",
     icon: Lock,
     tier: "Level 4",
@@ -1278,6 +1398,7 @@ export const modules = [
     topics: "Introduction, SQL Injection Auth Bypass, Logic Flaws, Token Manipulation, JWT Vulnerabilities, Session Prediction, Password Reset Flaws, Multi-Factor Authentication Bypass, OAuth Misconfiguration, SAML Attacks, Cookie Manipulation, Conclusion",
   },
   {
+    id: "nosql-injection-fundamentals",
     title: "NoSQL Injection Fundamentals",
     icon: Database,
     tier: "Level 4",
@@ -1290,6 +1411,7 @@ export const modules = [
     topics: "Introduction, NoSQL Databases (MongoDB, CouchDB, Redis), NoSQL Injection Operators, JavaScript Injection, JSON Injection, Filter Bypass, Authentication Bypass, Data Extraction, Boolean-Based Injection, Blind Injection, Error-Based, Conclusion",
   },
   {
+    id: "blind-sql-injection-techniques",
     title: "Blind SQL Injection Techniques",
     icon: Database,
     tier: "Level 4",
@@ -1302,6 +1424,7 @@ export const modules = [
     topics: "Introduction, Boolean-Based Blind, Time-Based Blind, Out-of-Band Injection, Binary Search Algorithm, Data Extraction, Character-by-Character, DNS Exfiltration, HTTP Exfiltration, Conditional Responses, Automation Scripts, Conclusion",
   },
   {
+    id: "video-game-security-testing",
     title: "Video Game Security Testing",
     icon: Gamepad2,
     tier: "Level 4",
@@ -1314,6 +1437,7 @@ export const modules = [
     topics: "Introduction, Memory Editing, Cheat Engine, Debuggers (x64dbg, OllyDbg), Game Mechanics Analysis, Value Scanning, Pointer Chains, Code Injection, DLL Injection, Anti-Cheat Bypass, Network Protocol Analysis, Save File Editing, Conclusion",
   },
   {
+    id: "tls-protocol-exploitation",
     title: "TLS Protocol Exploitation",
     icon: Lock,
     tier: "Level 4",
@@ -1326,6 +1450,7 @@ export const modules = [
     topics: "Introduction, SSL/TLS Vulnerabilities (Heartbleed, POODLE, BEAST, CRIME), Downgrade Attacks, Certificate Validation Issues, Man-in-the-Middle, Cipher Suite Weaknesses, Perfect Forward Secrecy, Certificate Pinning Bypass, SNI Leakage, Conclusion",
   },
   {
+    id: "advanced-sql-injection-techniques",
     title: "Advanced SQL Injection Techniques",
     icon: Database,
     tier: "Level 4",
@@ -1338,6 +1463,7 @@ export const modules = [
     topics: "Introduction, Second-Order SQL Injection, WAF Bypass Techniques, Advanced Exfiltration, DNS Exfiltration, Error-Based Advanced, Boolean Optimization, Time-Based Optimization, Database-Specific Attacks, Stored Procedures, Polyglot Payloads, Conclusion",
   },
   {
+    id: "http-misconfiguration-exploitation",
     title: "HTTP Misconfiguration Exploitation",
     icon: Globe,
     tier: "Level 4",
@@ -1350,6 +1476,7 @@ export const modules = [
     topics: "Introduction, HTTP Methods (PUT, DELETE, TRACE, OPTIONS), Security Headers Missing, Directory Listing, HTTP Verbs Tampering, CORS Misconfiguration, Insecure HTTP Headers, Clickjacking, Content Security Policy Bypass, Conclusion",
   },
   {
+    id: "http-protocol-exploitation",
     title: "HTTP Protocol Exploitation",
     icon: Globe,
     tier: "Level 4",
@@ -1362,6 +1489,7 @@ export const modules = [
     topics: "Introduction, HTTP Request Smuggling, HTTP Desync Attacks, CL.TE, TE.CL, TE.TE, HTTP/2 Exploits, Request Splitting, Response Splitting, CRLF Injection, HTTP Parameter Pollution, Cache Poisoning, Conclusion",
   },
   {
+    id: "code-injection-techniques",
     title: "Code Injection Techniques",
     icon: Code,
     tier: "Level 4",
@@ -1374,6 +1502,7 @@ export const modules = [
     topics: "Introduction, Remote Code Execution, Expression Language Injection, Template Injection, SSTI (Server-Side Template Injection), OGNL Injection, SpEL Injection, Code Execution Contexts, Filter Bypass, Sandbox Escape, Conclusion",
   },
   {
+    id: "source-code-security-analysis",
     title: "Source Code Security Analysis",
     icon: FileSearch,
     tier: "Level 4",
@@ -1386,6 +1515,7 @@ export const modules = [
     topics: "Introduction, White-Box Testing, Manual Code Review, Automated SAST, Vulnerability Patterns, Input Validation, Output Encoding, Secure Coding Practices, CWE Top 25, Code Quality, Security Hotspots, Remediation, Conclusion",
   },
   {
+    id: "video-game-reverse-engineering",
     title: "Video Game Reverse Engineering",
     icon: Gamepad2,
     tier: "Level 4",
@@ -1398,6 +1528,7 @@ export const modules = [
     topics: "Introduction, Binary Analysis (IDA Pro, Ghidra), Game File Formats, Asset Extraction, Texture/Model Extraction, Save File Format, Binary Patching, Hex Editing, Anti-Debugging, Packing/Unpacking, Memory Dumping, Conclusion",
   },
   {
+    id: "discretionary-access-control-exploitation-i",
     title: "Discretionary Access Control Exploitation I",
     icon: Lock,
     tier: "Level 4",
@@ -1410,6 +1541,7 @@ export const modules = [
     topics: "Introduction, Windows DACL, ACL Structure, ACE (Access Control Entry), Object Permissions, Abuse Techniques, ACL Modification, Permission Inheritance, Ownership Changes, Weak Permissions, GenericAll/WriteDACL, Conclusion",
   },
   {
+    id: "android-static-code-analysis",
     title: "Android Static Code Analysis",
     icon: Smartphone,
     tier: "Level 4",
@@ -1422,6 +1554,7 @@ export const modules = [
     topics: "Introduction, APK Structure, APK Decompilation, JADX, Apktool, Smali Code, AndroidManifest.xml Analysis, Permissions Analysis, Intent Filters, Exported Components, API Keys, Hardcoded Secrets, Code Obfuscation, Conclusion",
   },
   {
+    id: "advanced-web-exploitation",
     title: "Advanced Web Exploitation",
     icon: Bug,
     tier: "Level 4",
@@ -1434,6 +1567,7 @@ export const modules = [
     topics: "Introduction, Prototype Pollution, Race Conditions, TOCTOU, Business Logic Flaws, Integer Overflow, Type Confusion, Memory Corruption, Browser Exploitation, Electron Exploitation, WebAssembly, Advanced XSS Vectors, Conclusion",
   },
   {
+    id: "ntlm-authentication-relay",
     title: "NTLM Authentication Relay",
     icon: Key,
     tier: "Level 4",
@@ -1446,6 +1580,7 @@ export const modules = [
     topics: "Introduction, NTLM Relay Attacks, SMB Relay, HTTP Relay, LDAP Relay, Responder Tool, ntlmrelayx, Authentication Coercion, PrinterBug, PetitPotam, Shadow Credentials, Credential Capture, MIC Bypass, Conclusion",
   },
   {
+    id: "windows-credential-extraction",
     title: "Windows Credential Extraction",
     icon: Key,
     tier: "Level 4",
@@ -1458,6 +1593,7 @@ export const modules = [
     topics: "Introduction, Mimikatz, SAM Database, LSA Secrets, LSASS Memory Dump, Credential Manager, DPAPI, Domain Cached Credentials, NTDS.dit Extraction, Kerberos Tickets, Token Impersonation, Registry Secrets, Secretsdump, Conclusion",
   },
   {
+    id: "windows-persistence-techniques",
     title: "Windows Persistence Techniques",
     icon: Terminal,
     tier: "Level 4",
@@ -1470,6 +1606,7 @@ export const modules = [
     topics: "Introduction, Registry Run Keys, Scheduled Tasks, Services, DLL Search Order, COM Hijacking, WMI Event Subscription, AppInit DLLs, Accessibility Features, Image File Execution, Boot Configuration, Startup Folder, Golden Ticket Persistence, Conclusion",
   },
   {
+    id: "deserialization-exploitation-advanced",
     title: "Deserialization Exploitation Advanced",
     icon: Bug,
     tier: "Level 4",
@@ -1482,6 +1619,7 @@ export const modules = [
     topics: "Introduction, Advanced Gadget Chains, Framework-Specific Exploits (.NET, Java, PHP, Python), Custom Gadget Development, ysoserial, Gadget Chain Discovery, Type Confusion, Class Pollution, POP Chains, Conclusion",
   },
   {
+    id: "command-and-control-infrastructure",
     title: "Command & Control Infrastructure",
     icon: Server,
     tier: "Level 4",
@@ -1494,6 +1632,7 @@ export const modules = [
     topics: "Introduction, C2 Frameworks (Sliver, Covenant, Havoc), Implant Development, Listeners, Stagers, Beacon Configuration, Domain Fronting, Redirectors, Traffic Obfuscation, OPSEC, Infrastructure Setup, Encryption, Conclusion",
   },
   {
+    id: "supply-chain-security-testing",
     title: "Supply Chain Security Testing",
     icon: Boxes,
     tier: "Level 4",
@@ -1506,6 +1645,7 @@ export const modules = [
     topics: "Introduction, Dependency Analysis, Software Composition Analysis, Package Repositories (npm, PyPI), Typosquatting, Dependency Confusion, Malicious Packages, Third-Party Risk, SBOM, Vulnerability Management, CI/CD Security, Conclusion",
   },
   {
+    id: "source-code-security-testing",
     title: "Source Code Security Testing",
     icon: Code,
     tier: "Level 4",
@@ -1518,6 +1658,7 @@ export const modules = [
     topics: "Introduction, White-Box Pentesting, Source Code Access, SAST Tools, Manual Review, Business Logic Analysis, Framework Security, API Security, Authentication Logic, Authorization Logic, Cryptography Implementation, Secure Defaults, Conclusion",
   },
   {
+    id: "user-activity-analysis",
     title: "User Activity Analysis",
     icon: Eye,
     tier: "Level 4",
@@ -1530,6 +1671,7 @@ export const modules = [
     topics: "Introduction, User Behavior Analytics (UBA), Baseline Behavior, Anomaly Detection, Session Analysis, Access Patterns, Login Anomalies, Privilege Escalation Detection, Data Access Patterns, Time-Based Analysis, Peer Group Analysis, Conclusion",
   },
   {
+    id: "android-runtime-analysis",
     title: "Android Runtime Analysis",
     icon: Smartphone,
     tier: "Level 4",
@@ -1542,6 +1684,7 @@ export const modules = [
     topics: "Introduction, Dynamic Analysis, Frida Framework, Runtime Hooking, Method Hooking, API Monitoring, SSL Pinning Bypass, Root Detection Bypass, Emulator Detection Bypass, Intent Manipulation, Activity Monitoring, Service Analysis, Conclusion",
   },
   {
+    id: "ad-trust-relationship-exploitation",
     title: "AD Trust Relationship Exploitation",
     icon: Server,
     tier: "Level 4",
@@ -1554,6 +1697,7 @@ export const modules = [
     topics: "Introduction, Domain Trusts, Forest Trusts, External Trusts, SID Filtering, SID History, Trust Tickets, Inter-Realm TGT, Trust Keys, Kerberos Referral, Trust Abuse, Cross-Domain Attacks, Trust Mapping, Conclusion",
   },
   {
+    id: "windows-detection-evasion",
     title: "Windows Detection Evasion",
     icon: Eye,
     tier: "Level 4",
@@ -1566,6 +1710,7 @@ export const modules = [
     topics: "Introduction, Antivirus Evasion, EDR Bypass, AMSI Bypass, ETW Patching, Obfuscation Techniques, Encoding, Encryption, Packing, Process Injection, Direct Syscalls, Unhooking, Signature Avoidance, Behavioral Evasion, Conclusion",
   },
   {
+    id: "discretionary-access-control-exploitation-ii",
     title: "Discretionary Access Control Exploitation II",
     icon: Lock,
     tier: "Level 4",
@@ -1578,6 +1723,7 @@ export const modules = [
     topics: "Introduction, Advanced DACL Attacks, Token Privileges, Object ACLs, Registry Permissions, File System ACLs, Service ACLs, Named Pipe Security, DCOM Permissions, WMI Permissions, COM Objects, ALPC, Conclusion",
   },
   {
+    id: "binary-fuzzing-fundamentals",
     title: "Binary Fuzzing Fundamentals",
     icon: Bug,
     tier: "Level 4",
@@ -1590,6 +1736,7 @@ export const modules = [
     topics: "Introduction, Fuzzing Concepts, Mutation-Based Fuzzing, Generation-Based Fuzzing, AFL (American Fuzzy Lop), LibFuzzer, Coverage-Guided Fuzzing, Crash Analysis, Triage, Input Corpus, Instrumentation, Sanitizers, Conclusion",
   },
   {
+    id: "windows-network-movement-techniques",
     title: "Windows Network Movement Techniques",
     icon: Network,
     tier: "Level 4",
@@ -1602,6 +1749,7 @@ export const modules = [
     topics: "Introduction, Pass-the-Hash, Pass-the-Ticket, Overpass-the-Hash, WMI Lateral Movement, DCOM Lateral Movement, PS Remoting, RDP, SSH, Service Installation, Scheduled Tasks, WinRM, SMB, Remote Registry, Conclusion",
   },
   {
+    id: "document-malware-analysis",
     title: "Document Malware Analysis",
     icon: FileSearch,
     tier: "Level 4",
@@ -1614,6 +1762,7 @@ export const modules = [
     topics: "Introduction, Malicious Documents, Macro Analysis, VBA Deobfuscation, PDF Exploits, OLE Objects, Embedded Objects, RTF Exploits, DDE Attacks, Office Document Analysis, Sandbox Analysis (ANY.RUN, Joe Sandbox), IOC Extraction, Conclusion",
   },
   {
+    id: "microsoft-infrastructure-exploitation",
     title: "Microsoft Infrastructure Exploitation",
     icon: Server,
     tier: "Level 4",
@@ -1626,6 +1775,7 @@ export const modules = [
     topics: "Introduction, MSSQL Attacks (xp_cmdshell, SQL Injection, Impersonation), Exchange Exploitation (PrivExchange, ProxyLogon), SCCM Attacks (Network Access Accounts, PXE Boot), Service-Specific Vulnerabilities, Configuration Issues, Conclusion",
   },
   {
+    id: "android-malware-reverse-engineering",
     title: "Android Malware Reverse Engineering",
     icon: Smartphone,
     tier: "Level 4",
@@ -1638,6 +1788,7 @@ export const modules = [
     topics: "Introduction, Malware Analysis Workflow, Static/Dynamic Analysis, Behavioral Analysis, Network Traffic Analysis, Code Deobfuscation, Anti-Analysis Techniques, C2 Communication, Persistence Mechanisms, Payload Analysis, IOC Extraction, Conclusion",
   },
   {
+    id: "automated-android-security-testing",
     title: "Automated Android Security Testing",
     icon: MonitorSmartphone,
     tier: "Level 4",
@@ -1650,6 +1801,7 @@ export const modules = [
     topics: "Introduction, MobSF (Mobile Security Framework), Drozer, Automation Scripts, CI/CD Integration, Continuous Security Testing, API Testing, Dynamic Instrumentation, Report Generation, Vulnerability Scanning, Compliance Checking, Conclusion",
   },
   {
+    id: "wpa-wpa2-security-exploitation",
     title: "WPA/WPA2 Security Exploitation",
     icon: Wifi,
     tier: "Level 4",
@@ -1662,6 +1814,7 @@ export const modules = [
     topics: "Introduction, WPA/WPA2 Architecture, 4-Way Handshake, EAPOL, PMK/PTK, KRACK Attack, Key Reinstallation, Handshake Capture, Offline Cracking, Dictionary Attack, GPU Acceleration, PMKID Attack, Hash Extraction, Conclusion",
   },
   {
+    id: "operational-security-and-detection",
     title: "Operational Security & Detection",
     icon: Eye,
     tier: "Level 4",
@@ -1674,6 +1827,7 @@ export const modules = [
     topics: "Introduction, OPSEC Principles, Attack Detection, Blue Team Tactics, Red Team vs Blue Team, Detection Engineering, Threat Emulation, TTPs, MITRE ATT&CK, Sigma Rules, Alert Tuning, Threat Hunting, Incident Response, Conclusion",
   },
   {
+    id: "android-digital-forensics",
     title: "Android Digital Forensics",
     icon: Smartphone,
     tier: "Level 4",
@@ -1686,6 +1840,7 @@ export const modules = [
     topics: "Introduction, Data Extraction Methods, Logical Extraction, Physical Extraction, Filesystem Extraction, ADB Backup, Root Access, SQLite Database Analysis, Application Data, Chat Recovery, Deleted File Recovery, Timeline Analysis, Conclusion",
   },
   {
+    id: "wireless-rogue-access-point-attacks",
     title: "Wireless Rogue Access Point Attacks",
     icon: Wifi,
     tier: "Level 4",
@@ -1698,6 +1853,7 @@ export const modules = [
     topics: "Introduction, Evil Twin Attack, Rogue AP Setup, Captive Portal, Credential Harvesting, DNS Spoofing, SSL Stripping, Man-in-the-Middle, Hostapd Configuration, Dnsmasq, Social Engineering, Network Impersonation, Conclusion",
   },
   {
+    id: "captive-portal-bypass-techniques",
     title: "Captive Portal Bypass Techniques",
     icon: Wifi,
     tier: "Level 4",
@@ -1710,6 +1866,7 @@ export const modules = [
     topics: "Introduction, Portal Bypass Methods, MAC Spoofing, DNS Tunneling, ICMP Tunneling, SSH Tunneling, VPN over Allowed Protocols, HTTP/HTTPS Tunneling, Time-Based Bypass, Authentication Bypass, Gateway Exploitation, Conclusion",
   },
   {
+    id: "wpa3-security-exploitation",
     title: "WPA3 Security Exploitation",
     icon: Wifi,
     tier: "Level 4",
@@ -1722,6 +1879,7 @@ export const modules = [
     topics: "Introduction, WPA3 Architecture, SAE (Simultaneous Authentication of Equals), Dragonblood Vulnerabilities, Downgrade Attacks, Side-Channel Attacks, Timing Attacks, Cache-Based Attacks, Denial of Service, Implementation Flaws, Conclusion",
   },
   {
+    id: "ad-security-hardening",
     title: "AD Security Hardening",
     icon: ShieldCheck,
     tier: "Level 4",
@@ -1736,6 +1894,7 @@ export const modules = [
 
   // Level 5 - Hard
   {
+    id: "open-source-intelligence-gathering",
     title: "Open Source Intelligence Gathering",
     icon: Search,
     tier: "Level 5",
@@ -1748,6 +1907,7 @@ export const modules = [
     topics: "Introduction, OSINT Methodology, Google Dorking, Advanced Search Operators, Shodan, Censys, Social Media Intelligence (Facebook, LinkedIn, Twitter), Email Harvesting, theHarvester, Maltego, Recon-ng, Dark Web, PasteBin, GitHub Dorking, Conclusion",
   },
   {
+    id: "secure-javascript-development",
     title: "Secure JavaScript Development",
     icon: Code,
     tier: "Level 5",
@@ -1760,6 +1920,7 @@ export const modules = [
     topics: "Introduction, Input Validation, Output Encoding, XSS Prevention, CSRF Protection, Content Security Policy, Secure Cookie Handling, DOM-Based Vulnerabilities, Prototype Pollution Prevention, Secure Coding Practices, OWASP Guidelines, Conclusion",
   },
   {
+    id: "linux-process-injection-techniques",
     title: "Linux Process Injection Techniques",
     icon: Terminal,
     tier: "Level 5",
@@ -1772,6 +1933,7 @@ export const modules = [
     topics: "Introduction, Process Injection Methods, ptrace System Call, LD_PRELOAD, /proc/pid/mem, Shared Libraries, Code Injection, Memory Manipulation, Detection Methods, Defense Evasion, Anti-Forensics, Rootkit Techniques, Conclusion",
   },
   {
+    id: "windows-management-instrumentation-analysis",
     title: "Windows Management Instrumentation Analysis",
     icon: Terminal,
     tier: "Level 5",
@@ -1784,6 +1946,7 @@ export const modules = [
     topics: "Introduction, WMI Architecture, WMI Events, Event Filters, Event Consumers, WMI Persistence, WMI Lateral Movement, WMI Queries, WMIC Command, WQL, Detection Strategies, Log Analysis, Sysmon WMI Events, Conclusion",
   },
   {
+    id: "access-token-attack-detection",
     title: "Access Token Attack Detection",
     icon: Fingerprint,
     tier: "Level 5",
@@ -1796,6 +1959,7 @@ export const modules = [
     topics: "Introduction, Token Theft, Token Impersonation, Token Duplication, Token Manipulation, SeImpersonate Privilege, Primary Token, Impersonation Token, Detection Methods, Log Analysis, Behavior Analysis, EDR Telemetry, Conclusion",
   },
   {
+    id: "process-injection-detection-and-response",
     title: "Process Injection Detection & Response",
     icon: ShieldAlert,
     tier: "Level 5",
@@ -1808,6 +1972,7 @@ export const modules = [
     topics: "Introduction, Injection Techniques (CreateRemoteThread, QueueUserAPC, Process Hollowing, Thread Hijacking, AtomBombing), Detection Methods, API Monitoring, EDR Telemetry, Memory Analysis, Behavior Detection, Response Actions, Conclusion",
   },
   {
+    id: "windows-debugger-fundamentals",
     title: "Windows Debugger Fundamentals",
     icon: Bug,
     tier: "Level 5",
@@ -1820,6 +1985,7 @@ export const modules = [
     topics: "Introduction, WinDbg Basics, Debugger Commands, Symbol Files, Stack Traces, Crash Dump Analysis, Kernel Debugging, User-Mode Debugging, Breakpoints, Memory Analysis, Extension Commands, Debugging Symbols, Conclusion",
   },
   {
+    id: "windows-kernel-monitoring",
     title: "Windows Kernel Monitoring",
     icon: Cpu,
     tier: "Level 5",
@@ -1832,6 +1998,7 @@ export const modules = [
     topics: "Introduction, ETW (Event Tracing for Windows), Kernel Callbacks, Driver Analysis, Minifilter Drivers, Process/Thread Callbacks, Registry Callbacks, Object Callbacks, Image Load Notifications, Telemetry Collection, Security Monitoring, Conclusion",
   },
   {
+    id: "low-level-windows-detection",
     title: "Low-Level Windows Detection",
     icon: Eye,
     tier: "Level 5",
@@ -1844,6 +2011,7 @@ export const modules = [
     topics: "Introduction, System Calls, Userland Hooks, Kernel-Mode Detection, SSDT Hooking, IDT Hooking, IRP Hooking, Inline Hooking, API Monitoring, Direct Syscalls, Heaven's Gate, Detection Bypass, Low-Level Analysis, Conclusion",
   },
   {
+    id: "windows-api-security-monitoring",
     title: "Windows API Security Monitoring",
     icon: Eye,
     tier: "Level 5",
@@ -1856,6 +2024,7 @@ export const modules = [
     topics: "Introduction, API Hooking, API Monitoring, Inline Hooking, IAT (Import Address Table) Hooking, Trampoline Hooking, Detours Library, User-Mode Hooks, Kernel-Mode Hooks, EDR Implementation, Behavior Monitoring, Conclusion",
   },
   {
+    id: "ai-data-poisoning-attacks",
     title: "AI Data Poisoning Attacks",
     icon: Bot,
     tier: "Level 5",
