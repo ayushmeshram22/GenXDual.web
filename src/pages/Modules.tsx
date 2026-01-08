@@ -3,8 +3,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 import {
-  Heart, Clock, Award, Search, Filter, ChevronDown, ChevronUp, X
+  Shield,
+  Terminal,
+  Globe,
+  Server,
+  Code,
+  FileCode,
+  Bug,
+  Target,
+  Heart,
+  Clock,
+  Award,
+  Search,
+  Filter,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from "lucide-react";
+
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +39,8 @@ import {
 const levels = ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5"];
 const difficulties = ["Fundamental", "Easy", "Easy/Medium", "Medium", "Medium/Hard", "Hard"];
 const types = ["Core", "Offensive", "Defensive", "General"];
+
+/* ===================== HELPERS ===================== */
 
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
@@ -58,6 +76,23 @@ const getTypeColor = (type: string) => {
   }
 };
 
+const getStageColor = (stage: string) => {
+  switch (stage) {
+    case "Beginner":
+      return "bg-indigo-500/20 text-indigo-400 border-indigo-500/30";
+    case "Intermediate":
+      return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+    case "Advanced":
+      return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+    case "Pro":
+      return "bg-red-600/20 text-red-500 border-red-600/30";
+    default:
+      return "bg-muted text-muted-foreground";
+  }
+};
+
+/* ===================== COMPONENT ===================== */
+
 const Modules = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
@@ -71,7 +106,8 @@ const Modules = () => {
       module.tier.toLowerCase().includes(searchQuery.toLowerCase()) ||
       module.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
       module.difficulty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (module.topics && module.topics.toLowerCase().includes(searchQuery.toLowerCase()));
+      module.topics.toLowerCase().includes(searchQuery.toLowerCase());
+
 
     const matchesLevel = selectedLevel ? module.tier === selectedLevel : true;
     const matchesDifficulty = selectedDifficulty ? module.difficulty === selectedDifficulty : true;
@@ -79,6 +115,7 @@ const Modules = () => {
 
     return matchesSearch && matchesLevel && matchesDifficulty && matchesType;
   });
+
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -96,9 +133,10 @@ const Modules = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-4">
+
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -106,14 +144,14 @@ const Modules = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <p className="text-primary font-medium tracking-widest mb-4">
-              ALL LEARNING PATHS
+            <p className="text-primary tracking-widest mb-4">
+              LEARNING PATH
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Cybersecurity Modules
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Master cybersecurity from fundamentals to advanced penetration testing with our structured learning modules
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Beginner to Pro cybersecurity roadmap with hands-on modules
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {filteredModules.length} of {modules.length} modules
@@ -366,6 +404,7 @@ const Modules = () => {
               })}
             </div>
           )}
+
         </div>
       </main>
 
