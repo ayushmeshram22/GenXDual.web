@@ -84,12 +84,28 @@ export default function ModuleLearningPage() {
     );
   
   // Find current section index (first incomplete or first completed)
-  const initialSection =
-    module.sections.findIndex(s => s.completed === false);
+  const initialSection = module
+    ? module.sections.findIndex(s => s.completed === false)
+    : 0;
 
   const [activeSection, setActiveSection] = useState(
     initialSection === -1 ? 0 : initialSection
   );
+
+  // Handle case where module is not found
+  if (!module) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Module Not Found</h1>
+          <p className="text-muted-foreground mb-6">The module "{moduleId}" could not be found.</p>
+          <Link to="/modules">
+            <Button>Back to Modules</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (topics.length !== module.sections.length) {
     console.warn(
