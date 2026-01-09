@@ -33,6 +33,7 @@ import ScrollToTop from "@/components/common/ScrollToTop";
 import IntroductionToCybersecurity from "@/pages/modules/IntroductionToCybersecurity";
 import CybersecurityTest from "@/pages/modules/CybersecurityTest";
 import ModuleLearningPage from "@/pages/modules/ModuleLearningPage";
+import Leaderboard from "@/pages/Leaderboard";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/modules/cybersecurity" element={<IntroductionToCybersecurity />} />
           <Route path="/modules/cybersecurity/test" element={<CybersecurityTest />} />
           <Route path="/modules/learn/:moduleId" element={<ModuleLearningPage />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

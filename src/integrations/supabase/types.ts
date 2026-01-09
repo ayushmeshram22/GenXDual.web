@@ -248,6 +248,153 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_attempts: {
+        Row: {
+          answers: Json | null
+          completed_at: string
+          created_at: string
+          id: string
+          lesson_index: number
+          module_id: string
+          score: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          lesson_index: number
+          module_id: string
+          score?: number
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          lesson_index?: number
+          module_id?: string
+          score?: number
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_engagement: {
+        Row: {
+          average_quiz_score: number | null
+          created_at: string
+          id: string
+          last_activity_at: string | null
+          lessons_completed: number
+          modules_completed: number
+          quizzes_passed: number
+          streak_days: number | null
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          average_quiz_score?: number | null
+          created_at?: string
+          id?: string
+          last_activity_at?: string | null
+          lessons_completed?: number
+          modules_completed?: number
+          quizzes_passed?: number
+          streak_days?: number | null
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          average_quiz_score?: number | null
+          created_at?: string
+          id?: string
+          last_activity_at?: string | null
+          lessons_completed?: number
+          modules_completed?: number
+          quizzes_passed?: number
+          streak_days?: number | null
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_notifications: {
+        Row: {
+          created_at: string
+          data: Json | null
+          id: string
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          lesson_index: number
+          module_id: string
+          updated_at: string
+          user_id: string
+          video_progress_seconds: number | null
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lesson_index: number
+          module_id: string
+          updated_at?: string
+          user_id: string
+          video_progress_seconds?: number | null
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lesson_index?: number
+          module_id?: string
+          updated_at?: string
+          user_id?: string
+          video_progress_seconds?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
