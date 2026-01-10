@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, Clock, CheckCircle2, Circle,
   Play, FileText, BookOpen, FlaskConical, Sparkles,
-  Heart, MessageCircle, Share2, Bookmark
+  Heart, MessageCircle, Share2, Bookmark, Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { moduleDatabase } from "@/data/moduleContent";
 import { modules } from "@/data/modules";
-
+import { VideoPlayer } from "@/components/learning/VideoPlayer";
+import { QuizSection } from "@/components/learning/QuizSection";
+import { useProgress } from "@/hooks/useProgress";
+import { Progress } from "@/components/ui/progress";
 
 // Tab types
 type TabType = "watch" | "read" | "mcq" | "lab" | "flex";
 
-// Parse text with highlighted terms (for key areas)
 // Key Areas of Focus (static data)
 const keyAreas = [
   {
@@ -40,29 +42,32 @@ const keyAreas = [
   },
 ];
 
-
 const parseTopics = (topics: string): string[] =>
   topics.split(",").map(t => t.trim());
-
 
 export default function ModuleLearningPage() {
   const { moduleId } = useParams();
 
   const [activeTab, setActiveTab] = useState<TabType>("watch");
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const { 
+    progress, 
+    loading, 
+    userId,
+    markLessonComplete, 
+    updateVideoProgress, 
+    getVideoProgress, 
+    isLessonCompleted,
+    getCompletedCount 
+  } = useProgress(moduleId);
 
   const resetLessonState = () => {
     setActiveTab("watch");
-    setSelectedAnswer(null);
-    setCurrentQuestionIndex(0);
   };
-
 
   const moduleMeta = modules.find(m => m.id === moduleId);
   const topics = moduleMeta ? parseTopics(moduleMeta.topics) : [];
   
-  // Get module data or default to cybersecurity-basics
+  // Get module data or default to module meta
   const module =
     moduleDatabase[moduleId!] ??
     (moduleMeta
@@ -83,14 +88,26 @@ export default function ModuleLearningPage() {
       : null
     );
   
-  // Find current section index (first incomplete or first completed)
-  const initialSection = module
-    ? module.sections.findIndex(s => s.completed === false)
-    : 0;
+  // Find current section index (first incomplete based on user progress)
+  const getInitialSection = () => {
+    if (!module) return 0;
+    for (let i = 0; i < module.sections.length; i++) {
+      if (!isLessonCompleted(i)) {
+        return i;
+      }
+    }
+    return 0;
+  };
 
-  const [activeSection, setActiveSection] = useState(
-    initialSection === -1 ? 0 : initialSection
-  );
+  const [activeSection, setActiveSection] = useState(0);
+
+  // Update active section once progress loads
+  useEffect(() => {
+    if (!loading && module) {
+      const initial = getInitialSection();
+      setActiveSection(initial);
+    }
+  }, [loading, progress]);
 
   // Handle case where module is not found
   if (!module) {
@@ -118,11 +135,14 @@ export default function ModuleLearningPage() {
     title: topics[activeSection] ?? `Lesson ${activeSection + 1}`,
   };
 
-  
   const totalSections = module.sections.length;
+  const completedCount = getCompletedCount();
+  const overallProgress = (completedCount / totalSections) * 100;
 
-  const handleNextSection = () => {
-    module.sections[activeSection].completed = true;
+  const handleNextSection = async () => {
+    // Mark current lesson as complete
+    await markLessonComplete(activeSection);
+    
     if (activeSection < totalSections - 1) {
       setActiveSection(activeSection + 1);
       resetLessonState();
@@ -136,6 +156,18 @@ export default function ModuleLearningPage() {
     }
   };
 
+  const handleVideoProgress = (seconds: number) => {
+    updateVideoProgress(activeSection, Math.floor(seconds));
+  };
+
+  const handleVideoComplete = async () => {
+    await markLessonComplete(activeSection);
+  };
+
+  const handleQuizComplete = async () => {
+    await markLessonComplete(activeSection);
+  };
+
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: "watch", label: "Watch", icon: <Play className="w-4 h-4" /> },
     { id: "read", label: "Read", icon: <FileText className="w-4 h-4" /> },
@@ -144,12 +176,13 @@ export default function ModuleLearningPage() {
     { id: "flex", label: "Flex", icon: <Sparkles className="w-4 h-4" /> },
   ];
 
-  const currentMCQ =
-    currentSection.content.mcqQuestions[currentQuestionIndex];
-
-  const isCorrect =
-    selectedAnswer === currentMCQ?.correctAnswer;
-
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -163,53 +196,62 @@ export default function ModuleLearningPage() {
             <ArrowLeft className="w-4 h-4" />
             Back to Modules
           </Link>
-          <h2 className="font-semibold text-foreground text-lg">Lessons</h2>
+          <h2 className="font-semibold text-foreground text-lg mb-3">Lessons</h2>
+          
+          {/* Overall Progress */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>{completedCount} of {totalSections} completed</span>
+              <span>{Math.round(overallProgress)}%</span>
+            </div>
+            <Progress value={overallProgress} className="h-2" />
+          </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto p-3">
-          {module.sections.map((section, idx) => (
-            <button
-              key={section.id}
-              onClick={() => {
-                setActiveSection(idx);
-                resetLessonState();
-              }}
-              className={cn(
-                "w-full flex items-start gap-3 px-4 py-4 rounded-lg text-left transition-all mb-2",
-                activeSection === idx
-                  ? "bg-primary/10 border-l-4 border-primary"
-                  : "hover:bg-muted/50"
-              )}
-            >
-              <div className="mt-0.5">
-                {section.completed ? (
-                  <CheckCircle2 className={cn(
-                    "w-5 h-5",
-                    activeSection === idx ? "text-primary" : "text-primary"
-                  )} />
-                ) : (
-                  <Circle className={cn(
-                    "w-5 h-5",
-                    activeSection === idx ? "text-primary" : "text-muted-foreground"
-                  )} />
+          {module.sections.map((section, idx) => {
+            const lessonCompleted = isLessonCompleted(idx);
+            return (
+              <button
+                key={section.id}
+                onClick={() => {
+                  setActiveSection(idx);
+                  resetLessonState();
+                }}
+                className={cn(
+                  "w-full flex items-start gap-3 px-4 py-4 rounded-lg text-left transition-all mb-2",
+                  activeSection === idx
+                    ? "bg-primary/10 border-l-4 border-primary"
+                    : "hover:bg-muted/50"
                 )}
-              </div>
-              <div className="flex-1">
-                <span className={cn(
-                  "text-sm font-medium block",
-                  activeSection === idx ? "text-primary" : "text-foreground"
-                )}>
-                  {topics[idx] ?? `Lesson ${idx + 1}`}
-                </span>
-                <span className={cn(
-                  "text-xs mt-1 block",
-                  activeSection === idx ? "text-primary/70" : "text-muted-foreground"
-                )}>
-                  {section.duration}
-                </span>
-              </div>
-            </button>
-          ))}
+              >
+                <div className="mt-0.5">
+                  {lessonCompleted ? (
+                    <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  ) : (
+                    <Circle className={cn(
+                      "w-5 h-5",
+                      activeSection === idx ? "text-primary" : "text-muted-foreground"
+                    )} />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <span className={cn(
+                    "text-sm font-medium block",
+                    activeSection === idx ? "text-primary" : "text-foreground"
+                  )}>
+                    {topics[idx] ?? `Lesson ${idx + 1}`}
+                  </span>
+                  <span className={cn(
+                    "text-xs mt-1 block",
+                    activeSection === idx ? "text-primary/70" : "text-muted-foreground"
+                  )}>
+                    {section.duration}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </nav>
       </aside>
 
@@ -229,6 +271,12 @@ export default function ModuleLearningPage() {
                 <Clock className="w-4 h-4" />
                 {currentSection.duration}
               </span>
+              {isLessonCompleted(activeSection) && (
+                <span className="flex items-center gap-1 text-green-500">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Completed
+                </span>
+              )}
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">{currentSection.title}</h1>
             <p className="text-muted-foreground">{currentSection.description}</p>
@@ -264,26 +312,14 @@ export default function ModuleLearningPage() {
           >
             {/* Watch Tab */}
             {activeTab === "watch" && (
-              <div className="bg-card border border-border rounded-xl overflow-hidden">
-                <div className="aspect-video flex items-center justify-center bg-gradient-to-br from-muted to-card">
-                  <div className="text-center">
-                    <div className="w-20 h-20 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center mx-auto mb-4">
-                      <Play className="w-8 h-8 text-primary ml-1" />
-                    </div>
-                    <p className="text-foreground font-medium mb-2">Video content coming soon</p>
-                    <p className="text-muted-foreground text-sm">Interactive video lessons for this module</p>
-                  </div>
-                </div>
-                <div className="p-4 border-t border-border flex items-center gap-4">
-                  <button className="text-muted-foreground hover:text-foreground">
-                    <Play className="w-5 h-5" />
-                  </button>
-                  <div className="flex-1 h-1 bg-muted rounded-full">
-                    <div className="h-full w-0 bg-primary rounded-full"></div>
-                  </div>
-                  <span className="text-primary text-sm font-mono">0:00 / {currentSection.duration}</span>
-                </div>
-              </div>
+              <VideoPlayer
+                videoUrl={undefined} // Will show placeholder - add video URLs to moduleContent.ts
+                duration={currentSection.duration}
+                onProgress={handleVideoProgress}
+                onComplete={handleVideoComplete}
+                initialProgress={getVideoProgress(activeSection)}
+                title={currentSection.title}
+              />
             )}
 
             {/* Read Tab */}
@@ -299,7 +335,7 @@ export default function ModuleLearningPage() {
                 ))}
                 
                 {/* Key Areas of Focus */}
-                {activeSection === 0 && moduleId === "cybersecurity-basics" && (
+                {activeSection === 0 && moduleId === "introduction-to-cybersecurity" && (
                   <div className="mt-8">
                     <h2 className="text-xl font-semibold text-foreground mb-4">Key Areas of Focus</h2>
                     <div className="space-y-4">
@@ -319,67 +355,27 @@ export default function ModuleLearningPage() {
                     <p className="text-muted-foreground">Reading content coming soon</p>
                   </div>
                 )}
+
+                {/* Mark as complete button for read tab */}
+                {currentSection.content.readContent.length > 0 && !isLessonCompleted(activeSection) && (
+                  <div className="mt-8 pt-6 border-t border-border">
+                    <Button onClick={() => markLessonComplete(activeSection)}>
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Mark as Complete
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
             {/* MCQ Tab */}
-            {activeTab === "mcq" && (
-              <div>
-                {currentSection.content.mcqQuestions.length > 0 ? (
-                  <div className="bg-card border border-border rounded-xl p-6">
-                    <h3 className="text-lg font-medium text-foreground mb-6">
-                      Question {currentQuestionIndex + 1}: {currentSection.content.mcqQuestions[currentQuestionIndex]?.question}
-                    </h3>
-                    <div className="space-y-3">
-                      {currentSection.content.mcqQuestions[currentQuestionIndex]?.options.map((option) => (
-                        <button
-                          key={option.label}
-                          onClick={() => setSelectedAnswer(option.label)}
-                          className={cn(
-                            "w-full text-left p-4 rounded-lg border transition-all",
-                            selectedAnswer === option.label
-                              ? option.label === currentMCQ?.correctAnswer
-                                ? "bg-green-500/10 border-green-500 text-green-400"
-                                : "bg-red-500/10 border-red-500 text-red-400"
-                              : "bg-muted/30 border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                          )}
-                        >
-                          {option.label}. {option.text}
-                        </button>
-                      ))}
-                    </div>
-                    {currentSection.content.mcqQuestions.length > 1 && (
-                      <div className="flex justify-between mt-6 pt-4 border-t border-border">
-                        <Button
-                          variant="outline"
-                          disabled={currentQuestionIndex === 0}
-                          onClick={() => {
-                            setCurrentQuestionIndex(currentQuestionIndex - 1);
-                            setSelectedAnswer(null);
-                          }}
-                        >
-                          Previous Question
-                        </Button>
-                        <Button
-                          disabled={currentQuestionIndex === currentSection.content.mcqQuestions.length - 1}
-                          onClick={() => {
-                            setCurrentQuestionIndex(currentQuestionIndex + 1);
-                            setSelectedAnswer(null);
-                          }}
-                          className="bg-primary hover:bg-primary/90"
-                        >
-                          Next Question
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Quiz questions coming soon</p>
-                  </div>
-                )}
-              </div>
+            {activeTab === "mcq" && moduleId && (
+              <QuizSection
+                questions={currentSection.content.mcqQuestions}
+                moduleId={moduleId}
+                lessonIndex={activeSection}
+                onComplete={handleQuizComplete}
+              />
             )}
 
             {/* Lab Tab */}
@@ -470,13 +466,26 @@ export default function ModuleLearningPage() {
             >
               Previous Lesson
             </Button>
-            <Button
-              onClick={handleNextSection}
-              disabled={activeSection === totalSections - 1}
-              className="px-6 bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              Next Lesson
-            </Button>
+            
+            <div className="flex items-center gap-4">
+              {!isLessonCompleted(activeSection) && (
+                <Button
+                  variant="outline"
+                  onClick={() => markLessonComplete(activeSection)}
+                  className="px-6"
+                >
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Mark Complete
+                </Button>
+              )}
+              <Button
+                onClick={handleNextSection}
+                disabled={activeSection === totalSections - 1}
+                className="px-6 bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                Next Lesson
+              </Button>
+            </div>
           </div>
         </div>
       </main>
