@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { User, Camera, Save, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { CongratulationsAnimation } from "@/components/learning/CongratulationsAnimation";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const Profile = () => {
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showCongrats, setShowCongrats] = useState(false);
+  const [previousCompletion, setPreviousCompletion] = useState(0);
   const [formData, setFormData] = useState({
     full_name: "",
     username: "",
@@ -141,6 +144,9 @@ const Profile = () => {
     e.preventDefault();
     if (!user) return;
 
+    // Calculate completion before save
+    const currentCompletion = calculateCompletion();
+
     setLoading(true);
     const { error } = await supabase
       .from("profiles")
@@ -166,6 +172,12 @@ const Profile = () => {
         title: "Success",
         description: "Your profile has been updated successfully!",
       });
+
+      // Check if profile just reached 100% completion
+      if (currentCompletion === 100 && previousCompletion < 100) {
+        setShowCongrats(true);
+      }
+      setPreviousCompletion(currentCompletion);
     }
   };
 
@@ -188,8 +200,21 @@ const Profile = () => {
     return Math.round((filledFields / fields.length) * 100);
   };
 
+  // Track initial completion when profile loads
+  useEffect(() => {
+    const completion = calculateCompletion();
+    setPreviousCompletion(completion);
+  }, [formData]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <CongratulationsAnimation
+        show={showCongrats}
+        onClose={() => setShowCongrats(false)}
+        title="Profile Complete! 🎉"
+        message="You've completed your profile! You're all set to get personalized learning recommendations."
+        type="profile"
+      />
       <Navbar />
       <main className="flex-1 pt-24 pb-16">
         <div className="container max-w-2xl mx-auto px-4">

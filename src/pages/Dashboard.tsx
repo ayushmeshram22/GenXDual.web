@@ -22,6 +22,8 @@ import {
   AlertCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { CongratulationsAnimation } from "@/components/learning/CongratulationsAnimation";
+import { modules } from "@/data/modules";
 
 interface ProfileData {
   display_name: string | null;
@@ -39,6 +41,9 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [showModuleCongrats, setShowModuleCongrats] = useState(false);
+  const [completedModulesCount, setCompletedModulesCount] = useState(0);
+  const [userProgress, setUserProgress] = useState<Array<{ module_id: string; lesson_index: number; completed: boolean }>>([]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -48,6 +53,7 @@ const Dashboard = () => {
         } else {
           setUser(session.user);
           fetchProfile(session.user.id);
+          fetchUserProgress(session.user.id);
         }
       }
     );
@@ -58,6 +64,7 @@ const Dashboard = () => {
       } else {
         setUser(session.user);
         fetchProfile(session.user.id);
+        fetchUserProgress(session.user.id);
       }
     });
 
@@ -82,8 +89,56 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error:", error);
     } finally {
+      // Don't set loading false here - wait for progress fetch too
+    }
+  };
+
+  const fetchUserProgress = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("user_progress")
+        .select("module_id, lesson_index, completed")
+        .eq("user_id", userId);
+
+      if (!error && data) {
+        setUserProgress(data);
+        
+        // Check if any modules are fully completed
+        const completedModules = checkCompletedModules(data);
+        
+        // Check localStorage to see if we've already shown congrats for this count
+        const lastShownCount = parseInt(localStorage.getItem(`congrats_modules_${userId}`) || "0");
+        
+        if (completedModules > lastShownCount && completedModules > 0) {
+          setCompletedModulesCount(completedModules);
+          setShowModuleCongrats(true);
+          localStorage.setItem(`congrats_modules_${userId}`, completedModules.toString());
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching progress:", error);
+    } finally {
       setLoading(false);
     }
+  };
+
+  const checkCompletedModules = (progressData: typeof userProgress) => {
+    let completedCount = 0;
+    
+    modules.forEach(mod => {
+      const moduleProgress = progressData.filter(p => p.module_id === mod.id && p.completed);
+      if (moduleProgress.length >= mod.sections) {
+        completedCount++;
+      }
+    });
+    
+    return completedCount;
+  };
+
+  // Calculate real module progress from database
+  const getModuleProgress = (moduleId: string, totalSections: number) => {
+    const completed = userProgress.filter(p => p.module_id === moduleId && p.completed).length;
+    return Math.round((completed / totalSections) * 100);
   };
 
   const getInitials = () => {
@@ -122,12 +177,19 @@ const Dashboard = () => {
 
   const profileCompletion = calculateProfileCompletion();
 
-  // Mock learning progress data
-  const learningModules = [
-    { name: "Network Security Fundamentals", progress: 75, icon: Shield },
-    { name: "Ethical Hacking Basics", progress: 45, icon: Zap },
-    { name: "Incident Response", progress: 20, icon: Target },
-  ];
+  // Real learning progress from database
+  const learningModules = modules.slice(0, 3).map((mod, index) => ({
+    id: mod.id,
+    name: mod.title,
+    progress: getModuleProgress(mod.id, mod.sections),
+    icon: index === 0 ? Shield : index === 1 ? Zap : Target,
+    totalSections: mod.sections
+  }));
+
+  // Calculate overall progress
+  const totalLessons = modules.reduce((sum, m) => sum + m.sections, 0);
+  const completedLessons = userProgress.filter(p => p.completed).length;
+  const overallProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   if (loading) {
     return (
@@ -139,6 +201,13 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <CongratulationsAnimation
+        show={showModuleCongrats}
+        onClose={() => setShowModuleCongrats(false)}
+        title="Module Complete! 🏆"
+        message={`Amazing! You've completed ${completedModulesCount} module${completedModulesCount > 1 ? 's' : ''}! Keep up the great work on your cybersecurity journey.`}
+        type="module"
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -349,7 +418,7 @@ const Dashboard = () => {
                       <TrendingUp className="w-6 h-6 text-yellow-400" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-foreground">47%</p>
+                      <p className="text-2xl font-bold text-foreground">{overallProgress}%</p>
                       <p className="text-sm text-muted-foreground">Overall Progress</p>
                     </div>
                   </div>
