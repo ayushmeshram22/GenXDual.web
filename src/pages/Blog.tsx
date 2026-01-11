@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Tag, Calendar, Clock, Plus, Trash2, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, Tag, Calendar, Clock, Trash2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { FeaturedPosts } from "@/components/blog/FeaturedPosts";
+import { StartPostCard } from "@/components/blog/StartPostCard";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface Blog {
@@ -46,21 +44,11 @@ const AVAILABLE_TAGS = [
 const Blog = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [showUploadForm, setShowUploadForm] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { toast } = useToast();
-
-  // Form state
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [excerpt, setExcerpt] = useState("");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
-  const [published, setPublished] = useState(false);
-  const [featured, setFeatured] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -98,61 +86,6 @@ const Blog = () => {
     setLoading(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to create a blog",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setSubmitting(true);
-
-    // Strip HTML tags for word count
-    const plainText = content.replace(/<[^>]*>/g, " ");
-    const readTime = Math.max(1, Math.ceil(plainText.split(/\s+/).length / 200));
-
-    const { error } = await supabase.from("blogs").insert({
-      title,
-      content,
-      excerpt: excerpt || null,
-      cover_image_url: coverImageUrl || null,
-      published,
-      featured,
-      user_id: user.id,
-      tags: selectedTags,
-      read_time: readTime,
-    });
-
-    if (error) {
-      console.error("Error creating blog:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create blog post",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Blog post created successfully!",
-      });
-      setTitle("");
-      setContent("");
-      setExcerpt("");
-      setCoverImageUrl("");
-      setPublished(false);
-      setFeatured(false);
-      setSelectedTags([]);
-      setShowUploadForm(false);
-      fetchBlogs();
-    }
-
-    setSubmitting(false);
-  };
-
   const handleDelete = async (blogId: string) => {
     const { error } = await supabase.from("blogs").delete().eq("id", blogId);
 
@@ -179,10 +112,8 @@ const Blog = () => {
     });
   };
 
-  const toggleFormTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+  const handleLoginRequired = () => {
+    navigate("/auth");
   };
 
   const filteredBlogs = blogs.filter((blog) => {
@@ -265,139 +196,19 @@ const Blog = () => {
             </div>
           </motion.div>
 
-          {/* Create Blog Button / Form */}
-          {user && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-10"
-            >
-              {!showUploadForm ? (
-                <div className="flex justify-center">
-                  <Button onClick={() => setShowUploadForm(true)} className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    Create New Blog Post
-                  </Button>
-                </div>
-              ) : (
-                <Card className="max-w-3xl mx-auto border-primary/20 bg-card/50">
-                  <CardContent className="p-6">
-                    <h2 className="text-xl font-bold text-foreground mb-6">
-                      Create New Blog Post
-                    </h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="title">Title *</Label>
-                        <Input
-                          id="title"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          placeholder="Enter blog title"
-                          required
-                          className="bg-background"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="excerpt">Excerpt</Label>
-                        <Input
-                          id="excerpt"
-                          value={excerpt}
-                          onChange={(e) => setExcerpt(e.target.value)}
-                          placeholder="Brief description of your blog"
-                          className="bg-background"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="coverImage">Cover Image URL</Label>
-                        <Input
-                          id="coverImage"
-                          value={coverImageUrl}
-                          onChange={(e) => setCoverImageUrl(e.target.value)}
-                          placeholder="https://example.com/image.jpg"
-                          className="bg-background"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Tags</Label>
-                        <div className="flex flex-wrap gap-2">
-                          {AVAILABLE_TAGS.map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant={selectedTags.includes(tag) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => toggleFormTag(tag)}
-                            >
-                              #{tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Content *</Label>
-                        <RichTextEditor content={content} onChange={setContent} />
-                      </div>
-
-                      <div className="flex items-center gap-6">
-                        <div className="flex items-center space-x-2">
-                          <Switch
-                            id="published"
-                            checked={published}
-                            onCheckedChange={setPublished}
-                          />
-                          <Label htmlFor="published">Publish immediately</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Switch
-                            id="featured"
-                            checked={featured}
-                            onCheckedChange={setFeatured}
-                          />
-                          <Label htmlFor="featured" className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-yellow-500" />
-                            Featured
-                          </Label>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-3 pt-4">
-                        <Button type="submit" disabled={submitting || !content.trim()}>
-                          {submitting ? "Creating..." : "Create Post"}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setShowUploadForm(false)}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </form>
-                  </CardContent>
-                </Card>
-              )}
-            </motion.div>
-          )}
-
-          {!user && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-center mb-10 p-6 bg-card/50 rounded-xl border border-border/50"
-            >
-              <p className="text-muted-foreground mb-4">
-                Sign in to create and manage your own blog posts
-              </p>
-              <Button asChild>
-                <Link to="/auth">Sign In</Link>
-              </Button>
-            </motion.div>
-          )}
+          {/* LinkedIn-style Start Post Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-2xl mx-auto mb-10"
+          >
+            <StartPostCard
+              user={user}
+              onPostCreated={fetchBlogs}
+              onLoginRequired={handleLoginRequired}
+            />
+          </motion.div>
 
           {/* Featured Posts */}
           {featuredBlogs.length > 0 && <FeaturedPosts posts={featuredBlogs} />}
