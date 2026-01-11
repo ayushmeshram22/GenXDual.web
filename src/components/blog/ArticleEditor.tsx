@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Upload, Image, X, Star, ChevronDown } from "lucide-react";
+import { Upload, Image, Video, X, Star, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -38,20 +38,23 @@ export const ArticleEditor = ({ user, onClose, onPostCreated }: ArticleEditorPro
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverMedia, setCoverMedia] = useState<File | null>(null);
+  const [coverMediaType, setCoverMediaType] = useState<"image" | "video" | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [published, setPublished] = useState(true);
   const [featured, setFeatured] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleCoverSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>, type: "image" | "video") => {
     const file = e.target.files?.[0];
     if (file) {
-      setCoverImage(file);
+      setCoverMedia(file);
+      setCoverMediaType(type);
       const reader = new FileReader();
       reader.onloadend = () => {
         setCoverPreview(reader.result as string);
@@ -61,11 +64,11 @@ export const ArticleEditor = ({ user, onClose, onPostCreated }: ArticleEditorPro
   };
 
   const removeCover = () => {
-    setCoverImage(null);
+    setCoverMedia(null);
+    setCoverMediaType(null);
     setCoverPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (imageInputRef.current) imageInputRef.current.value = "";
+    if (videoInputRef.current) videoInputRef.current.value = "";
   };
 
   const toggleTag = (tag: string) => {
@@ -75,15 +78,15 @@ export const ArticleEditor = ({ user, onClose, onPostCreated }: ArticleEditorPro
   };
 
   const uploadCover = async (): Promise<string | null> => {
-    if (!coverImage || !user) return null;
+    if (!coverMedia || !user) return null;
 
     setUploading(true);
-    const fileExt = coverImage.name.split(".").pop();
+    const fileExt = coverMedia.name.split(".").pop();
     const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from("blog-covers")
-      .upload(fileName, coverImage);
+      .upload(fileName, coverMedia);
 
     if (uploadError) {
       toast({
@@ -124,7 +127,7 @@ export const ArticleEditor = ({ user, onClose, onPostCreated }: ArticleEditorPro
     setSubmitting(true);
 
     let coverImageUrl = null;
-    if (coverImage) {
+    if (coverMedia) {
       coverImageUrl = await uploadCover();
     }
 
@@ -191,22 +194,37 @@ export const ArticleEditor = ({ user, onClose, onPostCreated }: ArticleEditorPro
         </div>
       </div>
 
-      {/* Cover Image Upload */}
+      {/* Cover Media Upload */}
       <div className="relative">
         <input
-          ref={fileInputRef}
+          ref={imageInputRef}
           type="file"
           accept="image/*"
-          onChange={handleCoverSelect}
+          onChange={(e) => handleMediaSelect(e, "image")}
+          className="hidden"
+        />
+        <input
+          ref={videoInputRef}
+          type="file"
+          accept="video/*"
+          onChange={(e) => handleMediaSelect(e, "video")}
           className="hidden"
         />
         {coverPreview ? (
           <div className="relative rounded-lg overflow-hidden border border-border bg-muted">
-            <img
-              src={coverPreview}
-              alt="Cover preview"
-              className="w-full h-64 object-cover"
-            />
+            {coverMediaType === "video" ? (
+              <video
+                src={coverPreview}
+                controls
+                className="w-full h-64 object-cover"
+              />
+            ) : (
+              <img
+                src={coverPreview}
+                alt="Cover preview"
+                className="w-full h-64 object-cover"
+              />
+            )}
             <Button
               variant="destructive"
               size="icon"
@@ -215,20 +233,38 @@ export const ArticleEditor = ({ user, onClose, onPostCreated }: ArticleEditorPro
             >
               <X className="h-4 w-4" />
             </Button>
+            <div className="absolute bottom-3 left-3">
+              <Badge variant="secondary" className="capitalize">
+                {coverMediaType}
+              </Badge>
+            </div>
           </div>
         ) : (
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="flex flex-col items-center justify-center h-48 rounded-lg border-2 border-dashed border-border bg-muted/50 cursor-pointer hover:bg-muted transition-colors"
-          >
+          <div className="flex flex-col items-center justify-center h-48 rounded-lg border-2 border-dashed border-border bg-muted/50">
             <Image className="h-12 w-12 text-muted-foreground/50 mb-3" />
-            <p className="text-muted-foreground text-sm mb-2">
+            <p className="text-muted-foreground text-sm mb-4">
               Add a cover image or video to your article.
             </p>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Upload className="h-4 w-4" />
-              Upload from computer
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => imageInputRef.current?.click()}
+              >
+                <Image className="h-4 w-4 text-blue-500" />
+                Photo
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => videoInputRef.current?.click()}
+              >
+                <Video className="h-4 w-4 text-green-500" />
+                Video
+              </Button>
+            </div>
           </div>
         )}
       </div>
